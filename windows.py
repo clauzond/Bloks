@@ -1,8 +1,10 @@
 from tkinter import *
+import classtooltip as ctt
+import dictionnaires
 
 class levelup():
 
-    def __init__(self,toplevel,attribut_dic,color_dic,player_name="Empty",player_exp={'level':'0','current':0,'max':0}):
+    def __init__(self,toplevel,player_dic,attribut_dic):
 
         if toplevel:
             self.level_window = Toplevel()
@@ -12,60 +14,111 @@ class levelup():
         self.level_window.resizable(False, False)
 
         self.level_window.option_add('*Font','Constantia 12')
-        self.level_window.option_add('*activebackground','white')
-        self.level_window.option_add('*activeforeground','blue')
-        self.level_window.option_add('*overrelif','groove')
+        self.level_window.option_add('*Button.activebackground','darkgray')
+        self.level_window.option_add('*Button.activeforeground','darkgray')
+        self.level_window.option_add('*Button.relief','ridge')
         self.level_window.option_add('*justify','left')
         self.level_window.option_add('*bg','lightgray')
+        self.level_window.option_add('*compound','left')
 
 
         self.level_canvas = Canvas(self.level_window)
         self.level_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
 
+        self.player_dic = player_dic
         self.attribut_dic = attribut_dic
-        self.color_dic = color_dic
+        self.color_dic = dictionnaires.dictionnaires_vierge(loadcolor=True)
+        self.img_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
+        self.tooltips_dic = dictionnaires.dictionnaires_vierge(loadtooltip=True)
 
 
         # Statistiques du joueurs
+        k = 5 # nombre de lignes utilisées avant les attributs
 
-        Label(self.level_canvas,text=player_name,fg='black').grid(row=0,column=0,columnspan=10,sticky=W)
-        txt = 'lv'+str(player_exp['level'])+" "+str(player_exp['current']) + '/' + str(player_exp['max'])
-        Label(self.level_canvas,text=txt,fg='black',font="Constantia 13").grid(row=0,column=1,columnspan=10,sticky=E)
+        name_label = Label(self.level_canvas,
+                        text=self.player_dic['name'],
+                        fg='black',font="Constantia 13 bold",image=self.img_dic['player'])
+        name_label.grid(row=0, column=0, sticky=W)
 
+        level_label = Label(self.level_canvas,
+                        text=str(self.player_dic['level']),
+                        fg='black',font="Constantia 13 bold",image=self.img_dic['starnoir'])
+        level_label.grid(row=0,column=1,columnspan=1)
+
+        xp_label = Label(self.level_canvas,
+                        text=str(self.player_dic['current_xp'])+'/'+str(self.player_dic['max_xp']),
+                        fg='black',font='Constantia 13 bold',image=self.img_dic['xpnoir'])
+        xp_label.grid(row=0,column=2,columnspan=10,sticky=E)
         Frame(self.level_canvas,height=20).grid(row=1)
+
+        txt_point_label = Label(self.level_canvas,
+                            text='Disponible : ',
+                            fg='black',font='Constantia 13 bold',image=self.img_dic['star'])
+        txt_point_label.grid(row=1,column=0)
+        self.point_label = Label(self.level_canvas,
+                            text=str(self.player_dic['attribut_point']),
+                            fg='black',font='Constantia 13 bold')
+        self.point_label.grid(row=1,column=1)
+
 
         # Ecriture de tous les boutons
         # On ajoute 'name' pour pouvoir les identifier en cliquant dessus
+        if player_dic['attribut_point']>0:
+            plus_state='normal'
+            minus_state='disabled'
+        else:
+            plus_state='disabled'
+            minus_state='disabled'
+
         attribut_name_list = list(self.attribut_dic.keys())
         attribut_value_list = list(self.attribut_dic.values())
         color_value_list = list(self.color_dic.values())
         self.widget_list = []
         for i in range(len(attribut_name_list)):
-            l1=Label(self.level_canvas,text=attribut_name_list[i],fg=color_value_list[i])
-            l1.grid(row=i+2,column=0,padx=20,pady=10,sticky=W)
-            b1=Button(self.level_canvas,text="+",name=f'1|{i}')
-            b1.grid(row=i+2,column=1,padx=2)
+            attribut_name = attribut_name_list[i]
+            attribut_value = attribut_value_list[i]
+
+            l1=Label(self.level_canvas,
+                    text=attribut_name,
+                    fg=self.color_dic[attribut_name],
+                    image=self.img_dic[attribut_name])
+            l1.grid(row=i+k,column=0,padx=20,pady=10,sticky=W)
+            b1=Button(self.level_canvas,
+                    text="+",name=f'1|{i}',
+                    state=plus_state,font='bold',fg='green')
+            b1.grid(row=i+k,column=1,padx=2)
             b1.bind('<Button-1>',self.plus)
-            b2=Button(self.level_canvas,text="-",name=f'2|{i}')
-            b2.grid(row=i+2,column=3,padx=2)
+            b2=Button(self.level_canvas,
+                    text="-",name=f'2|{i}',
+                    state=minus_state,font='bold',fg='red')
+            b2.grid(row=i+k,column=3,padx=2)
             b2.bind('<Button-1>',self.minus)
-            l2=Label(self.level_canvas,text=attribut_value_list[i],width=3)
-            l2.grid(row=i+2,column=2)
-            self.widget_list.append({'attribut_name':l1,'button1':b1,'button2':b2,'attribut_value':l2})
+            l2=Label(self.level_canvas,text=attribut_value,width=3)
+            l2.grid(row=i+k,column=2)
+            self.widget_list.append({'attribut_name':l1,'button1':b1,'button2':b2,'attribut_value':l2,'point_spent':0,'button1_state':plus_state,'button2_state':minus_state})
+
+            ctt.CreateToolTip(l1,self.tooltips_dic[attribut_name])
 
 
 
         # Séparateur suivi du bouton 'Confirmer'
-        Frame(self.level_canvas,height=20).grid(row=i+3)
-        Button(self.level_canvas,text="Confirmer",command=self.confirm).grid(row=i+4,column=0,columnspan=10)
+        Frame(self.level_canvas,height=20).grid(row=i+k+1)
+        Button(self.level_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
 
 
         self.level_window.mainloop()
 
+    # Renvoie en str la liste des attributs, comme ça on peut savoir ce qui a été changé
+    def __repr__(self):
+        s = str(self.attribut_dic)
+        s += "\n"
+        s += str(self.player_dic)
+        return(s)
 
     # Ferme la fenêtre de levelup, et donne le dictionnaire des attributs
     def confirm(self):
-        print(attribut_dic)
+        print(self.player_dic)
+        print(self.attribut_dic)
         self.level_window.destroy()
 
     # +1 à l'attribut correspondant
@@ -78,11 +131,25 @@ class levelup():
         i = i.split('|')[-1]
         i = int(i)
 
-        # manipulation des dictionnaires pour changer la valeur correspondante
-        thisattribut_name = list(self.attribut_dic.keys())[i]
-        self.attribut_dic[thisattribut_name] += 1
-        self.widget_list[i]['attribut_value'].config(text=self.attribut_dic[thisattribut_name])
-        self.widget_list[i]['attribut_value'].update()
+        if self.widget_list[i]['button1_state']=='normal':
+            # manipulation des dictionnaires pour changer la valeur correspondante
+            thisattribut_name = list(self.attribut_dic.keys())[i]
+            self.attribut_dic[thisattribut_name] += 1
+            self.widget_list[i]['attribut_value'].config(text=self.attribut_dic[thisattribut_name])
+            self.widget_list[i]['attribut_value'].update()
+
+            # On dépense un point, et on vérifie s'il reste encore des points
+            self.player_dic['attribut_point'] -= 1
+            self.widget_list[i]['point_spent'] += 1
+            self.point_label.config(text=str(self.player_dic['attribut_point']))
+            self.point_label.update()
+
+            if self.player_dic['attribut_point'] == 0:
+                self.disable_all_buttons('plus')
+
+            self.widget_list[i]['button2_state'] = 'normal'
+            self.widget_list[i]['button2'].config(state='normal')
+            self.widget_list[i]['button2'].update()
 
 
     # -1 à l'attribut correspondant
@@ -95,16 +162,57 @@ class levelup():
         i = i.split('|')[-1]
         i = int(i)
 
-        # manipulation des dictionnaires pour changer la valeur correspondante
-        thisattribut_name = list(self.attribut_dic.keys())[i]
-        self.attribut_dic[thisattribut_name] -= 1
-        self.widget_list[i]['attribut_value'].config(text=self.attribut_dic[thisattribut_name])
-        self.widget_list[i]['attribut_value'].update()
+        if self.widget_list[i]['button2_state'] == 'normal':
+            # manipulation des dictionnaires pour changer la valeur correspondante
+            thisattribut_name = list(self.attribut_dic.keys())[i]
+            self.attribut_dic[thisattribut_name] -= 1
+            self.widget_list[i]['attribut_value'].config(text=self.attribut_dic[thisattribut_name])
+            self.widget_list[i]['attribut_value'].update()
+
+            # Si tous les boutons "+" ont été précédemment disabled
+            if self.player_dic['attribut_point']==0:
+                self.enable_all_buttons('plus')
+
+
+            # On rembourse un point d'attribut, et on vérifie après si on peut encore être remboursé
+            self.player_dic['attribut_point'] += 1
+            self.widget_list[i]['point_spent'] -= 1
+            self.point_label.config(text=str(self.player_dic['attribut_point']))
+            self.point_label.update()
+
+            if self.widget_list[i]['point_spent'] == 0:
+                self.widget_list[i]['button2_state'] = 'disabled'
+                self.widget_list[i]['button2'].config(state='disabled')
+                self.widget_list[i]['button2'].update()
+
+
+    def enable_all_buttons(self,type):
+        if type=='plus':
+            for i in range(len(self.widget_list)):
+                self.widget_list[i]['button1_state'] = 'normal'
+                self.widget_list[i]['button1'].config(state='normal')
+                self.widget_list[i]['button1'].update()
+
+
+    def disable_all_buttons(self,type):
+        if type=='plus':
+            for i in range(len(self.widget_list)):
+                self.widget_list[i]['button1_state'] = 'disabled'
+                self.widget_list[i]['button1'].config(state='disabled')
+                self.widget_list[i]['button1'].update()
+
+
+class spell_upgrade():
+    pass
+
+
+
+
+
+
+
 
 if __name__=='__main__':
-    attribut_dic = {'HP':120,'Mana':30,'Force':10,'Agilité':69,'Intelligence':42}
-    color_dic = {'HP':'red','Mana':'blue','Force':'saddle brown','Agilité':'green','Intelligence':'red3'}
-    player_name = "Blue Dragon"
-    player_exp = {'level':2,'current':42,'max':100}
+    player_dic,attribut_dic,spelldic = dictionnaires.dictionnaires_vierge()
 
-    w=levelup(False,attribut_dic,color_dic,player_name,player_exp)
+    w=levelup(toplevel=False,player_dic=player_dic,attribut_dic=attribut_dic)

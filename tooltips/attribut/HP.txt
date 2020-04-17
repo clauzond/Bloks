@@ -1,0 +1,1 @@
+Augmente les points de vie de base de 1 ; les multiplicateurs d'HP seront appliqués après

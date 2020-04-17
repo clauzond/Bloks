@@ -1,0 +1,1 @@
+Augmente la mana de base de 1 ; les multiplicateurs de mana seront appliqués après

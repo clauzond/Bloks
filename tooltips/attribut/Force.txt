@@ -1,0 +1,1 @@
+Augmente la force de base de 1 ; les multiplicateurs de force seront appliqués après

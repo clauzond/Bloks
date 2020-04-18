@@ -102,7 +102,7 @@ class AttributWindow():
 
 
         # Séparateur suivi du bouton 'Confirmer'
-        Frame(self.level_canvas,height=20).grid(row=i+k+1)
+        Frame(self.level_canvas,height=20,width=400).grid(row=i+k+1)
         Button(self.level_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
 
         self.level_window.deiconify()

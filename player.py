@@ -1,10 +1,11 @@
 class Player():
 
-    def __init__(self,player_dic,attribut_dic,spell_dic,x,y):
+    def __init__(self,player_dic,attribut_dic,spell_dic,spellbind_dic,x,y):
 
         self.player_dic = player_dic
         self.attribut_dic = attribut_dic
         self.spell_dic = spell_dic
+        self.spellbind_dic = spellbind_dic
 
         self.x = x
         self.y = y

@@ -1,6 +1,60 @@
 from tkinter import PhotoImage
 
 
+def load_levelupdics():
+    dic = {'max_xp':[],'attribut_gain':{},'attribut_point_gain':[],'spell_point_gain':[]}
+
+    # load max_xp
+    fich = open('ressources/levelup/max_xp.txt','r',encoding='utf-8')
+    liste = fich.readlines()
+    fich.close()
+
+    mylist = [0] # pour le niveau 0
+    for i in range(len(liste)):
+        x = liste[i].replace('\n','').split('|')[1]
+        mylist.append(int(x))
+    dic['max_xp'] = mylist
+
+    # load attribut_gain
+    fich = open('ressources/levelup/attribut_gain.txt','r',encoding='utf-8')
+    liste = fich.readlines()
+    fich.close()
+
+    mydic = {'HP':[0],'Mana':[0],'Force':[0],'Agilité':[0],'Chance':[0],'Intelligence':[0]}
+    for i in range(len(liste)):
+        xliste = liste[i].replace('\n','').split('|')[1:]
+
+        for elem in xliste:
+            nom = str(elem[:-1])
+            x = elem[-1] # les attributs gagnés par level seront < 10
+            mydic[nom].append(int(x))
+
+    dic['attribut_gain'] = mydic
+
+    # load attribut_point_gain
+    fich = open('ressources/levelup/attribut_point_gain.txt','r',encoding='utf-8')
+    liste = fich.readlines()
+    fich.close()
+
+    mylist = [0] # pour le niveau 0
+    for i in range(len(liste)):
+        x = liste[i].replace('\n','').split('|+')[1]
+        mylist.append(int(x))
+    dic['attribut_point_gain'] = mylist
+
+    # load spell_point_gain
+    fich = open('ressources/levelup/spell_point_gain.txt','r',encoding='utf-8')
+    liste = fich.readlines()
+    fich.close()
+
+    mylist = [0] # pour le niveau 0
+    for i in range(len(liste)):
+        x = liste[i].replace('\n','').split('|+')[1]
+        mylist.append(int(x))
+    dic['spell_point_gain'] = mylist
+
+    return(dic)
+
 def load_images():
     """
     images des attributs en 30x30
@@ -135,7 +189,7 @@ def load_colors():
     return(color_dic)
 
 
-def dictionnaires_vierge(loadcolor=False,loadimg=False,loadattributtip=False,loadspelltip=False,loadspellname=False):
+def dictionnaires_vierge(loadcolor=False,loadimg=False,loadattributtip=False,loadspelltip=False,loadspellname=False,loadlevelupdics=False):
     if loadimg:
         return(load_images())
 
@@ -151,20 +205,24 @@ def dictionnaires_vierge(loadcolor=False,loadimg=False,loadattributtip=False,loa
     elif loadspellname:
         return(load_spell('name'))
 
+    elif loadlevelupdics:
+        return(load_levelupdics())
+
     else:
-        attribut_dic = {'HP':0,
-                        'Mana':0,
-                        'Force':0,
-                        'Agilité':0,
-                        'Intelligence':0,
-                        'Chance':0
+        attribut_dic = {'HP':3,
+                        'Mana':3,
+                        'Force':3,
+                        'Agilité':3,
+                        'Intelligence':3,
+                        'Chance':3
                         }
         player_dic = {  "name":'Blue Dragon',
-                        "level":1,
-                        "current_xp":0,
-                        "max_xp":10,
-                        "attribut_point":3,
-                        "spell_point":2
+                        "level":4,
+                        "current_xp":20,
+                        "max_xp":100,
+                        "total_xp":390,
+                        "attribut_point":15,
+                        "spell_point":3
                         }
 
         spell_dic = load_spell('blank')

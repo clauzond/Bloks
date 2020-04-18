@@ -67,7 +67,7 @@ class SpellWindow():
         self.point_label = Label(self.level_canvas,
                             text=str(self.player_dic['spell_point']),
                             fg='black',font='Constantia 13 bold')
-        self.point_label.grid(row=1,column=1,columnspan=2)
+        self.point_label.grid(row=1,column=1,columnspan=10,sticky=W)
 
 
         # Ecriture de tous les boutons
@@ -124,7 +124,7 @@ class SpellWindow():
 
 
         # Séparateur suivi du bouton 'Confirmer'
-        Frame(self.level_canvas,height=20).grid(row=i+k+1)
+        Frame(self.level_canvas,height=10,width=400).grid(row=i+k+1)
         Button(self.level_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
 
 

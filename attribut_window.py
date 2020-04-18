@@ -2,7 +2,7 @@ from tkinter import *
 import classtooltip as ctt
 import dictionnaires
 
-class levelup():
+class AttributWindow():
 
     def __init__(self,toplevel,player_dic,attribut_dic):
 
@@ -10,13 +10,15 @@ class levelup():
             self.level_window = Toplevel()
         else:
             self.level_window = Tk()
-        self.level_window.title("Paramètres")
+        self.level_window.title("Attributs")
         self.level_window.resizable(False, False)
+        self.level_window.iconbitmap("img/icone.ico")
 
         self.level_window.option_add('*Font','Constantia 12')
         self.level_window.option_add('*Button.activebackground','darkgray')
         self.level_window.option_add('*Button.activeforeground','darkgray')
-        self.level_window.option_add('*Button.relief','ridge')
+        self.level_window.option_add('*Button.relief','groove')
+        self.level_window.option_add('*Button.overRelief','ridge')
         self.level_window.option_add('*justify','left')
         self.level_window.option_add('*bg','lightgray')
         self.level_window.option_add('*compound','left')
@@ -29,36 +31,34 @@ class levelup():
         self.attribut_dic = attribut_dic
         self.color_dic = dictionnaires.dictionnaires_vierge(loadcolor=True)
         self.img_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
-        self.tooltips_dic = dictionnaires.dictionnaires_vierge(loadtooltip=True)
-
-
+        self.tooltips_dic = dictionnaires.dictionnaires_vierge(loadattributtip=True)
         # Statistiques du joueurs
         k = 5 # nombre de lignes utilisées avant les attributs
 
         name_label = Label(self.level_canvas,
                         text=self.player_dic['name'],
                         fg='black',font="Constantia 13 bold",image=self.img_dic['player'])
-        name_label.grid(row=0, column=0, sticky=W)
+        name_label.grid(row=0, column=0, sticky=W,columnspan=1)
 
         level_label = Label(self.level_canvas,
                         text=str(self.player_dic['level']),
                         fg='black',font="Constantia 13 bold",image=self.img_dic['starnoir'])
-        level_label.grid(row=0,column=1,columnspan=1)
+        level_label.grid(row=0,column=0,columnspan=10)
 
         xp_label = Label(self.level_canvas,
                         text=str(self.player_dic['current_xp'])+'/'+str(self.player_dic['max_xp']),
                         fg='black',font='Constantia 13 bold',image=self.img_dic['xpnoir'])
-        xp_label.grid(row=0,column=2,columnspan=10,sticky=E)
+        xp_label.grid(row=0,column=2,columnspan=1,sticky=E)
         Frame(self.level_canvas,height=20).grid(row=1)
 
         txt_point_label = Label(self.level_canvas,
                             text='Disponible : ',
                             fg='black',font='Constantia 13 bold',image=self.img_dic['star'])
-        txt_point_label.grid(row=1,column=0)
+        txt_point_label.grid(row=1,column=0,columnspan=10)
         self.point_label = Label(self.level_canvas,
                             text=str(self.player_dic['attribut_point']),
                             fg='black',font='Constantia 13 bold')
-        self.point_label.grid(row=1,column=1)
+        self.point_label.grid(row=1,column=1,columnspan=2)
 
 
         # Ecriture de tous les boutons
@@ -79,21 +79,21 @@ class levelup():
             attribut_value = attribut_value_list[i]
 
             l1=Label(self.level_canvas,
-                    text=attribut_name,
-                    fg=self.color_dic[attribut_name],
+                    text=" "+attribut_name,
+                    fg=self.color_dic[attribut_name],font="Constantia 16 bold",
                     image=self.img_dic[attribut_name])
-            l1.grid(row=i+k,column=0,padx=20,pady=10,sticky=W)
+            l1.grid(row=i+k,column=0,padx=20,pady=5,sticky=W)
             b1=Button(self.level_canvas,
                     text="+",name=f'1|{i}',
-                    state=plus_state,font='bold',fg='green')
+                    state=plus_state,font='Constantia 15 bold',fg='green')
             b1.grid(row=i+k,column=1,padx=2)
             b1.bind('<Button-1>',self.plus)
             b2=Button(self.level_canvas,
                     text="-",name=f'2|{i}',
-                    state=minus_state,font='bold',fg='red')
+                    state=minus_state,font='Constantia 15 bold',fg='red')
             b2.grid(row=i+k,column=3,padx=2)
             b2.bind('<Button-1>',self.minus)
-            l2=Label(self.level_canvas,text=attribut_value,width=3)
+            l2=Label(self.level_canvas,text=attribut_value,fg='black',font='Constantia 16',width=3)
             l2.grid(row=i+k,column=2)
             self.widget_list.append({'attribut_name':l1,'button1':b1,'button2':b2,'attribut_value':l2,'point_spent':0,'button1_state':plus_state,'button2_state':minus_state})
 
@@ -105,7 +105,7 @@ class levelup():
         Frame(self.level_canvas,height=20).grid(row=i+k+1)
         Button(self.level_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
 
-
+        self.level_window.deiconify()
         self.level_window.mainloop()
 
     # Renvoie en str la liste des attributs, comme ça on peut savoir ce qui a été changé
@@ -151,6 +151,9 @@ class levelup():
             self.widget_list[i]['button2'].config(state='normal')
             self.widget_list[i]['button2'].update()
 
+            self.widget_list[i]['attribut_value'].config(fg='green')
+            self.widget_list[i]['attribut_value'].update()
+
 
     # -1 à l'attribut correspondant
     def minus(self,event):
@@ -185,6 +188,9 @@ class levelup():
                 self.widget_list[i]['button2'].config(state='disabled')
                 self.widget_list[i]['button2'].update()
 
+                self.widget_list[i]['attribut_value'].config(fg='black')
+                self.widget_list[i]['attribut_value'].update()
+
 
     def enable_all_buttons(self,type):
         if type=='plus':
@@ -202,17 +208,12 @@ class levelup():
                 self.widget_list[i]['button1'].update()
 
 
-class spell_upgrade():
-    pass
-
-
-
-
-
-
-
-
 if __name__=='__main__':
-    player_dic,attribut_dic,spelldic = dictionnaires.dictionnaires_vierge()
+    player_dic,attribut_dic,spelldic,spellbind_dic = dictionnaires.dictionnaires_vierge()
 
-    w=levelup(toplevel=False,player_dic=player_dic,attribut_dic=attribut_dic)
+    attribut_dic['HP'] = 15
+    attribut_dic['Agilité'] = 2
+    player_dic['attribut_point'] = 20
+
+
+    w=AttributWindow(toplevel=False,player_dic=player_dic,attribut_dic=attribut_dic)

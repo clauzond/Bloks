@@ -130,48 +130,6 @@ def load_attribut_tips():
     return(dic)
 
 
-def load_spell(type):
-    dic = { 'spell1':'Nom du premier sort',
-            'spell2':'Nom du deuxième sort',
-            'spell3':'Nom du troisième sort',
-            'spell4':'Nom du quatrième sort',
-            'spell5':'Nom du cinquième sort',
-            'spell6':'Nom du sixième sort'
-            }
-
-    if type=='tip':
-        namelist = list(dic.keys())
-
-        for name in namelist:
-            fich = open(f'tooltips/spell/{name}.txt',mode='r',encoding='utf-8')
-            textlist=fich.readlines()
-
-            s = ""
-            for ligne in textlist:
-                s+=ligne
-
-            dic[name] = s
-            fich.close()
-
-        return(dic)
-
-    elif type=='name':
-        return(dic)
-
-    elif type=='bind':
-        namelist=list(dic.keys())
-
-        for name in namelist:
-            dic[name] = 'None'
-        dic['active'] = ['spell1','spell2','spell3']
-        return(dic)
-
-    elif type=='blank':
-        l = list(dic.keys())
-        for x in l:
-            dic[x] = 0
-        return(dic)
-
 def load_colors():
     color_dic = {   'HP':'#FF1E1E',
                     'Mana':'#02AFFD',
@@ -188,6 +146,10 @@ def load_colors():
                 }
     return(color_dic)
 
+def load_newspell():
+    import json_manager as jm
+
+    return(jm.load_file(filename='spell_dic',player_name='template',fulldir='ressources/template/spell_dic.json'))
 
 def dictionnaires_vierge(loadcolor=False,loadimg=False,loadattributtip=False,loadspelltip=False,loadspellname=False,loadlevelupdics=False):
     if loadimg:
@@ -198,12 +160,6 @@ def dictionnaires_vierge(loadcolor=False,loadimg=False,loadattributtip=False,loa
 
     elif loadattributtip:
         return(load_attribut_tips())
-
-    elif loadspelltip:
-        return(load_spell('tip'))
-
-    elif loadspellname:
-        return(load_spell('name'))
 
     elif loadlevelupdics:
         return(load_levelupdics())
@@ -225,9 +181,9 @@ def dictionnaires_vierge(loadcolor=False,loadimg=False,loadattributtip=False,loa
                         "spell_point":3
                         }
 
-        spell_dic = load_spell('blank')
+        #spell_dic = load_spell('blank')
 
-        spellbind_dic = load_spell('bind')
+        #spellbind_dic = load_spell('bind')
 
-
-        return(player_dic,attribut_dic,spell_dic,spellbind_dic)
+        spell_dic = load_newspell()
+        return(player_dic,attribut_dic,spell_dic)

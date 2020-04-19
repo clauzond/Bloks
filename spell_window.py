@@ -4,7 +4,7 @@ import dictionnaires
 
 class SpellWindow():
 
-    def __init__(self,toplevel,player_dic,spell_dic,spellbind_dic):
+    def __init__(self,toplevel,player_dic,spell_dic):
 
         if toplevel:
             self.level_window = Toplevel()
@@ -31,9 +31,6 @@ class SpellWindow():
         self.spell_dic = spell_dic
         self.color_dic = dictionnaires.dictionnaires_vierge(loadcolor=True)
         self.img_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
-        self.tooltips_dic = dictionnaires.dictionnaires_vierge(loadspelltip=True)
-        self.spellname_dic = dictionnaires.dictionnaires_vierge(loadspellname=True)
-        self.spellbind_dic = spellbind_dic
 
         self.bind_state = (-1,'off')
         self.level_window.bind_all('<Key>',self.listen)
@@ -79,17 +76,15 @@ class SpellWindow():
             plus_state='disabled'
             minus_state='disabled'
 
-        spell_bind_list = list(self.spellbind_dic.values())
-        spell_name_list = list(self.spellname_dic.values())
-        spell_number_list = list(self.spellname_dic.keys())
-        spell_value_list = list(self.spell_dic.values())
         color_value_list = list(self.color_dic.values())
         self.widget_list = []
-        for i in range(len(spell_name_list)):
-            spell_number = spell_number_list[i]
-            spell_name = spell_name_list[i]
-            spell_value = spell_value_list[i]
-            spell_bind = spell_bind_list[i]
+
+        total_number_of_spells = self.spell_dic['total_number_of_spells']
+        for i in range(total_number_of_spells):
+            spell_number = f'spell{i+1}'
+            spell_name = str( self.spell_dic[f'spell{i+1}']['name'] )
+            spell_value = int( self.spell_dic[f'spell{i+1}']['level'] )
+            spell_bind = str( self.spell_dic[f'spell{i+1}']['bind'] )
 
             l1=Label(self.level_canvas,name=f'0|{i}',
                     text=" "+spell_name,
@@ -119,7 +114,7 @@ class SpellWindow():
 
             self.widget_list.append({'spell_name':l1,'button1':b1,'button2':b2,'button3':b3,'spell_value':l2,'point_spent':0,'button1_state':plus_state,'button2_state':minus_state})
 
-            ctt.CreateToolTip(l1,self.tooltips_dic[spell_number])
+            ctt.CreateToolTip(l1,self.spell_dic[spell_number]['description'])
 
 
 
@@ -138,15 +133,12 @@ class SpellWindow():
         s = str(self.player_dic)
         s += "\n"
         s += str(self.spell_dic)
-        s += '\n'
-        s += str(self.spellbind_dic)
         return(s)
 
     # Ferme la fenêtre de levelup, et donne le dictionnaire des spells
     def confirm(self):
         print(self.player_dic)
         print(self.spell_dic)
-        print(self.spellbind_dic)
         self.level_window.destroy()
 
     # +1 au spell correspondant
@@ -161,9 +153,9 @@ class SpellWindow():
 
         if self.widget_list[i]['button1_state']=='normal':
             # manipulation des dictionnaires pour changer la valeur correspondante
-            thisspell_number = list(self.spell_dic.keys())[i]
-            self.spell_dic[thisspell_number] += 1
-            self.widget_list[i]['spell_value'].config(text=self.spell_dic[thisspell_number])
+            thisspell_number = f'spell{i+1}'
+            self.spell_dic[thisspell_number]['level'] += 1
+            self.widget_list[i]['spell_value'].config(text=self.spell_dic[thisspell_number]['level'])
             self.widget_list[i]['spell_value'].update()
 
             # On dépense un point, et on vérifie s'il reste encore des points
@@ -195,9 +187,9 @@ class SpellWindow():
 
         if self.widget_list[i]['button2_state'] == 'normal':
             # manipulation des dictionnaires pour changer la valeur correspondante
-            thisspell_number = list(self.spell_dic.keys())[i]
-            self.spell_dic[thisspell_number] -= 1
-            self.widget_list[i]['spell_value'].config(text=self.spell_dic[thisspell_number])
+            thisspell_number = f'spell{i+1}'
+            self.spell_dic[thisspell_number]['level'] -= 1
+            self.widget_list[i]['spell_value'].config(text=self.spell_dic[thisspell_number]['level'])
             self.widget_list[i]['spell_value'].update()
 
             # Si tous les boutons "+" ont été précédemment disabled
@@ -275,13 +267,12 @@ class SpellWindow():
         self.widget_list[i]['button3'].config(text=f'< {char} >')
         self.widget_list[i]['button3'].update()
 
-        self.spellbind_dic[f'spell{i+1}'] = str(char)
+        self.spell_dic[f'spell{i+1}']['bind'] = str(char)
 
 
     def stop_waiting_for_bind(self,i):
         if self.bind_state==(i,'on'):
-            spell_bind_list = list(self.spellbind_dic.values())
-            spell_bind = spell_bind_list[i]
+            spell_bind = self.spell_dic[f'spell{i+1}']['bind']
             self.widget_list[i]['button3'].config(text=f'< {spell_bind} >')
             self.widget_list[i]['button3'].update()
             self.bind_state=(-1,'off')
@@ -296,15 +287,15 @@ class SpellWindow():
 
         spell_id = f'spell{i+1}'
 
-        if spell_id not in self.spellbind_dic['active']:
+        if spell_id not in self.spell_dic['active']:
             if self.next_label_bind==0:
-                self.spellbind_dic['active'][0] = spell_id
+                self.spell_dic['active'][0] = spell_id
                 self.next_label_bind += 1
             elif self.next_label_bind==1:
-                self.spellbind_dic['active'][1] = spell_id
+                self.spell_dic['active'][1] = spell_id
                 self.next_label_bind += 1
             elif self.next_label_bind==2:
-                self.spellbind_dic['active'][2] = spell_id
+                self.spell_dic['active'][2] = spell_id
                 self.next_label_bind = 0
 
 
@@ -313,9 +304,9 @@ class SpellWindow():
 
 
     def underline_activebind(self):
-        num0 = int(self.spellbind_dic['active'][0].split('spell')[1]) - 1
-        num1 = int(self.spellbind_dic['active'][1].split('spell')[1]) - 1
-        num2 = int(self.spellbind_dic['active'][2].split('spell')[1]) - 1
+        num0 = int(self.spell_dic['active'][0].split('spell')[1]) - 1
+        num1 = int(self.spell_dic['active'][1].split('spell')[1]) - 1
+        num2 = int(self.spell_dic['active'][2].split('spell')[1]) - 1
 
         for i in range(len(self.widget_list)):
             if i not in [num0,num1,num2]:
@@ -327,11 +318,6 @@ class SpellWindow():
 
 
 if __name__=='__main__':
-    player_dic,attribut_dic,spell_dic,spellbind_dic = dictionnaires.dictionnaires_vierge()
+    player_dic,attribut_dic,spell_dic = dictionnaires.dictionnaires_vierge()
 
-    player_dic['spell_point']=20
-    spell_dic['spell1']=2
-    spell_dic['spell5']=13
-
-
-    w=SpellWindow(toplevel=False,player_dic=player_dic,spell_dic=spell_dic,spellbind_dic=spellbind_dic)
+    w=SpellWindow(toplevel=False,player_dic=player_dic,spell_dic=spell_dic)

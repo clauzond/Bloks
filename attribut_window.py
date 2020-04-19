@@ -211,9 +211,4 @@ class AttributWindow():
 if __name__=='__main__':
     player_dic,attribut_dic,spelldic,spellbind_dic = dictionnaires.dictionnaires_vierge()
 
-    attribut_dic['HP'] = 15
-    attribut_dic['Agilité'] = 2
-    player_dic['attribut_point'] = 20
-
-
     w=AttributWindow(toplevel=False,player_dic=player_dic,attribut_dic=attribut_dic)

@@ -1,0 +1,26 @@
+﻿[
+  {
+    "id": 0,
+    "name": "Item 0",
+    "description": "Description item 0",
+    "owned": 0,
+    "sellprice": 1,
+    "itemlevel": 0
+  },
+  {
+    "id": 1,
+    "name": "Item 1",
+    "description": "Description item 1",
+    "owned": 0,
+    "sellprice": 0,
+    "itemlevel": 0
+  },
+  {
+    "id": 2,
+    "name": "Item 2",
+    "description": "Description item 2",
+    "owned": 0,
+    "sellprice": 0,
+    "itemlevel": 0
+  }
+]

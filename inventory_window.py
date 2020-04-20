@@ -29,12 +29,12 @@ class Inventory_Window():
 
         self.player_dic = player_dic
         self.inventory_dic = inventory_dic
-        self.img_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
+        self.baseimg_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
 
 
         self.create_owned_itemlist()
         self.current_page = 1
-        self.number_of_page = self.number_of_page()
+        self.number_of_page = self.func_number_of_page()
         self.playerimg = PhotoImage(file=self.player_dic['image'])
 
         self.create_imgdic()
@@ -72,7 +72,7 @@ class Inventory_Window():
         self.level_window.destroy()
 
 
-    def number_of_page(self):
+    def func_number_of_page(self):
         # On veut avoir 3 lignes de 10 items, et on affichera seulement les items possédés
         # Il y a donc 1 page par tranche de 30 items
 
@@ -98,23 +98,73 @@ class Inventory_Window():
 
         money_label = Label(self.inventory_canvas,
                         text=self.player_dic['money'],
-                        fg='black',font="Constantia 13 bold",image=self.img_dic['money'])
+                        fg='black',font="Constantia 13 bold",image=self.baseimg_dic['money'])
         money_label.grid(row=0,column=1,columnspan=1)
 
         self.level_label = Label(self.inventory_canvas,
                         text=str(self.player_dic['level']),
-                        fg='black',font="Constantia 13 bold",image=self.img_dic['starnoir'])
+                        fg='black',font="Constantia 13 bold",image=self.baseimg_dic['starnoir'])
         self.level_label.grid(row=0,column=20,columnspan=1)
 
         self.xp_label = Label(self.inventory_canvas,
                         text=str(self.player_dic['current_xp'])+'/'+str(self.player_dic['max_xp']),
-                        fg='black',font='Constantia 13 bold',image=self.img_dic['xpnoir'])
+                        fg='black',font='Constantia 13 bold',image=self.baseimg_dic['xpnoir'])
         self.xp_label.grid(row=0,column=21,columnspan=1)
 
 
         self.sell_button = Button(self.inventory_canvas,
                             text='Sell',command=self.sell_current_item)
-        self.sell_button.grid(row=3,column=20)
+        self.sell_button.grid(row=4,column=20)
+
+        self.equip_button = Button(self.inventory_canvas,
+                            text='Equip',command=self.equip_current_item)
+        self.equip_button.grid(row=2,column=20)
+
+        self.unequip_button = Button(self.inventory_canvas,
+                            text='Unequip',command=self.unequip_current_item)
+        self.unequip_button.grid(row=3,column=20)
+
+
+        self.selected_equipped_item = 'None'
+        self.selected_equipped_nbr = 'None'
+        k=2
+        self.equipped_widget_list = []
+        for i in range(len(self.player_dic['equipped_list'])):
+            item = self.player_dic['equipped_list'][i]
+
+            # Item non vide
+            if len(item)>0:
+                number_owned = item['owned']
+                img = self.imgdic[item['id']]
+                name = item['name']
+                description = item['description']
+                sellprice = item['sellprice']
+                itemlevel = item['itemlevel']
+                stats = item['stats']
+                if len(stats)==0:
+                    x = ""
+                else:
+                    x = str(stats)+'\n'
+                tooltip = f"{x}{description}\nSell price : {sellprice}\nItem level : {itemlevel}"
+                itemlabel=Label(self.inventory_canvas,name=f'a|{i}',
+                        image=img,relief=GROOVE)
+                itemlabel.grid(row=k+i,column=0)
+                itemlabel.bind('<Button-1>',self.bind_equipped_label)
+
+                self.equipped_widget_list.append(itemlabel)
+
+                ctt.CreateToolTip(itemlabel,tooltip)
+
+            # Item vide
+            else:
+                itemlabel=Label(self.inventory_canvas,name=f'a|{i}',
+                        image=self.baseimg_dic['nothing'],relief=GROOVE)
+                itemlabel.grid(row=k+i,column=0)
+                itemlabel.bind('<Button-1>',self.bind_equipped_label)
+
+                self.equipped_widget_list.append(itemlabel)
+                ctt.CreateToolTip(itemlabel,'Vide')
+
 
         # Séparateur suivi du bouton 'Confirmer'
         k = 10 # tout en bas
@@ -131,6 +181,7 @@ class Inventory_Window():
         a = 1 # pour indiquer la ligne de départ
         b = 2 # pour indiquer la colonne de départ
 
+        self.number_of_page = self.func_number_of_page()
         self.clear_everything()
         self.pagelabel.config(text=f'{self.current_page}/{self.number_of_page}')
 
@@ -148,14 +199,19 @@ class Inventory_Window():
             description = item['description']
             sellprice = item['sellprice']
             itemlevel = item['itemlevel']
+            stats = item['stats']
+            if len(stats)==0:
+                x = ""
+            else:
+                x = str(stats)+'\n'
 
-            tooltip = f"{description}\nOwned : {number_owned}\nSell price : {sellprice}\nItem level : {itemlevel}"
+            tooltip = f"{x}{description}\nOwned : {number_owned}\nSell price : {sellprice}\nItem level : {itemlevel}"
 
             ligne,colonne = self.n_to_coord(i)
 
             itemlabel=Label(self.inventory_canvas,name=f'0|{i}',
                     image=img,relief=GROOVE,text=f"{number_owned}",compound="top")
-            itemlabel.grid(row=a+ligne,column=b+colonne,padx=0,pady=2)
+            itemlabel.grid(row=a+ligne,column=b+colonne)
             itemlabel.bind('<Button-1>',self.bind_label)
 
             self.current_widgetlist.append(itemlabel)
@@ -171,9 +227,14 @@ class Inventory_Window():
         i = int(i)
 
         self.groove_all_label()
-        self.current_widgetlist[i].config(relief=SUNKEN)
-        self.selected_item = self.current_itemlist[i]
-        self.selected_nbr = i
+
+        if i != self.selected_nbr:
+            self.current_widgetlist[i].config(relief=SUNKEN)
+            self.selected_item = self.current_itemlist[i]
+            self.selected_nbr = i
+        else:
+            self.selected_item = 'None'
+            self.selected_nbr = 'None'
 
     def groove_all_label(self):
         for label in self.current_widgetlist:
@@ -236,10 +297,100 @@ class Inventory_Window():
 
 
 
+    def bind_equipped_label(self,event):
+        # event.widget = .!canvas.i|j
+        # on veut récupérer j
+        i = str(event.widget)
+        i = i.split('.')[-1]
+        i = i.split('|')[-1]
+        i = int(i)
+
+        if i == self.selected_equipped_nbr:
+            self.selected_equipped_nbr = 'None'
+            self.selected_equipped_item = 'None'
+            self.equipped_widget_list[i].config(relief=GROOVE)
+
+        else:
+            self.selected_equipped_item = self.player_dic['equipped_list'][i]
+            self.selected_equipped_nbr = i
+
+            for j in range(len(self.equipped_widget_list)):
+                self.equipped_widget_list[j].config(relief=GROOVE)
+            self.equipped_widget_list[i].config(relief=SUNKEN)
+
+
+    def equip_current_item(self):
+
+        if self.selected_equipped_item == 'None' or self.selected_equipped_nbr =='None' or self.selected_item == 'None' or self.selected_nbr == 'None':
+            pass
+        elif len(self.selected_equipped_item) == 0:
+            oldnbr = self.selected_equipped_nbr
+            newid = self.selected_item['id']
+
+            self.player_dic['equipped_list'][oldnbr] = self.inventory_dic['itemlist'][newid]
+            self.inventory_dic['itemlist'][newid]['owned'] -= 1
+            self.create_owned_itemlist()
+
+            self.generate_page(self.current_page)
+
+            # On applatit tous les boutons, inventaire ou équipement
+            self.groove_all_label()
+            for j in range(len(self.equipped_widget_list)):
+                self.equipped_widget_list[j].config(relief=GROOVE)
+            self.equipped_widget_list[oldnbr].config(relief=GROOVE)
+            self.selected_equipped_item,self.selected_equipped_nbr = 'None','None'
+            self.selected_item,self.selected_nbr = 'None','None'
+
+
+
+        else:
+            oldnbr = self.selected_equipped_nbr
+            oldid = self.selected_equipped_item['id']
+
+            newid = self.selected_item['id']
 
 
 
 
+            self.player_dic['equipped_list'][oldnbr] = self.inventory_dic['itemlist'][newid]
+
+            self.inventory_dic['itemlist'][oldid]['owned'] += 1
+            self.inventory_dic['itemlist'][newid]['owned'] -= 1
+            self.create_owned_itemlist()
+
+            self.generate_page(self.current_page)
+
+            # On applatit tous les boutons, inventaire ou équipement
+            self.groove_all_label()
+            for j in range(len(self.equipped_widget_list)):
+                self.equipped_widget_list[j].config(relief=GROOVE)
+            self.equipped_widget_list[oldnbr].config(relief=GROOVE)
+            self.selected_equipped_item,self.selected_equipped_nbr = 'None','None'
+            self.selected_item,self.selected_nbr = 'None','None'
+
+    def unequip_current_item(self):
+
+        if self.selected_equipped_item == 'None' or self.selected_equipped_nbr =='None':
+            pass
+        elif len(self.selected_equipped_item) == 0:
+            pass
+        else:
+            oldnbr = self.selected_equipped_nbr
+            oldid = self.selected_equipped_item['id']
+
+            self.player_dic['equipped_list'][oldnbr] = {}
+            self.inventory_dic['itemlist'][oldid]['owned'] += 1
+            self.create_owned_itemlist()
+
+            self.generate_page(self.current_page)
+
+            # On applatit tous les boutons, inventaire ou équipement
+            self.groove_all_label()
+            for j in range(len(self.equipped_widget_list)):
+                self.equipped_widget_list[j].config(relief=GROOVE)
+            self.equipped_widget_list[oldnbr].config(relief=GROOVE)
+            self.selected_equipped_item,self.selected_equipped_nbr = 'None','None'
+            self.selected_item,self.selected_nbr = 'None','None'
 
 if __name__ == "__main__":
     player_dic,attribut_dic,spell_dic,inventory_dic = dictionnaires.dictionnaires_vierge()

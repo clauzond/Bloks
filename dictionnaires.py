@@ -68,6 +68,7 @@ def load_images():
     xpblanc=PhotoImage(file='img/xpblanc.gif')
     xpnoir=PhotoImage(file='img/xpnoir.gif')
     starnoir=PhotoImage(file='img/starnoir.gif')
+    nothing=PhotoImage(file='img/nothing.gif')
 
     money=PhotoImage(file='img/kamas.gif')
 
@@ -78,7 +79,8 @@ def load_images():
                     'star':star,
                     'Neutre':neutre,
                     'starnoir':starnoir,
-                    'money':money
+                    'money':money,
+                    'nothing':nothing
                 }
 
 

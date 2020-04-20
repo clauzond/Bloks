@@ -1,3 +1,4 @@
+# coding: utf-8
 import json
 import os, os.path
 
@@ -24,7 +25,7 @@ def save_file(data,filename="",player_name='blank',fulldir=""):
     directory = "/".join(filedir.split('/')[:-1])
     if not os.path.exists(directory):
         os.mkdir(directory)
-    f = open(filedir,'w+',encoding='utf-8')
-    data = json.dump(data,f)
+    f = open(filedir,'w+',encoding='utf-8-sig')
+    data = json.dump(data,f,ensure_ascii=False)
     f.close()
     return

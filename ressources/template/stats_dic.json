@@ -1,0 +1,18 @@
+{
+    "HP": {},
+    "Mana": 5,
+    "Force": 8,
+    "Agilité": 8,
+    "Intelligence": 3,
+    "Chance": 3,
+    "Dommage fixe": 0,
+    "Dommage force": 0,
+    "Dommage agilité": 0,
+    "Dommage intelligence": 0,
+    "Dommage chance": 0,
+    "Résistance fixe": 0,
+    "Résistance force": 0,
+    "Résistance agilité": 0,
+    "Résistance intelligence": 0,
+    "Résistance chance": 0
+  }

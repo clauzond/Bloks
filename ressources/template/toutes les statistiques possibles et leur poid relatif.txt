@@ -1,0 +1,17 @@
+(stat / poid relatif)
+HP / 1
+Mana / 3
+Force / 3
+Agilité / 3
+Intelligence / 3
+Chance / 3
+Dommage fixe / 20
+Dommage force / 10
+Dommage intelligence / 10
+Dommage agilité / 10
+Dommage chance / 10
+Résistance fixe / 
+Résistance force / 
+Résistance intelligence / 
+Résistance agilité / 
+Résistance chance / 

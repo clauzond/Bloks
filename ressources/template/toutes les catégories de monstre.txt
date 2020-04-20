@@ -1,0 +1,7 @@
+Friendly
+Common
+Elite
+Epic
+Legendary
+God
+42

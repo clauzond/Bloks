@@ -7,24 +7,24 @@ class SpellWindow():
     def __init__(self,toplevel,player_dic,spell_dic):
 
         if toplevel:
-            self.level_window = Toplevel()
+            self.spell_window = Toplevel()
         else:
-            self.level_window = Tk()
-        self.level_window.title("Spells")
-        self.level_window.resizable(False,False)
-        self.level_window.iconbitmap("img/icone.ico")
+            self.spell_window = Tk()
+        self.spell_window.title("Spells")
+        self.spell_window.resizable(False,False)
+        self.spell_window.iconbitmap("img/icone.ico")
 
-        self.level_window.option_add('*Font','Constantia 12')
-        self.level_window.option_add('*Button.activebackground','darkgray')
-        self.level_window.option_add('*Button.activeforeground','darkgray')
-        self.level_window.option_add('*Button.relief','groove')
-        self.level_window.option_add('*Button.overRelief','ridge')
-        self.level_window.option_add('*justify','left')
-        self.level_window.option_add('*bg','lightgray')
-        self.level_window.option_add('*compound','left')
+        self.spell_window.option_add('*Font','Constantia 12')
+        self.spell_window.option_add('*Button.activebackground','darkgray')
+        self.spell_window.option_add('*Button.activeforeground','darkgray')
+        self.spell_window.option_add('*Button.relief','groove')
+        self.spell_window.option_add('*Button.overRelief','ridge')
+        self.spell_window.option_add('*justify','left')
+        self.spell_window.option_add('*bg','lightgray')
+        self.spell_window.option_add('*compound','left')
 
 
-        self.spell_canvas = Canvas(self.level_window)
+        self.spell_canvas = Canvas(self.spell_window)
         self.spell_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
 
         self.player_dic = player_dic
@@ -32,7 +32,7 @@ class SpellWindow():
         self.img_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
 
         self.bind_state = (-1,'off')
-        self.level_window.bind_all('<Key>',self.listen)
+        self.spell_window.bind_all('<Key>',self.listen)
         self.liste_num = ['&','é','"',"'","(","-","è","_","ç","à"]
 
         self.next_label_bind = 0
@@ -128,8 +128,9 @@ class SpellWindow():
         self.underline_activebind()
 
 
-        self.level_window.deiconify()
-        self.level_window.mainloop()
+        self.spell_window.iconify()
+        self.spell_window.deiconify()
+        self.spell_window.mainloop()
 
     # Renvoie en str la liste des spells, comme ça on peut savoir ce qui a été changé
     def __repr__(self):
@@ -142,7 +143,7 @@ class SpellWindow():
     def confirm(self):
         print(self.player_dic)
         print(self.spell_dic)
-        self.level_window.destroy()
+        self.spell_window.destroy()
 
     # +1 au spell correspondant
     def plus(self,event):
@@ -261,7 +262,7 @@ class SpellWindow():
         self.last_bind_widget = i
         self.widget_list[i]['button3'].config(text='< ... >')
         self.widget_list[i]['button3'].update()
-        self.level_window.after(3000,self.stop_waiting_for_bind,i)
+        self.spell_window.after(3000,self.stop_waiting_for_bind,i)
 
 
     def try_bind_to(self,char,i):
@@ -308,6 +309,8 @@ class SpellWindow():
 
 
 if __name__=='__main__':
+    global w
     player_dic,attribut_dic,spell_dic,inventory_dic = dictionnaires.dictionnaires_vierge()
 
     w=SpellWindow(toplevel=False,player_dic=player_dic,spell_dic=spell_dic)
+

@@ -7,24 +7,24 @@ class Inventory_Window():
 
     def __init__(self,toplevel,player_dic,inventory_dic):
         if toplevel:
-            self.level_window = Toplevel()
+            self.inventory_window = Toplevel()
         else:
-            self.level_window = Tk()
-        self.level_window.title("Inventory")
-        self.level_window.resizable(False,False)
-        self.level_window.iconbitmap("img/icone.ico")
+            self.inventory_window = Tk()
+        self.inventory_window.title("Inventory")
+        self.inventory_window.resizable(False,False)
+        self.inventory_window.iconbitmap("img/icone.ico")
 
-        self.level_window.option_add('*Font','Constantia 12')
-        self.level_window.option_add('*Button.activebackground','darkgray')
-        self.level_window.option_add('*Button.activeforeground','darkgray')
-        self.level_window.option_add('*Button.relief','groove')
-        self.level_window.option_add('*Button.overRelief','ridge')
-        self.level_window.option_add('*justify','left')
-        self.level_window.option_add('*bg','lightgray')
-        self.level_window.option_add('*compound','left')
+        self.inventory_window.option_add('*Font','Constantia 12')
+        self.inventory_window.option_add('*Button.activebackground','darkgray')
+        self.inventory_window.option_add('*Button.activeforeground','darkgray')
+        self.inventory_window.option_add('*Button.relief','groove')
+        self.inventory_window.option_add('*Button.overRelief','ridge')
+        self.inventory_window.option_add('*justify','left')
+        self.inventory_window.option_add('*bg','lightgray')
+        self.inventory_window.option_add('*compound','left')
 
 
-        self.inventory_canvas = Canvas(self.level_window)
+        self.inventory_canvas = Canvas(self.inventory_window)
         self.inventory_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
 
         self.player_dic = player_dic
@@ -44,8 +44,8 @@ class Inventory_Window():
         self.generate_page(self.current_page)
 
 
-        self.level_window.deiconify()
-        self.level_window.mainloop()
+        self.inventory_window.deiconify()
+        self.inventory_window.mainloop()
 
 
     def create_owned_itemlist(self):
@@ -69,7 +69,7 @@ class Inventory_Window():
     def confirm(self):
         print(self.player_dic)
         print(self.inventory_dic)
-        self.level_window.destroy()
+        self.inventory_window.destroy()
 
 
     def func_number_of_page(self):
@@ -86,7 +86,7 @@ class Inventory_Window():
     def clear_everything(self):
         self.inventory_canvas.destroy()
 
-        self.inventory_canvas = Canvas(self.level_window)
+        self.inventory_canvas = Canvas(self.inventory_window)
         self.inventory_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
 
 

@@ -70,6 +70,13 @@ def load_images():
     starnoir=PhotoImage(file='img/starnoir.gif')
     nothing=PhotoImage(file='img/nothing.gif')
 
+    friendly = PhotoImage(file='img/monster.gif')
+    common = PhotoImage(file='img/monster.gif')
+    elite = PhotoImage(file='img/monster.gif')
+    legendary = PhotoImage(file='img/monster.gif')
+    _42 = PhotoImage(file='img/monster.gif')
+
+
     money=PhotoImage(file='img/kamas.gif')
 
 
@@ -80,7 +87,12 @@ def load_images():
                     'Neutre':neutre,
                     'starnoir':starnoir,
                     'money':money,
-                    'nothing':nothing
+                    'nothing':nothing,
+                    "Friendly":friendly,
+                    "Common":common,
+                    "Elite":elite,
+                    "Legendary":legendary,
+                    "42":_42
                 }
 
 

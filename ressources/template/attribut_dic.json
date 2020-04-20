@@ -1,24 +1,24 @@
 ﻿{
   "HP": {
-    "level": 3,
+    "level": 23,
     "color": "#FF1E1E",
     "description": "Augmente les HP de base de 1 ; les multiplicateurs d'HP seront appliqués après",
     "image": "img/hp.gif"
   },
   "Mana": {
-    "level": 3,
+    "level": 5,
     "color": "#02AFFD",
     "description": "Augmente les points de mana de base de 1 ; les multiplicateurs de mana seront appliqués après",
     "image": "img/mana.gif"
   },
   "Force": {
-    "level": 3,
+    "level": 8,
     "color": "#815633",
     "description": "Augmente les points de force de base de 1 ; les multiplicateurs de force seront appliqués après",
     "image": "img/force.gif"
   },
   "Agilité": {
-    "level": 3,
+    "level": 8,
     "color": "#2A6E2C",
     "description": "Augmente les points d'agilité de base de 1 ; les multiplicateurs d'agilité seront appliqués après",
     "image": "img/agilite.gif"
@@ -34,5 +34,65 @@
     "color": "#398A89",
     "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
     "image": "img/chance.gif"
+  },
+  "Dommage fixe": {
+    "level": 0,
+    "color": "#000000",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/dmgfixe.gif"
+  },
+  "Dommage force": {
+    "level": 0,
+    "color": "#815633",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/dmgforce.gif"
+  },
+  "Dommage agilité": {
+    "level": 0,
+    "color": "#2A6E2C",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/dmgagilite.gif"
+  },
+  "Dommage intelligence": {
+    "level": 0,
+    "color": "#D13800",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/dmgintelligence.gif"
+  },
+  "Dommage chance": {
+    "level": 0,
+    "color": "#398A89",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/dmgchance.gif"
+  },
+  "Résistance fixe": {
+    "level": 0,
+    "color": "#000000",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/resfixe.gif"
+  },
+  "Résistance force": {
+    "level": 0,
+    "color": "#815633",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/resforce.gif"
+  },
+  "Résistance agilité": {
+    "level": 0,
+    "color": "#2A6E2C",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/resagilite.gif"
+  },
+  "Résistance intelligence": {
+    "level": 0,
+    "color": "#D13800",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/resintelligence.gif"
+  },
+  "Résistance chance": {
+    "level": 0,
+    "color": "#398A89",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après",
+    "image": "img/reschance.gif"
   }
 }

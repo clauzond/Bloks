@@ -7,24 +7,24 @@ class AttributWindow():
     def __init__(self,toplevel,player_dic,attribut_dic):
 
         if toplevel:
-            self.level_window = Toplevel()
+            self.attribut_window = Toplevel()
         else:
-            self.level_window = Tk()
-        self.level_window.title("Attributs")
-        self.level_window.resizable(False, False)
-        self.level_window.iconbitmap("img/icone.ico")
+            self.attribut_window = Tk()
+        self.attribut_window.title("Attributs")
+        self.attribut_window.resizable(False, False)
+        self.attribut_window.iconbitmap("img/icone.ico")
 
-        self.level_window.option_add('*Font','Constantia 12')
-        self.level_window.option_add('*Button.activebackground','darkgray')
-        self.level_window.option_add('*Button.activeforeground','darkgray')
-        self.level_window.option_add('*Button.relief','groove')
-        self.level_window.option_add('*Button.overRelief','ridge')
-        self.level_window.option_add('*justify','left')
-        self.level_window.option_add('*bg','lightgray')
-        self.level_window.option_add('*compound','left')
+        self.attribut_window.option_add('*Font','Constantia 12')
+        self.attribut_window.option_add('*Button.activebackground','darkgray')
+        self.attribut_window.option_add('*Button.activeforeground','darkgray')
+        self.attribut_window.option_add('*Button.relief','groove')
+        self.attribut_window.option_add('*Button.overRelief','ridge')
+        self.attribut_window.option_add('*justify','left')
+        self.attribut_window.option_add('*bg','lightgray')
+        self.attribut_window.option_add('*compound','left')
 
 
-        self.attribut_canvas = Canvas(self.level_window)
+        self.attribut_canvas = Canvas(self.attribut_window)
         self.attribut_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
 
         self.player_dic = player_dic
@@ -70,7 +70,7 @@ class AttributWindow():
             plus_state='disabled'
             minus_state='disabled'
 
-        attribut_name_list = list(self.attribut_dic.keys())
+        attribut_name_list = list(self.attribut_dic.keys())[:6]
         self.widget_list = []
         imglist=[]
         for i in range(len(attribut_name_list)):
@@ -108,8 +108,8 @@ class AttributWindow():
         Button(self.attribut_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
 
 
-        self.level_window.deiconify()
-        self.level_window.mainloop()
+        self.attribut_window.deiconify()
+        self.attribut_window.mainloop()
 
     # Renvoie en str la liste des attributs, comme ça on peut savoir ce qui a été changé
     def __repr__(self):
@@ -122,7 +122,7 @@ class AttributWindow():
     def confirm(self):
         print(self.player_dic)
         print(self.attribut_dic)
-        self.level_window.destroy()
+        self.attribut_window.destroy()
 
     # +1 à l'attribut correspondant
     def plus(self,event):

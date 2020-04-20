@@ -1,1 +1,0 @@
-Augmente la chance de base de 1 ; les multiplicateurs de chance seront appliqués après

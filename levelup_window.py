@@ -11,7 +11,7 @@ class Levelup_Window():
             self.level_window = Toplevel()
         else:
             self.level_window = Tk()
-        self.level_window.title("Level up !")
+        self.level_window.title("Statistiques")
         self.level_window.resizable(False,False)
         self.level_window.iconbitmap("img/icone.ico")
 
@@ -34,9 +34,6 @@ class Levelup_Window():
         self.newlevel = 0
         self.newattributpoint = 0
         self.newspellpoint = 0
-
-
-        #self.levelup_dic = dictionnaires.
 
         name_label = Label(self.level_canvas,
                         text=self.player_dic['name'],
@@ -102,6 +99,7 @@ class Levelup_Window():
         self.checkforlevelup()
 
 
+
         self.level_window.deiconify()
         self.level_window.mainloop()
 
@@ -138,10 +136,10 @@ class Levelup_Window():
             self.newspellpoint += gain
 
             # add attribut points according to levelup gain
-            attribut_name_list = list(self.attribut_dic.keys())
+            attribut_name_list = list(self.attribut_dic['attribut'].keys())
             for i in range(len(attribut_name_list)):
                 attribut_name = str(attribut_name_list[i])
-                self.attribut_dic[attribut_name] += int(apdic[attribut_name][self.player_dic['level']])
+                self.attribut_dic['attribut'][attribut_name] += int(apdic[attribut_name][self.player_dic['level']])
 
 
             # check for another level up
@@ -178,6 +176,7 @@ class Levelup_Window():
 
 
             if self.newlevel>0:
+                self.level_window.title("Level up !")
                 n = self.newlevel
                 n2 = self.newattributpoint
                 n3 = self.newspellpoint
@@ -200,10 +199,8 @@ class Levelup_Window():
                 self.txt_levelup3.update()
 
 if __name__=='__main__':
-    player_dic,attribut_dic,spell_dic,spellbind_dic = dictionnaires.dictionnaires_vierge()
+    player_dic,attribut_dic,spell_dic,inventory_dic = dictionnaires.dictionnaires_vierge()
 
-    print(player_dic)
-    print(attribut_dic)
 
     Levelup_Window(toplevel=False,player_dic=player_dic,attribut_dic=attribut_dic)
 

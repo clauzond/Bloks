@@ -24,12 +24,11 @@ class SpellWindow():
         self.level_window.option_add('*compound','left')
 
 
-        self.level_canvas = Canvas(self.level_window)
-        self.level_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
+        self.spell_canvas = Canvas(self.level_window)
+        self.spell_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
 
         self.player_dic = player_dic
         self.spell_dic = spell_dic
-        self.color_dic = dictionnaires.dictionnaires_vierge(loadcolor=True)
         self.img_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
 
         self.bind_state = (-1,'off')
@@ -41,27 +40,27 @@ class SpellWindow():
         # Statistiques du joueurs
         k = 5 # nombre de lignes utilisées avant les spells
 
-        name_label = Label(self.level_canvas,
+        name_label = Label(self.spell_canvas,
                         text=self.player_dic['name'],
                         fg='black',font="Constantia 13 bold",image=self.img_dic['player'])
         name_label.grid(row=0, column=0, sticky=W,columnspan=10)
 
-        level_label = Label(self.level_canvas,
+        level_label = Label(self.spell_canvas,
                         text=str(self.player_dic['level']),
                         fg='black',font="Constantia 13 bold",image=self.img_dic['starnoir'])
         level_label.grid(row=0,column=0,columnspan=10)
 
-        xp_label = Label(self.level_canvas,
+        xp_label = Label(self.spell_canvas,
                         text=str(self.player_dic['current_xp'])+'/'+str(self.player_dic['max_xp']),
                         fg='black',font='Constantia 13 bold',image=self.img_dic['xpnoir'])
         xp_label.grid(row=0,column=0,columnspan=100,sticky=E)
-        Frame(self.level_canvas,height=20).grid(row=1)
+        Frame(self.spell_canvas,height=20).grid(row=1)
 
-        txt_point_label = Label(self.level_canvas,
+        txt_point_label = Label(self.spell_canvas,
                             text='Disponible : ',
                             fg='black',font='Constantia 13 bold',image=self.img_dic['star'])
         txt_point_label.grid(row=1,column=0,columnspan=10)
-        self.point_label = Label(self.level_canvas,
+        self.point_label = Label(self.spell_canvas,
                             text=str(self.player_dic['spell_point']),
                             fg='black',font='Constantia 13 bold')
         self.point_label.grid(row=1,column=1,columnspan=10,sticky=W)
@@ -76,7 +75,6 @@ class SpellWindow():
             plus_state='disabled'
             minus_state='disabled'
 
-        color_value_list = list(self.color_dic.values())
         self.widget_list = []
 
         total_number_of_spells = self.spell_dic['total_number_of_spells']
@@ -85,28 +83,29 @@ class SpellWindow():
             spell_name = str( self.spell_dic[f'spell{i+1}']['name'] )
             spell_value = int( self.spell_dic[f'spell{i+1}']['level'] )
             spell_bind = str( self.spell_dic[f'spell{i+1}']['bind'] )
+            color = str( self.spell_dic[f'spell{i+1}']['color'])
 
-            l1=Label(self.level_canvas,name=f'0|{i}',
+            l1=Label(self.spell_canvas,name=f'0|{i}',
                     text=" "+spell_name,
-                    fg=self.color_dic[spell_number],font="Constantia 12",
+                    fg=color,font="Constantia 12",
                     image=self.img_dic[spell_number])
             l1.grid(row=i+k,column=0,padx=20,pady=1,sticky=W)
             l1.bind('<Button-1>',self.bind_label)
 
-            b1=Button(self.level_canvas,
+            b1=Button(self.spell_canvas,
                     text="+",name=f'1|{i}',
                     state=plus_state,font='Constantia 16 bold',fg='green')
             b1.grid(row=i+k,column=1,padx=2)
             b1.bind('<Button-1>',self.plus)
-            b2=Button(self.level_canvas,
+            b2=Button(self.spell_canvas,
                     text="-",name=f'2|{i}',
                     state=minus_state,font='Constantia 16 bold',fg='red')
             b2.grid(row=i+k,column=3,padx=2)
             b2.bind('<Button-1>',self.minus)
-            l2=Label(self.level_canvas,text=spell_value,fg='black',font='Constantia 16',width=3)
+            l2=Label(self.spell_canvas,text=spell_value,fg='black',font='Constantia 16',width=3)
             l2.grid(row=i+k,column=2)
 
-            b3=Button(self.level_canvas,
+            b3=Button(self.spell_canvas,
                     text=f'< {spell_bind} >',name=f'3|{i}',
                     font='Constantia 12 bold',fg='black')
             b3.grid(row=i+k,column=4,padx=10)
@@ -119,11 +118,12 @@ class SpellWindow():
 
 
         # Séparateur suivi du bouton 'Confirmer'
-        Frame(self.level_canvas,height=10,width=400).grid(row=i+k+1)
-        Button(self.level_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
+        Frame(self.spell_canvas,height=10,width=400).grid(row=i+k+1)
+        Button(self.spell_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
 
 
         self.underline_activebind()
+
 
         self.level_window.deiconify()
         self.level_window.mainloop()
@@ -287,29 +287,16 @@ class SpellWindow():
 
         spell_id = f'spell{i+1}'
 
-        if spell_id not in self.spell_dic['active']:
-            if self.next_label_bind==0:
-                self.spell_dic['active'][0] = spell_id
-                self.next_label_bind += 1
-            elif self.next_label_bind==1:
-                self.spell_dic['active'][1] = spell_id
-                self.next_label_bind += 1
-            elif self.next_label_bind==2:
-                self.spell_dic['active'][2] = spell_id
-                self.next_label_bind = 0
-
-
-            self.underline_activebind()
+        self.spell_dic['active'] = spell_id
+        self.underline_activebind()
 
 
 
     def underline_activebind(self):
-        num0 = int(self.spell_dic['active'][0].split('spell')[1]) - 1
-        num1 = int(self.spell_dic['active'][1].split('spell')[1]) - 1
-        num2 = int(self.spell_dic['active'][2].split('spell')[1]) - 1
+        num = int(self.spell_dic['active'].split('spell')[1]) - 1
 
         for i in range(len(self.widget_list)):
-            if i not in [num0,num1,num2]:
+            if i != num:
                 self.widget_list[i]['spell_name'].config(font='Constantia 12')
             else:
                 self.widget_list[i]['spell_name'].config(font='Constantia 12 bold underline')
@@ -318,6 +305,6 @@ class SpellWindow():
 
 
 if __name__=='__main__':
-    player_dic,attribut_dic,spell_dic = dictionnaires.dictionnaires_vierge()
+    player_dic,attribut_dic,spell_dic,inventory_dic = dictionnaires.dictionnaires_vierge()
 
     w=SpellWindow(toplevel=False,player_dic=player_dic,spell_dic=spell_dic)

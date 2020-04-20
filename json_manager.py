@@ -1,4 +1,5 @@
 import json
+import os, os.path
 
 
 def load_file(filename,player_name='blank',fulldir=""):
@@ -8,22 +9,22 @@ def load_file(filename,player_name='blank',fulldir=""):
     else:
         filedir = fulldir
     f = open(filedir,'r',encoding='utf-8-sig')
-
     data = json.load(f)
-
     f.close()
-
     return(data)
 
 
-def save_file(data,filename,player_name='blank'):
+def save_file(data,filename,player_name='blank',fulldir=""):
     # Sauvegarde l'inventaire
-    filedir = f'savestates/{player_name}/{filename}.json'
+    if fulldir=="":
+        filedir = f'savestates/{player_name}/{filename}.json'
+    else:
+        filedir=fulldir
 
-    f = open(filedir,'w',encoding='utf-8')
-
+    directory = "/".join(filedir.split('/')[:-1])
+    if not os.path.exists(directory):
+        os.mkdir(directory)
+    f = open(filedir,'w+',encoding='utf-8')
     data = json.dump(data,f)
-
     f.close()
-
     return

@@ -1,1 +1,10 @@
-{"HP": 3, "Mana": 3, "Force": 3, "Agilit\u00e9": 3, "Intelligence": 3, "Chance": 3}
+﻿{
+  "name": "Blue Dragon",
+  "level": 4,
+  "current_xp": 20,
+  "max_xp": 100,
+  "total_xp": 390,
+  "attribut_point": 15,
+  "spell_point": 3,
+  "money":10
+}

@@ -1,1 +1,32 @@
-{"name": "Blue Dragon", "level": 4, "current_xp": 20, "max_xp": 100, "total_xp": 390, "attribut_point": 15, "spell_point": 3}
+﻿{
+  "HP": {
+    "level": 3,
+    "color": "#FF1E1E",
+    "description": "Augmente les HP de base de 1 ; les multiplicateurs d'HP seront appliqués après"
+  },
+  "Mana": {
+    "level": 3,
+    "color": "#02AFFD",
+    "description": "Augmente les points de mana de base de 1 ; les multiplicateurs de mana seront appliqués après"
+  },
+  "Force": {
+    "level": 3,
+    "color": "#815633",
+    "description": "Augmente les points de force de base de 1 ; les multiplicateurs de force seront appliqués après"
+  },
+  "Agilité": {
+    "level": 3,
+    "color": "#2A6E2C",
+    "description": "Augmente les points d'agilité de base de 1 ; les multiplicateurs d'agilité seront appliqués après"
+  },
+  "Intelligence": {
+    "level": 3,
+    "color": "#D13800",
+    "description": "Augmente les points d'intelligence de base de 1 ; les multiplicateurs d'intelligence seront appliqués après"
+  },
+  "Chance": {
+    "level": 3,
+    "color": "#398A89",
+    "description": "Augmente les points de chance de base de 1 ; les multiplicateurs de chance seront appliqués après"
+  }
+}

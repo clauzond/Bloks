@@ -40,9 +40,10 @@ class SpellWindow():
         # Statistiques du joueurs
         k = 5 # nombre de lignes utilisées avant les spells
 
+        playerimg = PhotoImage(file=self.player_dic['image'])
         name_label = Label(self.spell_canvas,
                         text=self.player_dic['name'],
-                        fg='black',font="Constantia 13 bold",image=self.img_dic['player'])
+                        fg='black',font="Constantia 13 bold",image=playerimg)
         name_label.grid(row=0, column=0, sticky=W,columnspan=10)
 
         level_label = Label(self.spell_canvas,
@@ -78,17 +79,19 @@ class SpellWindow():
         self.widget_list = []
 
         total_number_of_spells = self.spell_dic['total_number_of_spells']
+        imglist=[]
         for i in range(total_number_of_spells):
             spell_number = f'spell{i+1}'
             spell_name = str( self.spell_dic[f'spell{i+1}']['name'] )
             spell_value = int( self.spell_dic[f'spell{i+1}']['level'] )
             spell_bind = str( self.spell_dic[f'spell{i+1}']['bind'] )
             color = str( self.spell_dic[f'spell{i+1}']['color'])
+            imglist.append( PhotoImage(file=self.spell_dic[f'spell{i+1}']['image']) )
 
             l1=Label(self.spell_canvas,name=f'0|{i}',
                     text=" "+spell_name,
                     fg=color,font="Constantia 12",
-                    image=self.img_dic[spell_number])
+                    image=imglist[i])
             l1.grid(row=i+k,column=0,padx=20,pady=1,sticky=W)
             l1.bind('<Button-1>',self.bind_label)
 

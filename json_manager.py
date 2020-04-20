@@ -2,7 +2,7 @@ import json
 import os, os.path
 
 
-def load_file(filename,player_name='blank',fulldir=""):
+def load_file(filename='',player_name='blank',fulldir=""):
     # Renvoie une liste, dont le ième élément est l'item d'ID i (item=dictionnaire)
     if fulldir=="":
         filedir = f'savestates/{player_name}/{filename}.json'
@@ -14,7 +14,7 @@ def load_file(filename,player_name='blank',fulldir=""):
     return(data)
 
 
-def save_file(data,filename,player_name='blank',fulldir=""):
+def save_file(data,filename="",player_name='blank',fulldir=""):
     # Sauvegarde l'inventaire
     if fulldir=="":
         filedir = f'savestates/{player_name}/{filename}.json'

@@ -33,9 +33,11 @@ class AttributWindow():
         # Statistiques du joueurs
         k = 5 # nombre de lignes utilisées avant les attributs
 
+
+        playerimage = PhotoImage(file=self.player_dic['image'])
         name_label = Label(self.attribut_canvas,
                         text=self.player_dic['name'],
-                        fg='black',font="Constantia 13 bold",image=self.img_dic['player'])
+                        fg='black',font="Constantia 13 bold",image=playerimage)
         name_label.grid(row=0, column=0, sticky=W,columnspan=1)
 
         level_label = Label(self.attribut_canvas,
@@ -70,16 +72,18 @@ class AttributWindow():
 
         attribut_name_list = list(self.attribut_dic.keys())
         self.widget_list = []
+        imglist=[]
         for i in range(len(attribut_name_list)):
 
             attribut_name = str(attribut_name_list[i])
             attribut_value = int(self.attribut_dic[attribut_name]['level'])
             color = str(self.attribut_dic[attribut_name]['color'])
+            imglist.append( PhotoImage(file=self.attribut_dic[attribut_name]['image']) )
 
             l1=Label(self.attribut_canvas,
                     text=" "+attribut_name,
                     fg=color,font="Constantia 16 bold",
-                    image=self.img_dic[attribut_name])
+                    image=imglist[i])
             l1.grid(row=i+k,column=0,padx=20,pady=5,sticky=W)
             b1=Button(self.attribut_canvas,
                     text="+",name=f'1|{i}',

@@ -6,5 +6,6 @@
   "total_xp": 390,
   "attribut_point": 15,
   "spell_point": 3,
-  "money":10
+  "money":10,
+  "image":"img/player.gif"
 }

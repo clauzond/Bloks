@@ -10,7 +10,7 @@ def append(d):
 
 
     for i in range(6,63):
-        item = {'id': int(i), 'name': f'Item {i}', 'description': f'Description item {i}', 'owned': int(i), 'sellprice': int(i), 'itemlevel': 0, 'image': 'item'}
+        item = {'id': int(i), 'name': f'Item {i}', 'description': f'Description item {i}', 'owned': int(i), 'sellprice': int(i), 'itemlevel': 0, 'image': 'img/item.gif'}
 
 
 

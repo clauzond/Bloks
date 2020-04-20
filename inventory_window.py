@@ -31,18 +31,13 @@ class Inventory_Window():
         self.inventory_dic = inventory_dic
         self.img_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
 
-        itemlist = self.inventory_dic['itemlist']
 
-        owned_itemlist = []
-        for i in range(len(itemlist)):
-            if itemlist[i]['owned'] > 0:
-                owned_itemlist.append(itemlist[i])
-
-        self.owned_itemlist = owned_itemlist
-        self.selected_label = 'None'
-        self.selected_item = 'None'
+        self.create_owned_itemlist()
         self.current_page = 1
         self.number_of_page = self.number_of_page()
+        self.playerimg = PhotoImage(file=self.player_dic['image'])
+
+        self.create_imgdic()
 
 
 
@@ -51,6 +46,24 @@ class Inventory_Window():
 
         self.level_window.deiconify()
         self.level_window.mainloop()
+
+
+    def create_owned_itemlist(self):
+        itemlist = self.inventory_dic['itemlist']
+        owned_itemlist = []
+        for i in range(len(itemlist)):
+            if itemlist[i]['owned'] > 0:
+                owned_itemlist.append(itemlist[i])
+
+        self.owned_itemlist = owned_itemlist
+        self.selected_nbr = 'None'
+        self.selected_item = 'None'
+
+    def create_imgdic(self):
+        self.imgdic = {}
+
+        for i in range(len(self.owned_itemlist)):
+            self.imgdic[self.owned_itemlist[i]['id']] = PhotoImage(file = self.owned_itemlist[i]['image'])
 
 
     def confirm(self):
@@ -80,7 +93,7 @@ class Inventory_Window():
         # Statistiques de base du joueur
         name_label = Label(self.inventory_canvas,
                         text=self.player_dic['name'],
-                        fg='black',font="Constantia 13 bold",image=self.img_dic['player'])
+                        fg='black',font="Constantia 13 bold",image=self.playerimg)
         name_label.grid(row=0, column=0, columnspan=1)
 
         money_label = Label(self.inventory_canvas,
@@ -97,6 +110,11 @@ class Inventory_Window():
                         text=str(self.player_dic['current_xp'])+'/'+str(self.player_dic['max_xp']),
                         fg='black',font='Constantia 13 bold',image=self.img_dic['xpnoir'])
         self.xp_label.grid(row=0,column=21,columnspan=1)
+
+
+        self.sell_button = Button(self.inventory_canvas,
+                            text='Sell',command=self.sell_current_item)
+        self.sell_button.grid(row=3,column=20)
 
         # Séparateur suivi du bouton 'Confirmer'
         k = 10 # tout en bas
@@ -125,7 +143,7 @@ class Inventory_Window():
         for i in range(len(self.current_itemlist)):
             item = self.current_itemlist[i]
             number_owned = item['owned']
-            img = self.img_dic[item['image']]
+            img = self.imgdic[item['id']]
             name = item['name']
             description = item['description']
             sellprice = item['sellprice']
@@ -154,8 +172,8 @@ class Inventory_Window():
 
         self.groove_all_label()
         self.current_widgetlist[i].config(relief=SUNKEN)
-        self.selected_label = self.current_widgetlist[i]
         self.selected_item = self.current_itemlist[i]
+        self.selected_nbr = i
 
     def groove_all_label(self):
         for label in self.current_widgetlist:
@@ -174,7 +192,7 @@ class Inventory_Window():
         else:
             self.current_page -= 1
             self.generate_page(self.current_page)
-            self.selected_label = 'None'
+            self.selected_nbr = 'None'
             self.selected_item = 'None'
         pass
 
@@ -186,9 +204,41 @@ class Inventory_Window():
         else:
             self.current_page += 1
             self.generate_page(self.current_page)
-            self.selected_label = 'None'
             self.selected_item = 'None'
+            self.selected_nbr = 'None'
         pass
+
+
+    def sell_current_item(self):
+
+        if self.selected_nbr=='None' or self.selected_item=='None':
+            pass
+
+        else:
+            itsnbr = self.selected_nbr
+            myprice = self.selected_item['sellprice']
+            myid = self.selected_item['id']
+            self.player_dic['money'] += myprice
+
+            self.inventory_dic['itemlist'][myid]['owned'] -= 1
+
+
+            self.create_owned_itemlist()
+
+            self.generate_page(self.current_page)
+
+            # Le bouton n'a pas bougé
+            if self.inventory_dic['itemlist'][myid]['owned'] > 0:
+                self.groove_all_label()
+                self.current_widgetlist[itsnbr].config(relief=SUNKEN)
+                self.selected_item = self.current_itemlist[itsnbr]
+                self.selected_nbr = itsnbr
+
+
+
+
+
+
 
 
 if __name__ == "__main__":

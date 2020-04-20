@@ -35,9 +35,10 @@ class Levelup_Window():
         self.newattributpoint = 0
         self.newspellpoint = 0
 
+        playerimg = PhotoImage(file=self.player_dic['image'])
         name_label = Label(self.level_canvas,
                         text=self.player_dic['name'],
-                        fg='black',font="Constantia 13 bold",image=self.img_dic['player'])
+                        fg='black',font="Constantia 13 bold",image=playerimg)
         name_label.grid(row=0, column=0, sticky=W,columnspan=10)
 
         self.level_label = Label(self.level_canvas,

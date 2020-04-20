@@ -55,52 +55,29 @@ def load_levelupdics():
 
     return(dic)
 
+
+
 def load_images():
     """
     images des attributs en 30x30
     images des sorts en 50x50
     """
-    agilite=PhotoImage(file="img/agilite.gif")
-    force=PhotoImage(file="img/force.gif")
-    chance=PhotoImage(file="img/chance.gif")
-    intelligence=PhotoImage(file="img/intelligence.gif")
-    hp=PhotoImage(file="img/hp.gif")
-    mana=PhotoImage(file="img/mana.gif")
     neutre=PhotoImage(file="img/neutre.gif")
     star=PhotoImage(file="img/star.gif")
     xp=PhotoImage(file='img/xp.gif')
     xpblanc=PhotoImage(file='img/xpblanc.gif')
     xpnoir=PhotoImage(file='img/xpnoir.gif')
-    player=PhotoImage(file='img/player.gif')
     starnoir=PhotoImage(file='img/starnoir.gif')
 
-    spell=PhotoImage(file='img/spell.gif')
     money=PhotoImage(file='img/kamas.gif')
 
-    item_default=PhotoImage(file='img/item.gif')
 
-    img_dic = {     'HP':hp,
-                    'Mana':mana,
-                    'Force':force,
-                    'Agilité':agilite,
-                    'Intelligence':intelligence,
-                    'Chance':chance,
-                    'xp':xp,
+    img_dic = {     'xp':xp,
                     'xpblanc':xpblanc,
                     'xpnoir':xpnoir,
                     'star':star,
                     'Neutre':neutre,
-                    'player':player,
                     'starnoir':starnoir,
-                    'spell1':spell,
-                    'spell2':spell,
-                    'spell3':spell,
-                    'spell4':spell,
-                    'spell5':spell,
-                    'spell6':spell,
-                    'spell7':spell,
-                    'spell8':spell,
-                    'item':item_default,
                     'money':money
                 }
 
@@ -111,49 +88,31 @@ def load_images():
 
     return(img_dic)
 
-def load_colors():
-    color_dic = {   'HP':'#FF1E1E',
-                    'Mana':'#02AFFD',
-                    'Force':'#815633',
-                    'Agilité':'#2A6E2C',
-                    'Intelligence': '#D13800',
-                    'Chance':'#398A89',
-                    'spell1':'#4C652B',
-                    'spell2':'#4C652B',
-                    'spell3':'#4C652B',
-                    'spell4':'#4C652B',
-                    'spell5':'#4C652B',
-                    'spell6':'#4C652B'
-                }
-    return(color_dic)
 
 def load_spell_dic():
     import json_manager as jm
 
-    return(jm.load_file(filename='spell_dic',player_name='template',fulldir='ressources/template/spell_dic.json'))
+    return(jm.load_file(fulldir='ressources/template/spell_dic.json'))
 
 def load_attribut_dic():
     import json_manager as jm
 
-    return(jm.load_file(filename='attribut_dic',player_name='template',fulldir='ressources/template/attribut_dic.json'))
+    return(jm.load_file(fulldir='ressources/template/attribut_dic.json'))
 
 def load_player_dic():
     import json_manager as jm
 
-    return(jm.load_file(filename='player_dic',player_name='template',fulldir='ressources/template/player_dic.json'))
+    return(jm.load_file(fulldir='ressources/template/player_dic.json'))
 
 def load_inventory_dic():
     import json_manager as jm
 
-    return(jm.load_file(filename='inventory_dic',player_name='template',fulldir='ressources/template/inventory_dic.json'))
+    return(jm.load_file(fulldir='ressources/template/inventory_dic.json'))
 
 
-def dictionnaires_vierge(loadcolor=False,loadimg=False,loadspelltip=False,loadspellname=False,loadlevelupdics=False):
+def dictionnaires_vierge(loadimg=False,loadspelltip=False,loadspellname=False,loadlevelupdics=False):
     if loadimg:
         return(load_images())
-
-    elif loadcolor:
-        return(load_colors())
 
     elif loadlevelupdics:
         return(load_levelupdics())

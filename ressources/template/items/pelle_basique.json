@@ -1,0 +1,19 @@
+{
+      "id":4,
+      "name": "Pelle basique",
+      "description": "Une pelle. T'espères pas taper avec quand même ?",
+      "owned": 0,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/pelle.gif",
+      "stats": {
+        "Chance": 5,
+        "HP": 10,
+        "Mana": 1
+      }
+		,
+	  "multiplicateurs":{"Force":0,
+						"Agilité":0,
+						"Intelligence":0,
+						"Chance":0.5}
+}

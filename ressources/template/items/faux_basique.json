@@ -1,0 +1,20 @@
+{
+      "id":5,
+      "name": "Faux basique",
+      "description": "Une faux conçue pour le travail agricole. Pas autre chose.",
+      "owned": 0,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/faux.gif",
+      "stats": {
+		"Force":2,
+        "Agilité": 2,
+        "HP": 10,
+        "Mana": 1
+      }
+		,
+	  "multiplicateurs":{"Force":0.4,
+						"Agilité":0.4,
+						"Intelligence":0,
+						"Chance":0}
+}

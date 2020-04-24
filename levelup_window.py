@@ -4,14 +4,15 @@ import dictionnaires
 
 class Levelup_Window():
 
-
     def __init__(self,toplevel,player_dic,attribut_dic):
 
         if toplevel:
             self.level_window = Toplevel()
+            self.level_window.wm_overrideredirect(1)
+            self.level_window.focus_force()
         else:
             self.level_window = Tk()
-        self.level_window.title("Statistiques")
+        self.level_window.title("Pas assez d'expérience...")
         self.level_window.resizable(False,False)
         self.level_window.iconbitmap("img/icone.ico")
 
@@ -105,8 +106,15 @@ class Levelup_Window():
         self.level_window.mainloop()
 
     def confirm(self):
-        print(self.player_dic)
-        print(self.attribut_dic)
+        import manipulate_stats
+
+        self.player_dic = manipulate_stats.calculate_playerstats(attribut_dic=self.attribut_dic,player_dic = self.player_dic)
+
+        import manipulate_json as jm
+
+        jm.save_file(self.player_dic,filename='player_dic',player_name=self.player_dic['name'])
+        jm.save_file(self.attribut_dic,filename='attribut_dic',player_name=self.player_dic['name'])
+
         self.level_window.destroy()
 
     def checkforlevelup(self):
@@ -114,10 +122,10 @@ class Levelup_Window():
         if int(self.player_dic['current_xp'])>=int(self.player_dic['max_xp']):
 
             dic = dictionnaires.dictionnaires_vierge(loadlevelupdics=True)
-            mxlist = dic['max_xp']
-            apglist = dic['attribut_point_gain']
-            spglist = dic['spell_point_gain']
-            apdic = dic['attribut_gain']
+            mxlist = self.player_dic['max_xp_growth']
+            apglist = self.player_dic['attribut_point_growth']
+            spglist = self.player_dic['spell_point_growth']
+            #apdic = dic['attribut_gain']
 
             # get new level
             self.player_dic['total_xp'] += int(self.player_dic['current_xp'])
@@ -128,26 +136,29 @@ class Levelup_Window():
 
             # get new attribut point
             gain = int(apglist[int(self.player_dic['level'])])
-            player_dic['attribut_point'] += gain
+            self.player_dic['attribut_point'] += gain
             self.newattributpoint += gain
 
             # get new spell point
             gain = int(spglist[int(self.player_dic['level'])])
-            player_dic['spell_point'] += gain
+            self.player_dic['spell_point'] += gain
             self.newspellpoint += gain
 
             # add attribut points according to levelup gain
-            attribut_name_list = list(self.attribut_dic['attribut'].keys())
+            attribut_name_list = list(self.attribut_dic.keys())
             for i in range(len(attribut_name_list)):
-                attribut_name = str(attribut_name_list[i])
-                self.attribut_dic['attribut'][attribut_name] += int(apdic[attribut_name][self.player_dic['level']])
+                this_attribut = str(attribut_name_list[i])
+                this_gain = int( self.attribut_dic[this_attribut]['growth'][ self.player_dic['level'] ] )
+
+                self.attribut_dic[this_attribut]['level'] += this_gain
+                self.player_dic['stats'][this_attribut] += this_gain
 
 
             # check for another level up
             self.checkforlevelup()
 
         else:
-            # afficher la majorité des informations
+            # afficher la majorité des informations une fois que la phase de levelup est terminée
 
             if int(self.player_dic['attribut_point'])>1:
                 s='s'
@@ -200,9 +211,15 @@ class Levelup_Window():
                 self.txt_levelup3.update()
 
 if __name__=='__main__':
-    player_dic,attribut_dic,spell_dic,inventory_dic = dictionnaires.dictionnaires_vierge()
+    #player_dic,attribut_dic,spell_dic,inventory_dic = dictionnaires.dictionnaires_vierge()
+
+    import manipulate_json as jm
+    player_dic = jm.load_file('player_dic','Blue Dragon')
+    attribut_dic =jm.load_file('attribut_dic','Blue Dragon')
+    spell_dic = jm.load_file('spell_dic','Blue Dragon')
+    inventory_dic = jm.load_file('inventory_dic','Blue Dragon')
 
 
-    Levelup_Window(toplevel=False,player_dic=player_dic,attribut_dic=attribut_dic)
+    w = Levelup_Window(toplevel=False,player_dic=player_dic,attribut_dic=attribut_dic)
 
 

@@ -1,0 +1,19 @@
+{
+      "id": 1,
+      "name": "Dagues basiques",
+      "description": "Ce sont des simples dagues. Il faut bien commencer quelque part !",
+      "owned": 0,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/dagues.gif",
+      "stats": {
+        "Agilité": 5,
+        "HP": 10,
+        "Mana": 1
+      },
+	  "multiplicateurs":{"Force":0 ,
+						"Agilité":0.5,
+						"Intelligence":0,
+						"Chance":0}
+						
+}

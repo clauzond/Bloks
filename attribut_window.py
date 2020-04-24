@@ -4,12 +4,48 @@ import dictionnaires
 
 class AttributWindow():
 
-    def __init__(self,toplevel,player_dic,attribut_dic):
+    def __init__(self,toplevel="",widget=""):
 
-        if toplevel:
-            self.attribut_window = Toplevel()
+        self.toplevel = toplevel
+        self.widget = widget
+        self.attribut_window = None
+
+
+    def hidetip(self):
+        tw = self.attribut_window
+        c = self.attribut_canvas
+        self.attribut_canvas = None
+        self.attribut_window = None
+        if tw:
+            c.destroy()
+            tw.destroy()
+
+
+
+    def show(self,player_dic,attribut_dic):
+        if self.attribut_window:
+            return
+
+        if type(self.widget)==str:
+            if self.toplevel:
+                self.attribut_window = Toplevel()
+                self.attribut_window.wm_overrideredirect(1)
+                self.attribut_window.focus_force()
+            else:
+                self.attribut_window = Tk()
+
         else:
-            self.attribut_window = Tk()
+            x, y, cx, cy = self.widget.bbox("insert")
+            x = x + self.widget.winfo_rootx() + 12
+            y = y + cy + self.widget.winfo_rooty() + 40
+            self.attribut_window = Toplevel(self.widget)
+
+            self.attribut_window.wm_overrideredirect(True)
+            self.attribut_window.wm_geometry("+%d+%d" % (x, y))
+
+
+
+
         self.attribut_window.title("Attributs")
         self.attribut_window.resizable(False, False)
         self.attribut_window.iconbitmap("img/icone.ico")
@@ -99,17 +135,19 @@ class AttributWindow():
             l2.grid(row=i+k,column=2)
             self.widget_list.append({'attribut_name':l1,'button1':b1,'button2':b2,'attribut_value':l2,'point_spent':0,'button1_state':plus_state,'button2_state':minus_state})
 
-            ctt.CreateToolTip(l1,self.attribut_dic[attribut_name]['description'])
+
+            if type(self.widget)==str:
+                ctt.CreateToolTip(l1,self.attribut_dic[attribut_name]['description'])
 
 
+        if type(self.widget)== str:
+            # Séparateur suivi du bouton 'Confirmer'
+            Frame(self.attribut_canvas,height=20,width=400).grid(row=i+k+1)
+            Button(self.attribut_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
 
-        # Séparateur suivi du bouton 'Confirmer'
-        Frame(self.attribut_canvas,height=20,width=400).grid(row=i+k+1)
-        Button(self.attribut_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
 
-
-        self.attribut_window.deiconify()
         self.attribut_window.mainloop()
+
 
     # Renvoie en str la liste des attributs, comme ça on peut savoir ce qui a été changé
     def __repr__(self):
@@ -120,8 +158,15 @@ class AttributWindow():
 
     # Ferme la fenêtre de levelup, et donne le dictionnaire des attributs
     def confirm(self):
-        print(self.player_dic)
-        print(self.attribut_dic)
+        import manipulate_stats
+        self.player_dic = manipulate_stats.calculate_playerstats(attribut_dic=self.attribut_dic,player_dic = self.player_dic)
+
+
+        import manipulate_json as jm
+
+        jm.save_file(self.player_dic,filename='player_dic',player_name=self.player_dic['name'])
+        jm.save_file(self.attribut_dic,filename='attribut_dic',player_name=self.player_dic['name'])
+
         self.attribut_window.destroy()
 
     # +1 à l'attribut correspondant
@@ -211,7 +256,55 @@ class AttributWindow():
                 self.widget_list[i]['button1'].update()
 
 
-if __name__=='__main__':
-    player_dic,attribut_dic,spelldic,inventory_dic = dictionnaires.dictionnaires_vierge()
+def Tooltip(player_dic,attribut_dic,toplevel='',widget=''):
+    toolTip = AttributWindow(widget=widget)
+    def enter(event):
+        toolTip.show(player_dic=player_dic,attribut_dic=attribut_dic)
+    def leave(event):
+        toolTip.hidetip()
+    widget.bind('<Enter>', enter)
+    widget.bind('<Leave>', leave)
 
-    w=AttributWindow(toplevel=False,player_dic=player_dic,attribut_dic=attribut_dic)
+if __name__=='__main__':
+    #player_dic,attribut_dic,spelldic,inventory_dic = dictionnaires.dictionnaires_vierge()
+    global w
+
+    import manipulate_json as jm
+    player_dic = jm.load_file('player_dic','Blue Dragon')
+    attribut_dic =jm.load_file('attribut_dic','Blue Dragon')
+    spell_dic = jm.load_file('spell_dic','Blue Dragon')
+    inventory_dic = jm.load_file('inventory_dic','Blue Dragon')
+
+    a=0
+
+    if a==0:
+
+        w=AttributWindow(toplevel=False)
+        w.show(player_dic,attribut_dic)
+
+    else:
+        w = Tk()
+
+        w.title("Un petit test")
+        w.resizable(False,False)
+        w.iconbitmap("img/icone.ico")
+
+        w.option_add('*Font','Constantia 12')
+        w.option_add('*Button.activebackground','darkgray')
+        w.option_add('*Button.activeforeground','darkgray')
+        w.option_add('*Button.relief','groove')
+        w.option_add('*Button.overRelief','ridge')
+        w.option_add('*justify','left')
+        w.option_add('*bg','lightgray')
+        w.option_add('*compound','left')
+
+
+        wc = Canvas(w,width=100,height=100)
+        wc.pack(fill=BOTH,expand=True,padx=20,pady=20)
+
+        l = Label(w,text="Bonjour")
+        l.pack()
+
+        Tooltip(player_dic,attribut_dic,widget=l)
+
+        w.mainloop()

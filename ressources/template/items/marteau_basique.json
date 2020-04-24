@@ -1,0 +1,19 @@
+{
+      "id": 2,
+      "name": "Marteau basique",
+      "description": "C'est juste un marteau.",
+      "owned": 0,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/marteau.gif",
+      "stats": {
+        "Force": 5,
+        "HP": 10,
+        "Mana": 1
+      }
+		,
+	  "multiplicateurs":{"Force":0.5,
+						"Agilité":0,
+						"Intelligence":0,
+						"Chance":0}
+}

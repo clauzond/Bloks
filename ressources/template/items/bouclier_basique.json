@@ -1,0 +1,19 @@
+﻿{
+  "id": 8,
+  "name": "Bouclier basique",
+  "description": "Une bouclier pour se protéger, mais essaye pas de taper avec.",
+  "owned": 0,
+  "sellprice": 100,
+  "itemlevel": 1,
+  "image": "img/bouclier.gif",
+  "stats": {
+    "HP": 30,
+    "Mana": 3
+  },
+  "multiplicateurs": {
+    "Force": 0,
+    "Agilité": 0,
+    "Intelligence": 0,
+    "Chance": 0
+  }
+}

@@ -2,12 +2,14 @@ from tkinter import *
 import classtooltip as ctt
 import dictionnaires
 
-class Inventory_Window():
+class InventoryWindow():
 
 
-    def __init__(self,toplevel,player_dic,inventory_dic):
+    def __init__(self,toplevel,player_dic,attribut_dic,inventory_dic):
         if toplevel:
             self.inventory_window = Toplevel()
+            self.inventory_window.wm_overrideredirect(1)
+            self.inventory_window.focus_force()
         else:
             self.inventory_window = Tk()
         self.inventory_window.title("Inventory")
@@ -23,11 +25,13 @@ class Inventory_Window():
         self.inventory_window.option_add('*bg','lightgray')
         self.inventory_window.option_add('*compound','left')
 
+        self.frame = Frame(self.inventory_window,height=1,width=1)
 
-        self.inventory_canvas = Canvas(self.inventory_window)
+        self.inventory_canvas = Canvas(self.frame)
         self.inventory_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
 
         self.player_dic = player_dic
+        self.attribut_dic = attribut_dic
         self.inventory_dic = inventory_dic
         self.baseimg_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
 
@@ -37,7 +41,6 @@ class Inventory_Window():
         self.number_of_page = self.func_number_of_page()
         self.playerimg = PhotoImage(file=self.player_dic['image'])
 
-        self.create_imgdic()
 
 
 
@@ -58,6 +61,7 @@ class Inventory_Window():
         self.owned_itemlist = owned_itemlist
         self.selected_nbr = 'None'
         self.selected_item = 'None'
+        self.create_imgdic()
 
     def create_imgdic(self):
         self.imgdic = {}
@@ -67,8 +71,15 @@ class Inventory_Window():
 
 
     def confirm(self):
-        print(self.player_dic)
-        print(self.inventory_dic)
+        import manipulate_stats
+
+        self.player_dic = manipulate_stats.calculate_playerstats(attribut_dic=self.attribut_dic,player_dic = self.player_dic)
+
+        import manipulate_json as jm
+
+        jm.save_file(self.player_dic,filename='player_dic',player_name=self.player_dic['name'])
+        jm.save_file(self.inventory_dic,filename='inventory_dic',player_name=self.player_dic['name'])
+
         self.inventory_window.destroy()
 
 
@@ -83,12 +94,24 @@ class Inventory_Window():
             number_of_page = n//30 + 1
         return(number_of_page)
 
+    def func_equipped_img_list(self):
+        self.equipped_img_list = []
+
+        for i in range(len(self.player_dic['equipped_list'])):
+            item = self.player_dic['equipped_list'][i]
+
+            if len(item)>0:
+                self.equipped_img_list.append(PhotoImage(file=item['image']))
+            else:
+                self.equipped_img_list.append(self.baseimg_dic['nothing'])
+
     def clear_everything(self):
         self.inventory_canvas.destroy()
 
         self.inventory_canvas = Canvas(self.inventory_window)
         self.inventory_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
 
+        self.create_owned_itemlist()
 
         # Statistiques de base du joueur
         name_label = Label(self.inventory_canvas,
@@ -129,13 +152,15 @@ class Inventory_Window():
         self.selected_equipped_nbr = 'None'
         k=2
         self.equipped_widget_list = []
+
+        self.func_equipped_img_list()
         for i in range(len(self.player_dic['equipped_list'])):
             item = self.player_dic['equipped_list'][i]
 
             # Item non vide
             if len(item)>0:
+
                 number_owned = item['owned']
-                img = self.imgdic[item['id']]
                 name = item['name']
                 description = item['description']
                 sellprice = item['sellprice']
@@ -147,7 +172,7 @@ class Inventory_Window():
                     x = str(stats)+'\n'
                 tooltip = f"{x}{description}\nSell price : {sellprice}\nItem level : {itemlevel}"
                 itemlabel=Label(self.inventory_canvas,name=f'a|{i}',
-                        image=img,relief=GROOVE)
+                        image=self.equipped_img_list[i],relief=GROOVE)
                 itemlabel.grid(row=k+i,column=0)
                 itemlabel.bind('<Button-1>',self.bind_equipped_label)
 
@@ -174,6 +199,7 @@ class Inventory_Window():
         self.pagelabel = Label(self.inventory_canvas,text=f'{self.current_page}/{self.number_of_page}')
         self.pagelabel.grid(row=k+1,column=20,columnspan=1)
         Button(self.inventory_canvas,text="Next",command=self.next_page).grid(row=k+1,column=21,padx=10)
+
 
 
     def generate_page(self,number):
@@ -217,6 +243,7 @@ class Inventory_Window():
             self.current_widgetlist.append(itemlabel)
 
             ctt.CreateToolTip(itemlabel,tooltip)
+        self.inventory_canvas.update()
 
     def bind_label(self,event):
         # event.widget = .!canvas.i|j
@@ -341,8 +368,6 @@ class Inventory_Window():
             self.selected_equipped_item,self.selected_equipped_nbr = 'None','None'
             self.selected_item,self.selected_nbr = 'None','None'
 
-
-
         else:
             oldnbr = self.selected_equipped_nbr
             oldid = self.selected_equipped_item['id']
@@ -392,7 +417,14 @@ class Inventory_Window():
             self.selected_equipped_item,self.selected_equipped_nbr = 'None','None'
             self.selected_item,self.selected_nbr = 'None','None'
 
-if __name__ == "__main__":
-    player_dic,attribut_dic,spell_dic,inventory_dic = dictionnaires.dictionnaires_vierge()
 
-    w = Inventory_Window(toplevel=False,player_dic=player_dic,inventory_dic=inventory_dic)
+if __name__ == "__main__":
+    #player_dic,attribut_dic,spell_dic,inventory_dic = dictionnaires.dictionnaires_vierge()
+
+    import manipulate_json as jm
+    player_dic = jm.load_file('player_dic','Blue Dragon')
+    attribut_dic =jm.load_file('attribut_dic','Blue Dragon')
+    spell_dic = jm.load_file('spell_dic','Blue Dragon')
+    inventory_dic = jm.load_file('inventory_dic','Blue Dragon')
+
+    w = InventoryWindow(toplevel=True,player_dic=player_dic,inventory_dic=inventory_dic,attribut_dic=attribut_dic)

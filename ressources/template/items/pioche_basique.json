@@ -1,0 +1,20 @@
+{
+      "id": 7,
+      "name": "Pioche basique",
+      "description": "Une pioche. Pour miner. Pas autre chose.",
+      "owned": 0,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/pioche.gif",
+      "stats": {
+	  "Force":2,
+        "Chance": 2,
+        "HP": 10,
+        "Mana": 1
+      }
+		,
+	  "multiplicateurs":{"Force":0.25,
+						"Agilité":0,
+						"Intelligence":0,
+						"Chance":0.25}
+}

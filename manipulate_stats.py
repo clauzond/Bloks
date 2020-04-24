@@ -5,25 +5,23 @@ import dictionnaires
 
 
 
-# Transférer les attributs de "attribut_dic" vers les attributs de bases du joueur
-def baseattribut_to_playerstats(attribut_dic,player_dic):
+# Transférer les attributs de "attribut_dic" et des items de "player_dic['equipped_list']" vers player_dic['stats']
+# Les statistiques de "attribut_dic" resteront ceux donnés par les level_up et par l'attribuation manuelle
+# Comme ça, les statistiques réelles du joueur sont toujours contenu dedans
+def calculate_playerstats(attribut_dic,player_dic):
+    player_dic['stats'] = {}
 
-    attribut_liste = list(attribut_dic.keys())[:6]
-
+    # attribut_dic vers player_dic['stats']
+    attribut_liste = list(attribut_dic.keys())
     for i in range(len(attribut_liste)):
         attribut = attribut_liste[i]
         attribut_level = attribut_dic[attribut]['level']
-
-        player_dic['stats']['base'][attribut] = attribut_level
-
-    return(player_dic)
+        player_dic['stats'][attribut] = attribut_level
 
 
-# Transférer les statistiques donnés par les items équippés vers les attributs du joueur
-def equipped_list_attributs_to_playerstats(player_dic):
+    # equipped_list vers player_dic['stats']
+
     equipped_list = player_dic['equipped_list']
-    player_dic['stats']['byitems'] = {}
-
 
 
     for i in range(len(equipped_list)):
@@ -39,54 +37,100 @@ def equipped_list_attributs_to_playerstats(player_dic):
                     this_stat = statkey_list[i]
                     this_value = statvalue_list[i]
                     # Si la statistique existe, on rajoute à celle existante
-                    if this_stat in player_dic['stats']['byitems']:
-                        player_dic['stats']['byitems'][this_stat] += this_value
+                    if this_stat in player_dic['stats']:
+                        player_dic['stats'][this_stat] += this_value
                     # Sinon, on la crée, en l'initialisant à la valeur voulue
                     else:
-                        player_dic['stats']['byitems'][this_stat] = this_value
+                        player_dic['stats'][this_stat] = this_value
+
     return(player_dic)
 
 
-# Additionner toutes les statistiques 'base' et 'byitems' en une seule 'total'
-def total_playerstats(player_dic):
-    total = {"HP":0,
-"Mana":0,
-"Force":0,
-"Agilité":0,
-"Intelligence":0,
-"Chance":0,
-"Dommage fixe":0,
-"Dommage force":0,
-"Dommage agilité":0,
-"Dommage intelligence":0,
-"Dommage chance":0,
-"Résistance fixe":0,
-"Résistance force":0,
-"Résistance agilité":0,
-"Résistance intelligence":0,
-"Résistance chance":0}
 
-    base = player_dic['stats']['base']
-    byitems = player_dic['stats']['byitems']
+def calculate_damage_player(player_stats,monster_stats,player_itemlist):
+    # itemlist sera la "equipped_list" du joueur
 
-    keys = list(total.keys())
-    for key in keys:
-        if key in base:
-            if key in byitems:
-                total[key] = base[key] + byitems[key]
-            else:
-                total[key] = base[key]
-        else:
-            if key in byitems:
-                total[key] = byitems[key]
-    player_dic['stats']['total'] = total
-    return(player_dic)
+    # mult item attribut
+    mi_f = mi_a = mi_i = mi_c = 0
+    # mult base attribut (par défault, 25%)
+    mb_f = mb_a = mb_i = mb_c = 0.25
 
-# Transférer les attributs de "total" vers attribut_dic
-def total_to_attribut_dic(player_dic,attribut_dic):
-    total = total_playerstats(player_dic)['stats']['total']
+    dmg_fixe = player_stats['Dommage fixe']
+    dmg_f = player_stats['Dommage force']
+    dmg_a = player_stats['Dommage agilité']
+    dmg_i = player_stats['Dommage intelligence']
+    dmg_c = player_stats['Dommage chance']
 
-    keys = list(total.keys())
-    for key in keys:
-        attribut_dic[key]['level'] = total[key]
-    return(attribut_dic)
+    f = player_stats['Force']
+    a = player_stats['Agilité']
+    i = player_stats['Intelligence']
+    c = player_stats['Chance']
+
+    res_fixe = monster_stats['Résistance fixe']
+    res_f = monster_stats['Résistance force']
+    res_a = monster_stats['Résistance agilité']
+    res_i = monster_stats['Résistance intelligence']
+    res_c = monster_stats['Résistance chance']
+
+
+    for item in player_itemlist:
+        # l'item avec lequel on tape doit avoir un attribut 'multiplicateurs'
+
+        # on vérifie que l'item a bien la clef 'multiplicateurs'
+        if 'multiplicateurs' in item:
+            mi_f += item['multiplicateurs']['Force']
+            mi_a += item['multiplicateurs']['Agilité']
+            mi_i += item['multiplicateurs']['Intelligence']
+            mi_c += item['multiplicateurs']['Chance']
+
+    # Si le joueur tape au poing, alors le multiplicateur sera de 1% pour toutes les stats
+    if mi_f==mi_a==mi_i==mi_c==0:
+        mi_f = mi_a = mi_i = mi_c = 0.01
+
+
+    dmg_fixe = dmg_fixe - res_fixe
+    if dmg_fixe < 0:
+        dmg_fixe = 0
+    dmg_force = mi_f*(mb_f*f + dmg_f) - res_f
+    if dmg_force < 0:
+        dmg_force = 0
+    dmg_agilite = mi_a*(mb_a*a + dmg_a) - res_a
+    if dmg_agilite < 0:
+        dmg_agilite = 0
+    dmg_intelligence = mi_i*(mb_i*i + dmg_i) - res_i
+    if dmg_intelligence < 0:
+        dmg_intelligence = 0
+    dmg_chance = mi_c*(mb_c*c + dmg_c) - res_c
+    if dmg_chance < 0:
+        dmg_chance = 0
+
+
+
+    # dommage_fixe + [somme pour tous les attributs de [(multiplicateur_item) * (multiplicateur_attribut*attribut + dommage_attribut) ]
+    dmg_tot = dmg_fixe + dmg_force + dmg_agilite + dmg_intelligence + dmg_chance
+    return(dmg_tot)
+
+
+# Le monstre va taper à [(multiplicateur_stat)*(stat_principale) + dommage de la stat principale]
+def calculate_damage_monster(monster_stats,player_stats,element):
+    # Element = Force, Agilité, Intelligence ou Chance
+
+    stat = monster_stats[element]
+    dmg_stat = monster_stats['Dommage fixe'] + monster_stats[f'Dommage {element.lower()}']
+
+    res = player_stats['Résistance fixe'] + player_stats[f'Résistance {element.lower()}']
+
+    if element == "Force":
+        multiplicateur_stat = 0.25
+    elif element == "Agilité":
+        multiplicateur_stat = 0.25
+    elif element == "Intelligence":
+        multiplicateur_stat = 0.25
+    elif element == "Chance":
+        multiplicateur_stat = 0.25
+
+    dommage_total = (dmg_stat + stat * multiplicateur_stat) - res
+    if dommage_total < 0:
+        dommage_total = 0
+
+    return(dommage_total)

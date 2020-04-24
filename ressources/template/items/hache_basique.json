@@ -1,0 +1,19 @@
+{
+      "id":6,
+      "name": "Hache basique",
+      "description": "Une hache pour couper du bois. Attention à ne pas te couper !",
+      "owned": 0,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/hache.gif",
+      "stats": {
+        "Force": 10,
+        "HP": 15,
+        "Mana": 1
+      }
+		,
+	  "multiplicateurs":{"Force":0.75,
+						"Agilité":0,
+						"Intelligence":0,
+						"Chance":0}
+}

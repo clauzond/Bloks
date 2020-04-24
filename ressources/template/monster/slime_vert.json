@@ -1,0 +1,26 @@
+{
+"name":"Slime vert",
+"description":"Qu'il est mignon ! Sa couleur doit vouloir dire quelque chose...",
+"level":1,
+"category":"Common",
+"image":"img/slime_vert.gif",
+"element":"Agilité",
+"stats": {
+    "HP": 20,
+    "Mana": 0,
+    "Force": 0,
+    "Agilité": 5,
+    "Intelligence": 0,
+    "Chance": 0,
+    "Dommage fixe": 0,
+    "Dommage force": 0,
+    "Dommage agilité": 1,
+    "Dommage intelligence": 0,
+    "Dommage chance": 0,
+    "Résistance fixe": 0,
+    "Résistance force": 0,
+    "Résistance agilité": 1,
+    "Résistance intelligence": 0,
+    "Résistance chance": 0
+  }
+ }

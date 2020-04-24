@@ -1,0 +1,108 @@
+﻿{
+  "name": "Blue Dragon",
+  "level": 4,
+  "current_xp": 20,
+  "max_xp": 100,
+  "total_xp": 390,
+  "max_xp_growth":[0,10,30,50,100,300,500,1000,2500,5000,10000,15000,20000,30000,50000,100000,500000,1000000,2500000,5000000,10000000],
+  "attribut_point": 15,
+  "attribut_point_growth": [
+        0,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+  ],
+  "spell_point": 3,
+  "spell_point_growth": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+  ],
+  "money": 10,
+  "image": "img/player.gif",
+  "equipped_list": [
+    {
+      "id": 1,
+      "name": "Dagues basiques",
+      "description": "Ce sont des simples dagues. Il faut bien commencer quelque part !",
+      "owned": 1,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/dagues.gif",
+      "stats": {
+        "Agilité": 5,
+        "HP": 10,
+        "Mana": 1
+      }
+    },
+    {
+      "id": 2,
+      "name": "Marteau basique",
+      "description": "C'est juste un marteau.",
+      "owned": 1,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/marteau.gif",
+      "stats": {
+        "Force": 5,
+        "HP": 10,
+        "Mana": 1
+      }
+    },
+    {
+    }
+  ],
+  "stats": {
+    "HP": 43,
+    "Mana": 7,
+    "Force": 13,
+    "Agilité": 13,
+    "Intelligence": 3,
+    "Chance": 3,
+    "Dommage fixe": 0,
+    "Dommage force": 0,
+    "Dommage agilité": 0,
+    "Dommage intelligence": 0,
+    "Dommage chance": 0,
+    "Résistance fixe": 0,
+    "Résistance force": 0,
+    "Résistance agilité": 0,
+    "Résistance intelligence": 0,
+    "Résistance chance": 0
+  }
+}

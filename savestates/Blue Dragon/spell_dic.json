@@ -1,1 +1,68 @@
-﻿{"spell1": {"name": "Nom du premier sort", "level": 0, "bind": "None", "description": "Description du premier sort", "color": "#4C652B", "image": "img/spell.gif"}, "spell2": {"name": "Nom du deuxième sort", "level": 0, "bind": "None", "description": "Description du deuxième sort", "color": "#4C652B", "image": "img/spell.gif"}, "spell3": {"name": "Nom du troisième sort", "level": 0, "bind": "None", "description": "Description du troisième sort", "color": "#4C652B", "image": "img/spell.gif"}, "spell4": {"name": "Nom du quatrième sort", "level": 0, "bind": "None", "description": "Description du quatrième sort", "color": "#4C652B", "image": "img/spell.gif"}, "spell5": {"name": "Nom du cinquième sort", "level": 0, "bind": "None", "description": "Description du cinquième sort", "color": "#4C652B", "image": "img/spell.gif"}, "spell6": {"name": "Nom du sixième sort", "level": 0, "bind": "None", "description": "Description du sixième sort", "color": "#4C652B", "image": "img/spell.gif"}, "spell7": {"name": "Nom du septième sort", "level": 0, "bind": "None", "description": "Description du septième sort", "color": "#4C652B", "image": "img/spell.gif"}, "spell8": {"name": "Nom du huitième sort", "level": 0, "bind": "None", "description": "Description du huitième sort", "color": "#4C652B", "image": "img/spell.gif"}, "active": "", "total_number_of_spells": 8}
+﻿{
+  "spell1": {
+    "name": "Nom du premier sort",
+    "level": 0,
+    "bind": "None",
+    "description": "Description du premier sort",
+    "color": "#4C652B",
+    "image": "img/spell.gif"
+  },
+  "spell2": {
+    "name": "Nom du deuxième sort",
+    "level": 0,
+    "bind": "None",
+    "description": "Description du deuxième sort",
+    "color": "#4C652B",
+    "image": "img/spell.gif"
+  },
+  "spell3": {
+    "name": "Nom du troisième sort",
+    "level": 0,
+    "bind": "None",
+    "description": "Description du troisième sort",
+    "color": "#4C652B",
+    "image": "img/spell.gif"
+  },
+  "spell4": {
+    "name": "Nom du quatrième sort",
+    "level": 0,
+    "bind": "None",
+    "description": "Description du quatrième sort",
+    "color": "#4C652B",
+    "image": "img/spell.gif"
+  },
+  "spell5": {
+    "name": "Nom du cinquième sort",
+    "level": 0,
+    "bind": "None",
+    "description": "Description du cinquième sort",
+    "color": "#4C652B",
+    "image": "img/spell.gif"
+  },
+  "spell6": {
+    "name": "Nom du sixième sort",
+    "level": 0,
+    "bind": "None",
+    "description": "Description du sixième sort",
+    "color": "#4C652B",
+    "image": "img/spell.gif"
+  },
+  "spell7": {
+    "name": "Nom du septième sort",
+    "level": 0,
+    "bind": "None",
+    "description": "Description du septième sort",
+    "color": "#4C652B",
+    "image": "img/spell.gif"
+  },
+  "spell8": {
+    "name": "Nom du huitième sort",
+    "level": 0,
+    "bind": "None",
+    "description": "Description du huitième sort",
+    "color": "#4C652B",
+    "image": "img/spell.gif"
+  },
+  "active": "",
+  "total_number_of_spells": 8
+}

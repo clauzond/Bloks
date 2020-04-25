@@ -4,7 +4,9 @@ import dictionnaires
 
 class Levelup_Window():
 
-    def __init__(self,toplevel,player_dic,attribut_dic):
+    def __init__(self,toplevel,player_dic,attribut_dic,function=None):
+
+        self.function = function
 
         if toplevel:
             self.level_window = Toplevel()
@@ -95,7 +97,8 @@ class Levelup_Window():
 
         # Séparateur
         Frame(self.level_canvas,height=20,width=400).grid(row=7)
-        Button(self.level_canvas,text="Confirmer",command=self.confirm).grid(row=10,column=0,columnspan=10)
+        self.confirmbutton = Button(self.level_canvas,text="Confirmer",command=self.confirm)
+        self.confirmbutton.grid(row=10,column=0,columnspan=10)
 
 
         self.checkforlevelup()
@@ -114,6 +117,9 @@ class Levelup_Window():
 
         jm.save_file(self.player_dic,filename='player_dic',player_name=self.player_dic['name'])
         jm.save_file(self.attribut_dic,filename='attribut_dic',player_name=self.player_dic['name'])
+
+        if self.function is not None:
+            self.function()
 
         self.level_window.destroy()
 

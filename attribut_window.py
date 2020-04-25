@@ -22,9 +22,11 @@ class AttributWindow():
 
 
 
-    def show(self,player_dic,attribut_dic):
+    def show(self,player_dic,attribut_dic,function=None):
         if self.attribut_window:
             return
+
+        self.function = function
 
         if type(self.widget)==str:
             if self.toplevel:
@@ -143,7 +145,8 @@ class AttributWindow():
         if type(self.widget)== str:
             # Séparateur suivi du bouton 'Confirmer'
             Frame(self.attribut_canvas,height=20,width=400).grid(row=i+k+1)
-            Button(self.attribut_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
+            self.confirmbutton = Button(self.attribut_canvas,text="Confirmer",command=self.confirm)
+            self.confirmbutton.grid(row=i+k+2,column=0,columnspan=10)
 
 
         self.attribut_window.mainloop()
@@ -166,6 +169,9 @@ class AttributWindow():
 
         jm.save_file(self.player_dic,filename='player_dic',player_name=self.player_dic['name'])
         jm.save_file(self.attribut_dic,filename='attribut_dic',player_name=self.player_dic['name'])
+
+        if self.function is not None:
+            self.function()
 
         self.attribut_window.destroy()
 

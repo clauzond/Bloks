@@ -1,17 +1,6 @@
 ﻿{
   "itemlist": [
     {
-      "id": 0,
-      "name": "Item 0",
-      "description": "Description item 0",
-      "owned": 0,
-      "sellprice": 0,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
       "id": 1,
       "name": "Dagues basiques",
       "description": "Ce sont des simples dagues. Il faut bien commencer quelque part !",
@@ -23,6 +12,12 @@
         "Agilité": 5,
         "HP": 10,
         "Mana": 1
+      },
+      "multiplicateurs": {
+        "Force": 0,
+        "Agilité": 0.5,
+        "Intelligence": 0,
+        "Chance": 0
       }
     },
     {
@@ -37,669 +32,154 @@
         "Force": 5,
         "HP": 10,
         "Mana": 1
+      },
+      "multiplicateurs": {
+        "Force": 0.5,
+        "Agilité": 0,
+        "Intelligence": 0,
+        "Chance": 0
       }
     },
     {
       "id": 3,
-      "name": "Item 3",
-      "description": "Description item 3",
-      "owned": 3,
-      "sellprice": 3,
-      "itemlevel": 0,
-      "image": "img/item.gif",
+      "name": "Baguette basique",
+      "description": "Une baguette assez banale, voire un peu basique.",
+      "owned": 1,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/baguette.gif",
       "stats": {
+        "Intelligence": 5,
+        "HP": 10,
+        "Mana": 1
+      },
+      "multiplicateurs": {
+        "Force": 0,
+        "Agilité": 0,
+        "Intelligence": 0.5,
+        "Chance": 0
+      }
+    },
+    {
+      "id": 3,
+      "name": "Baguette basique",
+      "description": "Une baguette assez banale, voire un peu basique.",
+      "owned": 1,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/baguette.gif",
+      "stats": {
+        "Intelligence": 5,
+        "HP": 10,
+        "Mana": 1
+      },
+      "multiplicateurs": {
+        "Force": 0,
+        "Agilité": 0,
+        "Intelligence": 0.5,
+        "Chance": 0
       }
     },
     {
       "id": 4,
-      "name": "Item 4",
-      "description": "Description item 4",
-      "owned": 4,
-      "sellprice": 4,
-      "itemlevel": 0,
-      "image": "img/item.gif",
+      "name": "Pelle basique",
+      "description": "Une pelle. T'espères pas taper avec quand même ?",
+      "owned": 1,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/pelle.gif",
       "stats": {
+        "Chance": 5,
+        "HP": 10,
+        "Mana": 1
+      },
+      "multiplicateurs": {
+        "Force": 0,
+        "Agilité": 0,
+        "Intelligence": 0,
+        "Chance": 0.5
       }
     },
     {
       "id": 5,
-      "name": "Item 5",
-      "description": "Description item 5",
-      "owned": 5,
-      "sellprice": 5,
-      "itemlevel": 0,
-      "image": "img/item.gif",
+      "name": "Faux basique",
+      "description": "Une faux conçue pour le travail agricole. Pas autre chose.",
+      "owned": 1,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/faux.gif",
       "stats": {
+        "Force": 2,
+        "Agilité": 2,
+        "HP": 10,
+        "Mana": 1
+      },
+      "multiplicateurs": {
+        "Force": 0.4,
+        "Agilité": 0.4,
+        "Intelligence": 0,
+        "Chance": 0
       }
     },
     {
       "id": 6,
-      "name": "Item 6",
-      "description": "Description item 6",
-      "owned": 6,
-      "sellprice": 6,
-      "itemlevel": 0,
-      "image": "img/item.gif",
+      "name": "Hache basique",
+      "description": "Une hache pour couper du bois. Attention à ne pas te couper !",
+      "owned": 1,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/hache.gif",
       "stats": {
+        "Force": 10,
+        "HP": 15,
+        "Mana": 1
+      },
+      "multiplicateurs": {
+        "Force": 0.75,
+        "Agilité": 0,
+        "Intelligence": 0,
+        "Chance": 0
       }
     },
     {
       "id": 7,
-      "name": "Item 7",
-      "description": "Description item 7",
-      "owned": 7,
-      "sellprice": 7,
-      "itemlevel": 0,
-      "image": "img/item.gif",
+      "name": "Pioche basique",
+      "description": "Une pioche. Pour miner. Pas autre chose.",
+      "owned": 1,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/pioche.gif",
       "stats": {
+        "Force": 2,
+        "Chance": 2,
+        "HP": 10,
+        "Mana": 1
+      },
+      "multiplicateurs": {
+        "Force": 0.25,
+        "Agilité": 0,
+        "Intelligence": 0,
+        "Chance": 0.25
       }
     },
     {
       "id": 8,
-      "name": "Item 8",
-      "description": "Description item 8",
-      "owned": 8,
-      "sellprice": 8,
-      "itemlevel": 0,
-      "image": "img/item.gif",
+      "name": "Bouclier basique",
+      "description": "Une bouclier pour se protéger, mais essaye pas de taper avec.",
+      "owned": 1,
+      "sellprice": 100,
+      "itemlevel": 1,
+      "image": "img/bouclier.gif",
       "stats": {
-      }
-    },
-    {
-      "id": 9,
-      "name": "Item 9",
-      "description": "Description item 9",
-      "owned": 9,
-      "sellprice": 9,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 10,
-      "name": "Item 10",
-      "description": "Description item 10",
-      "owned": 10,
-      "sellprice": 10,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 11,
-      "name": "Item 11",
-      "description": "Description item 11",
-      "owned": 11,
-      "sellprice": 11,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 12,
-      "name": "Item 12",
-      "description": "Description item 12",
-      "owned": 12,
-      "sellprice": 12,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 13,
-      "name": "Item 13",
-      "description": "Description item 13",
-      "owned": 13,
-      "sellprice": 13,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 14,
-      "name": "Item 14",
-      "description": "Description item 14",
-      "owned": 14,
-      "sellprice": 14,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 15,
-      "name": "Item 15",
-      "description": "Description item 15",
-      "owned": 15,
-      "sellprice": 15,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 16,
-      "name": "Item 16",
-      "description": "Description item 16",
-      "owned": 16,
-      "sellprice": 16,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 17,
-      "name": "Item 17",
-      "description": "Description item 17",
-      "owned": 17,
-      "sellprice": 17,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 18,
-      "name": "Item 18",
-      "description": "Description item 18",
-      "owned": 18,
-      "sellprice": 18,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 19,
-      "name": "Item 19",
-      "description": "Description item 19",
-      "owned": 19,
-      "sellprice": 19,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 20,
-      "name": "Item 20",
-      "description": "Description item 20",
-      "owned": 20,
-      "sellprice": 20,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 21,
-      "name": "Item 21",
-      "description": "Description item 21",
-      "owned": 21,
-      "sellprice": 21,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 22,
-      "name": "Item 22",
-      "description": "Description item 22",
-      "owned": 22,
-      "sellprice": 22,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 23,
-      "name": "Item 23",
-      "description": "Description item 23",
-      "owned": 23,
-      "sellprice": 23,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 24,
-      "name": "Item 24",
-      "description": "Description item 24",
-      "owned": 24,
-      "sellprice": 24,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 25,
-      "name": "Item 25",
-      "description": "Description item 25",
-      "owned": 25,
-      "sellprice": 25,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 26,
-      "name": "Item 26",
-      "description": "Description item 26",
-      "owned": 26,
-      "sellprice": 26,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 27,
-      "name": "Item 27",
-      "description": "Description item 27",
-      "owned": 27,
-      "sellprice": 27,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 28,
-      "name": "Item 28",
-      "description": "Description item 28",
-      "owned": 28,
-      "sellprice": 28,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 29,
-      "name": "Item 29",
-      "description": "Description item 29",
-      "owned": 29,
-      "sellprice": 29,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 30,
-      "name": "Item 30",
-      "description": "Description item 30",
-      "owned": 30,
-      "sellprice": 30,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 31,
-      "name": "Item 31",
-      "description": "Description item 31",
-      "owned": 31,
-      "sellprice": 31,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 32,
-      "name": "Item 32",
-      "description": "Description item 32",
-      "owned": 32,
-      "sellprice": 32,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 33,
-      "name": "Item 33",
-      "description": "Description item 33",
-      "owned": 33,
-      "sellprice": 33,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 34,
-      "name": "Item 34",
-      "description": "Description item 34",
-      "owned": 34,
-      "sellprice": 34,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 35,
-      "name": "Item 35",
-      "description": "Description item 35",
-      "owned": 35,
-      "sellprice": 35,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 36,
-      "name": "Item 36",
-      "description": "Description item 36",
-      "owned": 36,
-      "sellprice": 36,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 37,
-      "name": "Item 37",
-      "description": "Description item 37",
-      "owned": 37,
-      "sellprice": 37,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 38,
-      "name": "Item 38",
-      "description": "Description item 38",
-      "owned": 38,
-      "sellprice": 38,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 39,
-      "name": "Item 39",
-      "description": "Description item 39",
-      "owned": 39,
-      "sellprice": 39,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 40,
-      "name": "Item 40",
-      "description": "Description item 40",
-      "owned": 40,
-      "sellprice": 40,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 41,
-      "name": "Item 41",
-      "description": "Description item 41",
-      "owned": 41,
-      "sellprice": 41,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 42,
-      "name": "Item 42",
-      "description": "Description item 42",
-      "owned": 42,
-      "sellprice": 42,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 43,
-      "name": "Item 43",
-      "description": "Description item 43",
-      "owned": 43,
-      "sellprice": 43,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 44,
-      "name": "Item 44",
-      "description": "Description item 44",
-      "owned": 44,
-      "sellprice": 44,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 45,
-      "name": "Item 45",
-      "description": "Description item 45",
-      "owned": 45,
-      "sellprice": 45,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 46,
-      "name": "Item 46",
-      "description": "Description item 46",
-      "owned": 46,
-      "sellprice": 46,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 47,
-      "name": "Item 47",
-      "description": "Description item 47",
-      "owned": 47,
-      "sellprice": 47,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 48,
-      "name": "Item 48",
-      "description": "Description item 48",
-      "owned": 48,
-      "sellprice": 48,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 49,
-      "name": "Item 49",
-      "description": "Description item 49",
-      "owned": 49,
-      "sellprice": 49,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 50,
-      "name": "Item 50",
-      "description": "Description item 50",
-      "owned": 50,
-      "sellprice": 50,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 51,
-      "name": "Item 51",
-      "description": "Description item 51",
-      "owned": 51,
-      "sellprice": 51,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 52,
-      "name": "Item 52",
-      "description": "Description item 52",
-      "owned": 52,
-      "sellprice": 52,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 53,
-      "name": "Item 53",
-      "description": "Description item 53",
-      "owned": 53,
-      "sellprice": 53,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 54,
-      "name": "Item 54",
-      "description": "Description item 54",
-      "owned": 54,
-      "sellprice": 54,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 55,
-      "name": "Item 55",
-      "description": "Description item 55",
-      "owned": 55,
-      "sellprice": 55,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 56,
-      "name": "Item 56",
-      "description": "Description item 56",
-      "owned": 56,
-      "sellprice": 56,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 57,
-      "name": "Item 57",
-      "description": "Description item 57",
-      "owned": 57,
-      "sellprice": 57,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 58,
-      "name": "Item 58",
-      "description": "Description item 58",
-      "owned": 58,
-      "sellprice": 58,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 59,
-      "name": "Item 59",
-      "description": "Description item 59",
-      "owned": 59,
-      "sellprice": 59,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 60,
-      "name": "Item 60",
-      "description": "Description item 60",
-      "owned": 60,
-      "sellprice": 60,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 61,
-      "name": "Item 61",
-      "description": "Description item 61",
-      "owned": 61,
-      "sellprice": 61,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
-      }
-    },
-    {
-      "id": 62,
-      "name": "Item 62",
-      "description": "Description item 62",
-      "owned": 62,
-      "sellprice": 62,
-      "itemlevel": 0,
-      "image": "img/item.gif",
-      "stats": {
+        "HP": 30,
+        "Mana": 3
+      },
+      "multiplicateurs": {
+        "Force": 0,
+        "Agilité": 0,
+        "Intelligence": 0,
+        "Chance": 0
       }
     }
-  ],
-  "total_items": 63,
-  "owned_distinct_items": 62
+  ]
 }

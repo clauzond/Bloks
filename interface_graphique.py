@@ -71,6 +71,14 @@ class Main_Window():
         print('Everything has been saved !')
 
 
+    def reload_everything(self,*args):
+        print("Everything was loaded")
+        self.player_dic = jm.load_file(filename='player_dic',player_name=self.player_dic['name'])
+        self.spell_dic = jm.load_file(filename='spell_dic',player_name=self.player_dic['name'])
+        self.attribut_dic = jm.load_file(filename='attribut_dic',player_name=self.player_dic['name'])
+        self.inventory_dic = jm.load_file(filename='inventory_dic',player_name=self.player_dic['name'])
+
+
     ## Menu canvas related functions ##
 
     def draw_menu_canvas(self):
@@ -99,24 +107,23 @@ class Main_Window():
         import spell_window as spw
 
         w = spw.SpellWindow(toplevel=True)
-        w.show(player_dic=self.player_dic,spell_dic=self.spell_dic)
+        w.show(player_dic=self.player_dic,spell_dic=self.spell_dic,function=self.reload_everything)
 
     def openinventorywindow(self):
         import inventory_window as iw
 
-        w = iw.InventoryWindow(toplevel=True,player_dic=self.player_dic,inventory_dic=self.inventory_dic,attribut_dic=self.attribut_dic)
+        w = iw.InventoryWindow(toplevel=True,player_dic=self.player_dic,inventory_dic=self.inventory_dic,attribut_dic=self.attribut_dic,function = self.reload_everything)
 
     def openattributwindow(self):
         import attribut_window as aw
 
         w = aw.AttributWindow(toplevel=True)
-        w.show(player_dic=self.player_dic,attribut_dic=self.attribut_dic)
+        w.show(player_dic=self.player_dic,attribut_dic=self.attribut_dic,function=self.reload_everything)
 
     def openlevelupwindow(self):
         import levelup_window as luw
 
-        w = luw.Levelup_Window(toplevel=True,player_dic=self.player_dic,attribut_dic=self.attribut_dic)
-
+        w = luw.Levelup_Window(toplevel=True,player_dic=self.player_dic,attribut_dic=self.attribut_dic,function = self.reload_everything)
 
 
 
@@ -138,9 +145,10 @@ class Main_Window():
 
 
 
-        # Ces 2 dictionnaires pourront bouger en plein combat
+        # Ces 3 dictionnaires pourront bouger en plein combat, et sont recréés pour les manipuler
         self.player_stats = player_dic['stats']
         self.monster_stats = monster_dic['stats']
+        self.equipped_list = player_dic['equipped_list']
 
         # self.game_canvas
         hpmax = self.player_stats['HP']
@@ -212,10 +220,10 @@ class Main_Window():
 
         if speed2 > self.speedbar.id_speed2:
             self.speedbar.set_speed2(speed2)
-            self.outputbox.add_text(f"{self.player_name} a accéléré !")
+            self.outputbox.add_text(f"{self.player_dic['name']} a accéléré !")
         elif speed2 < self.speedbar.id_speed2:
             self.speedbar.set_speed2(speed2)
-            self.outputbox.add_text(f'{self.player_name} a été ralenti !')
+            self.outputbox.add_text(f"{self.player_dic['name']} a été ralenti !")
 
 
     def refresh_speed_monster(self):
@@ -233,21 +241,21 @@ class Main_Window():
 
 
     def player_defend(self):
-        print("Rien pour l'instant")
+        print("Touche de défense - inutile")
 
     def player_attack(self):
         if (not self.combat) or (not self.playerturn):
             return
         import manipulate_stats as ms
 
-        damage = ms.calculate_damage_player(player_stats = self.player_stats,monster_stats = self.monster_stats,player_itemlist=self.player_dic['equipped_list'])
+        damage = ms.calculate_damage_player(player_stats = self.player_stats,monster_stats = self.monster_stats,player_itemlist=self.equipped_list)
 
         self.monster_healthbar.take_hit(damage)
         if damage>1:
             s='s'
         else:
             s=''
-        self.outputbox.add_text(f'{self.monster_name} a subi {damage} dommage{s}')
+        self.outputbox.add_text(f'{self.monster_name} a subi {damage:0.1f} dommage{s}')
         self.monster_stats['HP'] -= damage
 
         if self.monster_stats['HP'] < 0:
@@ -258,8 +266,8 @@ class Main_Window():
             self.playerturn = False
             self.attackbutton.config(state=DISABLED)
             self.defendbutton.config(state=DISABLED)
-            self.playbutton.config(state=NORMAL)
-
+            #self.playbutton.config(state=NORMAL)
+            self.play_combat()
 
 
     def monster_attack(self):
@@ -275,15 +283,16 @@ class Main_Window():
             s='s'
         else:
             s=''
-        self.outputbox.add_text(f'{self.player_name} a subi {damage} dommage{s}')
+        self.outputbox.add_text(f"{self.player_dic['name']} a subi {damage:0.1f} dommage{s}")
 
 
         if self.player_stats['HP'] < 0:
-            self.outputbox.add_text(f'{self.player_name} a été vaincu !')
+            self.outputbox.add_text(f"{self.player_dic['name']} a été vaincu !")
             self.player_losecombat()
 
         else:
-            self.playbutton.config(state=NORMAL)
+            pass
+            #self.playbutton.config(state=NORMAL)
 
     def player_wincombat(self):
         print('Gagné')

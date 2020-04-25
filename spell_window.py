@@ -18,10 +18,11 @@ class SpellWindow():
             c.destroy()
             tw.destroy()
 
-    def show(self,player_dic,spell_dic):
+    def show(self,player_dic,spell_dic,function=None):
         if self.spell_window:
             return
 
+        self.function = function
 
         if type(self.widget)==str:
             if self.toplevel:
@@ -184,7 +185,8 @@ class SpellWindow():
         if type(self.widget)==str:
             # Séparateur suivi du bouton 'Confirmer'
             Frame(self.spell_canvas,height=10,width=400).grid(row=i+k+1)
-            Button(self.spell_canvas,text="Confirmer",command=self.confirm).grid(row=i+k+2,column=0,columnspan=10)
+            self.confirmbutton = Button(self.spell_canvas,text="Confirmer",command=self.confirm)
+            self.confirmbutton.grid(row=i+k+2,column=0,columnspan=10)
 
 
         self.underline_activebind()
@@ -208,6 +210,8 @@ class SpellWindow():
         jm.save_file(self.player_dic,filename='player_dic',player_name=self.player_dic['name'])
         jm.save_file(self.spell_dic,filename='spell_dic',player_name=self.player_dic['name'])
 
+        if self.function is not None:
+            self.function()
 
         self.spell_window.destroy()
 

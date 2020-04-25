@@ -1,11 +1,12 @@
 from tkinter import *
 import classtooltip as ctt
 import dictionnaires
+from copy import deepcopy
 
 class InventoryWindow():
 
 
-    def __init__(self,toplevel,player_dic,attribut_dic,inventory_dic):
+    def __init__(self,toplevel,player_dic,attribut_dic,inventory_dic,function=None):
         if toplevel:
             self.inventory_window = Toplevel()
             self.inventory_window.wm_overrideredirect(1)
@@ -36,13 +37,12 @@ class InventoryWindow():
         self.baseimg_dic = dictionnaires.dictionnaires_vierge(loadimg=True)
 
 
-        self.create_owned_itemlist()
+        self.create_imgdic()
         self.current_page = 1
         self.number_of_page = self.func_number_of_page()
         self.playerimg = PhotoImage(file=self.player_dic['image'])
 
-
-
+        self.function = function
 
         self.generate_page(self.current_page)
 
@@ -51,7 +51,7 @@ class InventoryWindow():
         self.inventory_window.mainloop()
 
 
-    def create_owned_itemlist(self):
+    """def create_owned_itemlist(self):
         itemlist = self.inventory_dic['itemlist']
         owned_itemlist = []
         for i in range(len(itemlist)):
@@ -61,13 +61,15 @@ class InventoryWindow():
         self.owned_itemlist = owned_itemlist
         self.selected_nbr = 'None'
         self.selected_item = 'None'
-        self.create_imgdic()
+        self.create_imgdic()"""
 
     def create_imgdic(self):
+        self.selected_nbr = 'None'
+        self.selected_item = 'None'
         self.imgdic = {}
 
-        for i in range(len(self.owned_itemlist)):
-            self.imgdic[self.owned_itemlist[i]['id']] = PhotoImage(file = self.owned_itemlist[i]['image'])
+        for i in range(len(self.inventory_dic['itemlist'])):
+            self.imgdic[self.inventory_dic['itemlist'][i]['id']] = PhotoImage(file = self.inventory_dic['itemlist'][i]['image'])
 
 
     def confirm(self):
@@ -80,6 +82,9 @@ class InventoryWindow():
         jm.save_file(self.player_dic,filename='player_dic',player_name=self.player_dic['name'])
         jm.save_file(self.inventory_dic,filename='inventory_dic',player_name=self.player_dic['name'])
 
+        if self.function is not None:
+            self.function()
+
         self.inventory_window.destroy()
 
 
@@ -87,7 +92,7 @@ class InventoryWindow():
         # On veut avoir 3 lignes de 10 items, et on affichera seulement les items possédés
         # Il y a donc 1 page par tranche de 30 items
 
-        n = len(self.owned_itemlist)
+        n = len(self.inventory_dic['itemlist'])
         if n%30 == 0:
             number_of_page = n//30
         else:
@@ -108,10 +113,12 @@ class InventoryWindow():
     def clear_everything(self):
         self.inventory_canvas.destroy()
 
+        self.frame = Frame(self.inventory_window,height=1,width=1)
+
         self.inventory_canvas = Canvas(self.inventory_window)
         self.inventory_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
 
-        self.create_owned_itemlist()
+        self.create_imgdic()
 
         # Statistiques de base du joueur
         name_label = Label(self.inventory_canvas,
@@ -170,7 +177,11 @@ class InventoryWindow():
                     x = ""
                 else:
                     x = str(stats)+'\n'
-                tooltip = f"{x}{description}\nSell price : {sellprice}\nItem level : {itemlevel}"
+                try:
+                    x += str(item['multiplicateurs'])+'\n'
+                except:
+                    pass
+                tooltip = f"{x}{name}\n{description}\nSell price : {sellprice}\nItem level : {itemlevel}"
                 itemlabel=Label(self.inventory_canvas,name=f'a|{i}',
                         image=self.equipped_img_list[i],relief=GROOVE)
                 itemlabel.grid(row=k+i,column=0)
@@ -194,7 +205,8 @@ class InventoryWindow():
         # Séparateur suivi du bouton 'Confirmer'
         k = 10 # tout en bas
         Frame(self.inventory_canvas,height=10,width=400).grid(row=k,columnspan=100)
-        Button(self.inventory_canvas,text="Confirmer",command=self.confirm).grid(row=k+1,column=0,columnspan=1)
+        self.confirmbutton = Button(self.inventory_canvas,text="Confirmer",command=self.confirm)
+        self.confirmbutton.grid(row=k+1,column=0,columnspan=1)
         Button(self.inventory_canvas,text="Previous",command=self.previous_page).grid(row=k+1,column=19,padx=10)
         self.pagelabel = Label(self.inventory_canvas,text=f'{self.current_page}/{self.number_of_page}')
         self.pagelabel.grid(row=k+1,column=20,columnspan=1)
@@ -211,7 +223,7 @@ class InventoryWindow():
         self.clear_everything()
         self.pagelabel.config(text=f'{self.current_page}/{self.number_of_page}')
 
-        self.current_itemlist = self.owned_itemlist[(number*30):(number*30 +30)]
+        self.current_itemlist = self.inventory_dic['itemlist'][(number*30):(number*30 +30)]
 
 
 
@@ -230,8 +242,12 @@ class InventoryWindow():
                 x = ""
             else:
                 x = str(stats)+'\n'
+            try:
+                x += str(item['multiplicateurs'])+'\n'
+            except:
+                pass
 
-            tooltip = f"{x}{description}\nOwned : {number_owned}\nSell price : {sellprice}\nItem level : {itemlevel}"
+            tooltip = f"{x}{name}\n{description}\nOwned : {number_owned}\nSell price : {sellprice}\nItem level : {itemlevel}"
 
             ligne,colonne = self.n_to_coord(i)
 
@@ -258,6 +274,7 @@ class InventoryWindow():
         if i != self.selected_nbr:
             self.current_widgetlist[i].config(relief=SUNKEN)
             self.selected_item = self.current_itemlist[i]
+
             self.selected_nbr = i
         else:
             self.selected_item = 'None'
@@ -297,6 +314,7 @@ class InventoryWindow():
         pass
 
 
+
     def sell_current_item(self):
 
         if self.selected_nbr=='None' or self.selected_item=='None':
@@ -308,19 +326,25 @@ class InventoryWindow():
             myid = self.selected_item['id']
             self.player_dic['money'] += myprice
 
-            self.inventory_dic['itemlist'][myid]['owned'] -= 1
+            # selon la page, le numéro appuyé (entre 0 et 29 pour une page) peut être plus petit que ce qu'il faut
+            self.inventory_dic['itemlist'][itsnbr + 30*(self.current_page-1)]['owned'] -= 1
 
 
-            self.create_owned_itemlist()
 
-            self.generate_page(self.current_page)
 
             # Le bouton n'a pas bougé
-            if self.inventory_dic['itemlist'][myid]['owned'] > 0:
+            if self.inventory_dic['itemlist'][itsnbr + 30*(self.current_page-1)]['owned'] > 0:
+                self.create_imgdic()
+                self.generate_page(self.current_page)
                 self.groove_all_label()
                 self.current_widgetlist[itsnbr].config(relief=SUNKEN)
                 self.selected_item = self.current_itemlist[itsnbr]
                 self.selected_nbr = itsnbr
+            # sinon, l'item doit disparaitre de l'inventaire
+            else:
+                del self.inventory_dic['itemlist'][itsnbr + 30*(self.current_page-1)]
+                self.create_imgdic()
+                self.generate_page(self.current_page)
 
 
 
@@ -352,12 +376,17 @@ class InventoryWindow():
             pass
         elif len(self.selected_equipped_item) == 0:
             oldnbr = self.selected_equipped_nbr
-            newid = self.selected_item['id']
 
-            self.player_dic['equipped_list'][oldnbr] = self.inventory_dic['itemlist'][newid]
-            self.inventory_dic['itemlist'][newid]['owned'] -= 1
-            self.create_owned_itemlist()
+            newnbr = self.selected_nbr
 
+            # On met l'item à sa nouvelle place
+            self.player_dic['equipped_list'][oldnbr] = deepcopy(self.inventory_dic['itemlist'][newnbr + 30*(self.current_page-1)])
+
+            # On enlève l'item de l'inventaire
+            self.inventory_dic['itemlist'][newnbr + 30*(self.current_page-1)]['owned'] -= 1
+            if self.inventory_dic['itemlist'][newnbr +30*(self.current_page-1)]['owned'] == 0:
+                del self.inventory_dic['itemlist'][newnbr +30*(self.current_page-1)]
+            self.create_imgdic()
             self.generate_page(self.current_page)
 
             # On applatit tous les boutons, inventaire ou équipement
@@ -370,18 +399,29 @@ class InventoryWindow():
 
         else:
             oldnbr = self.selected_equipped_nbr
-            oldid = self.selected_equipped_item['id']
-
-            newid = self.selected_item['id']
+            newnbr = self.selected_nbr
 
 
 
 
-            self.player_dic['equipped_list'][oldnbr] = self.inventory_dic['itemlist'][newid]
 
-            self.inventory_dic['itemlist'][oldid]['owned'] += 1
-            self.inventory_dic['itemlist'][newid]['owned'] -= 1
-            self.create_owned_itemlist()
+            # On cherche à remettre l'item déséquippé dans l'inventaire
+            c = True
+            for i in range(len(self.inventory_dic['itemlist'])):
+                if self.inventory_dic['itemlist'][i]['id'] == self.selected_equipped_item['id']:
+                    self.inventory_dic['itemlist'][i]['owned'] += 1
+                    c = False
+                    break
+            # L'item n'était pas dans l'inventaire, on le rajoute
+            if c:
+                self.inventory_dic['itemlist'].append(self.selected_equipped_item)
+
+            # On enlève l'autre item de l'inventaire pour le mettre dans equipped_list
+            self.player_dic['equipped_list'][oldnbr] = deepcopy(self.inventory_dic['itemlist'][newnbr + 30*(self.current_page-1)])
+            self.inventory_dic['itemlist'][newnbr + 30*(self.current_page-1)]['owned'] -= 1
+            if self.inventory_dic['itemlist'][newnbr + 30*(self.current_page-1)]['owned'] == 0:
+                del self.inventory_dic['itemlist'][newnbr + 30*(self.current_page-1)]
+            self.create_imgdic()
 
             self.generate_page(self.current_page)
 
@@ -401,11 +441,23 @@ class InventoryWindow():
             pass
         else:
             oldnbr = self.selected_equipped_nbr
-            oldid = self.selected_equipped_item['id']
 
             self.player_dic['equipped_list'][oldnbr] = {}
-            self.inventory_dic['itemlist'][oldid]['owned'] += 1
-            self.create_owned_itemlist()
+
+            # On cherche à remettre l'item déséquippé dans l'inventaire
+            c = True
+            for i in range(len(self.inventory_dic['itemlist'])):
+                if self.inventory_dic['itemlist'][i]['id'] == self.selected_equipped_item['id']:
+                    self.inventory_dic['itemlist'][i]['owned'] += 1
+                    c = False
+                    break
+            # L'item n'était pas dans l'inventaire, on le rajoute
+            if c:
+                self.inventory_dic['itemlist'].append(self.selected_equipped_item)
+
+
+
+            self.create_imgdic()
 
             self.generate_page(self.current_page)
 
@@ -427,4 +479,4 @@ if __name__ == "__main__":
     spell_dic = jm.load_file('spell_dic','Blue Dragon')
     inventory_dic = jm.load_file('inventory_dic','Blue Dragon')
 
-    w = InventoryWindow(toplevel=True,player_dic=player_dic,inventory_dic=inventory_dic,attribut_dic=attribut_dic)
+    w = InventoryWindow(toplevel=False,player_dic=player_dic,inventory_dic=inventory_dic,attribut_dic=attribut_dic)

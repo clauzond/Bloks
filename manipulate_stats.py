@@ -50,8 +50,8 @@ def calculate_playerstats(attribut_dic,player_dic):
 def calculate_damage_player(player_stats,monster_stats,player_itemlist):
     # itemlist sera la "equipped_list" du joueur
 
-    # mult item attribut
-    mi_f = mi_a = mi_i = mi_c = 0
+    # mult item attribut : de base, 10% pour tout de base
+    mi_f = mi_a = mi_i = mi_c = 0.1
     # mult base attribut (par défault, 25%)
     mb_f = mb_a = mb_i = mb_c = 0.25
 
@@ -82,11 +82,6 @@ def calculate_damage_player(player_stats,monster_stats,player_itemlist):
             mi_a += item['multiplicateurs']['Agilité']
             mi_i += item['multiplicateurs']['Intelligence']
             mi_c += item['multiplicateurs']['Chance']
-
-    # Si le joueur tape au poing, alors le multiplicateur sera de 1% pour toutes les stats
-    if mi_f==mi_a==mi_i==mi_c==0:
-        mi_f = mi_a = mi_i = mi_c = 0.01
-
 
     dmg_fixe = dmg_fixe - res_fixe
     if dmg_fixe < 0:

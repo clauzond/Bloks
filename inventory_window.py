@@ -181,7 +181,7 @@ class InventoryWindow():
                     x += str(item['multiplicateurs'])+'\n'
                 except:
                     pass
-                tooltip = f"{x}{name}\n{description}\nSell price : {sellprice}\nItem level : {itemlevel}"
+                tooltip = f"{x}{name}\n{description}\nSell price : {sellprice:0.1f}\nItem level : {itemlevel}"
                 itemlabel=Label(self.inventory_canvas,name=f'a|{i}',
                         image=self.equipped_img_list[i],relief=GROOVE)
                 itemlabel.grid(row=k+i,column=0)

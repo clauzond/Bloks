@@ -1,7 +1,6 @@
 from tkinter import *
 import tkinter.ttk as ttk
-import math
-
+from math import log
 
 class SpeedBar():
 
@@ -21,8 +20,8 @@ class SpeedBar():
         self.id_speed1 = speed1
         self.id_speed2 = speed2
 
-        self.speed1= math.log( speed1 + 2 )
-        self.speed2= math.log( speed2 + 2 )
+        self.speed1= self.fonction_lc(speed1)
+        self.speed2= self.fonction_lc(speed2)
 
 
         self.loop = False
@@ -44,7 +43,16 @@ class SpeedBar():
         #style = ThemedStyle()
         #style.set_theme('plastik')
 
+
+    # Une fonction qui : croit très lentement, prend des valeurs en R+, strictement positive
+    def fonction_lc(self,value):
+        new_value = log(10+value)
+
+        return(new_value)
+
+
     def hidetip(self):
+        self.order = "stop"
         self.bar1.place_forget()
         self.bar2.place_forget()
         self.bar1.destroy()
@@ -95,7 +103,7 @@ class SpeedBar():
         if not self.loop:
             return(self.mini_loop())
         else:
-            self.order = None
+            self.order = "wait"
 
 
     def mini_loop(self):
@@ -149,12 +157,12 @@ class SpeedBar():
 
     def set_speed1(self,value,*args):
         self.id_speed1 = value
-        self.speed1= math.log( value + 1 )
+        self.speed1= self.fonction_lc(value)
 
 
     def set_speed2(self,value,*args):
         self.id_speed2 = value
-        self.speed2= math.log( value + 1 )
+        self.speed2= self.fonction_lc(value)
 
 
 if __name__ == "__main__":

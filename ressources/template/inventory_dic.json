@@ -61,26 +61,6 @@
       }
     },
     {
-      "id": 3,
-      "name": "Baguette basique",
-      "description": "Une baguette assez banale, voire un peu basique.",
-      "owned": 1,
-      "sellprice": 100,
-      "itemlevel": 1,
-      "image": "img/baguette.gif",
-      "stats": {
-        "Intelligence": 5,
-        "HP": 10,
-        "Mana": 1
-      },
-      "multiplicateurs": {
-        "Force": 0,
-        "Agilité": 0,
-        "Intelligence": 0.5,
-        "Chance": 0
-      }
-    },
-    {
       "id": 4,
       "name": "Pelle basique",
       "description": "Une pelle. T'espères pas taper avec quand même ?",

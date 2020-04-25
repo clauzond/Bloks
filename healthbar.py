@@ -6,7 +6,7 @@ import tkinter.ttk as ttk
 class HealthBar():
 
 
-    def __init__(self,canvas,x,y,length,maximum,color):
+    def __init__(self,canvas,x,y,length,height,maximum,color):
         # La longueur maximuale de la barre sera fixe.
         # Il faudra donc tout compter en "relatif"
         self.length = length
@@ -21,6 +21,8 @@ class HealthBar():
         self.color = color
         self.x = x
         self.y = y
+
+        self.height = height
 
         #from ttkthemes import ThemedStyle
         #style = ThemedStyle()
@@ -39,11 +41,11 @@ class HealthBar():
         style = ttk.Style()
         style.theme_use('clam')
         # troughcolor pour le fond, background pour le devant de la barre, bordercolor pour les bords, lightcolor/darkcolor pour le haut/bas des bords
-        style.configure("TProgressbar", background=self.color,bordercolor="black",troughcolor="white")
+        style.configure("blue.Horizontal.TProgressbar", background=self.color,bordercolor="black",troughcolor="white")
 
 
-        self.widget = ttk.Progressbar(self.canvas,style="TProgressbar",orient=HORIZONTAL,length=self.length,maximum=self.maximum,mode='determinate',value=self.current_value)
-        self.widget.place(x=self.x,y=self.y,height=25)
+        self.widget = ttk.Progressbar(self.canvas,style="blue.Horizontal.TProgressbar",orient=HORIZONTAL,length=self.length,maximum=self.maximum,mode='determinate',value=self.current_value)
+        self.widget.place(x=self.x,y=self.y,height=self.height)
 
         self.label = Label(self.canvas,text=f"{self.current_value:0.1f}/{self.maximum:0.1f}")
         self.label.place(x=self.x,y=self.y+25)
@@ -119,7 +121,7 @@ if __name__=="__main__":
     wc = Canvas(w,width=500)
     wc.pack(fill=BOTH,expand=True,padx=0,pady=0)
 
-    healthbar = HealthBar(canvas=wc,length=100,maximum=10000,x=10,y=0,color="red")
+    healthbar = HealthBar(canvas=wc,length=100,height=25,maximum=10000,x=10,y=0,color="red")
     healthbar.show()
     healthbar.widget.bind('<Button-1>',healthbar.func)
 

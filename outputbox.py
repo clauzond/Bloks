@@ -51,7 +51,7 @@ if __name__ == '__main__':
     c = Canvas(main_window,width=300,height=300)
     c.pack()
 
-    textbox = OutputBox(canvas=c,x=50,y=50,height=100,width=100)
+    textbox = OutputBox(canvas=c,x=50,y=50,height=1000,width=100)
     textbox.show()
     textbox.widget.bind('<a>',textbox.ajouter)
     textbox.widget.bind('<b>',textbox.hidetip)

@@ -139,40 +139,58 @@ class Main_Window():
         self.combat = True
         self.playerturn = False
 
-        self.monster_name = monster_dic['name']
-
-        self.monster_element = monster_dic['element']
-
-
+        self.monster_dic = monster_dic
 
         # Ces 3 dictionnaires pourront bouger en plein combat, et sont recréés pour les manipuler
         self.player_stats = player_dic['stats']
-        self.monster_stats = monster_dic['stats']
         self.equipped_list = player_dic['equipped_list']
 
         # self.game_canvas
+
+        xl = 20
+        y_label = 20
+
+        self.player_label = Label(self.game_canvas,
+                                text=f"{self.player_dic['name']}",font="Constantia 13 bold")
+        self.player_label.place(x=xl+50,y=y_label)
+
+        y_healthbar = y_label + 25
+
         hpmax = self.player_stats['HP']
-        self.player_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=100,maximum=hpmax,x=500,y=470,color="red")
+        self.player_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=200,height=25,maximum=hpmax,x=xl,y=y_healthbar,color="red")
         self.player_healthbar.show()
 
-        hpmax = self.monster_stats['HP']
-        self.monster_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=100,maximum=hpmax,x=100,y=470,color="red")
-        self.monster_healthbar.show()
+        self.bind_player_tooltip()
 
-        # monstre en rouge, joueur en jaune
-        speed1=self.monster_stats['Agilité']
-        speed2=self.player_stats['Agilité']
-        self.speedbar = speedbar.SpeedBar(canvas=self.game_canvas,x=5,y=200,length=200,max1=100,max2=100,speed1=speed1,speed2=speed2,color1="red",color2="yellow",bg="gray")
+
+
+        x_outputbox = self.game_canvas.winfo_width() - 300 - 2 # pour l'outputbox
+        x_monster_label = x_outputbox - 220
+        self.monster_label = Label(self.game_canvas,
+                                text=f"{self.monster_dic['name']}",font="Constantia 13 bold")
+        self.monster_label.place(x=x_monster_label, y=y_label)
+
+        hpmax = self.monster_dic['stats']['HP']
+        self.monster_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=200,height=25,maximum=hpmax,x=(x_outputbox - 220),y=y_healthbar,color="red")
+        self.monster_healthbar.show()
+        self.bind_monster_tooltip()
+
+        # joueur en or, à gauche
+        # monstre en rouge, à droite
+        speed1=self.player_stats['Agilité']
+        speed2=self.monster_dic['stats']['Agilité']
+        x_speedbar = (xl + x_monster_label)/2 + 50
+        self.speedbar = speedbar.SpeedBar(canvas=self.game_canvas,x=x_speedbar,y=50,length=200,max1=100,max2=100,speed1=speed1,speed2=speed2,color1="#FFFFFF",color2="red",bg="gray")
         self.speedbar.show()
 
 
-        x = self.game_canvas.winfo_width() - 300 - 2
-        y = self.game_canvas.winfo_height() - 200 - 2
-        self.outputbox = outputbox.OutputBox(canvas=self.game_canvas,x=x,y=y,height=200,width=300)
+
+        height = self.game_canvas.winfo_height() - 1
+        self.outputbox = outputbox.OutputBox(canvas=self.game_canvas,x=x_outputbox,y=0,height=height,width=300)
         self.outputbox.show()
 
         # self.other_canvas
-        self.playbutton = Button(self.other_canvas,text="PLAY",command=self.play_combat)
+        self.playbutton = Button(self.other_canvas,text="PLAY",command=self.play_combat_loop)
         self.playbutton.pack(expand=False,fill='x',padx=2,pady=5)
 
         self.attackbutton = Button(self.other_canvas,text="ATTACK",state=DISABLED,command=self.player_attack)
@@ -182,32 +200,59 @@ class Main_Window():
         self.defendbutton = Button(self.other_canvas,text="DEFEND",state=DISABLED,command=self.player_defend)
         self.defendbutton.pack(expand=False,fill='x',padx=2,pady=5)
 
+        self.order = None
 
-    def play_combat2(self):
+
+    def bind_player_tooltip(self):
+        import stats_window as sw
+        toolTip = sw.StatsWindow(widget = self.player_healthbar.widget)
+        def enter(event):
+            toolTip.show(stat_dic=self.player_stats,name=self.player_dic['name'],level=self.player_dic['level'],image_dir=self.player_dic['image'],category='')
+        def leave(event):
+            toolTip.hidetip()
+        self.player_healthbar.widget.bind('<Enter>', enter)
+        self.player_healthbar.widget.bind('<Leave>', leave)
+
+
+    def bind_monster_tooltip(self):
+        import stats_window as sw
+        toolTip = sw.StatsWindow(widget = self.monster_healthbar.widget)
+        def enter(event):
+            toolTip.show(stat_dic=self.monster_dic['stats'],name=self.monster_dic['name'],level=self.monster_dic['level'],image_dir=self.monster_dic['image'],category=self.monster_dic['category'],x_relative=-200)
+        def leave(event):
+            toolTip.hidetip()
+        self.monster_healthbar.widget.bind('<Enter>', enter)
+        self.monster_healthbar.widget.bind('<Leave>', leave)
+
+    def play_combat_loop(self):
         self.order = self.speedbar.order
 
-        if self.order == None:
-            print("Attendez !")
+        if self.order is "wait":
+            self.main_window.after(20,self.play_combat_loop)
+
+        elif self.order is None:
+
+            self.order = self.speedbar.lets_go()
+
+            self.playbutton.config(state=DISABLED)
+            self.main_window.after(20,self.play_combat_loop)
+
         # Tour du monstre
-        elif self.order == 1:
-            self.monster_attack()
+        elif self.order == 2:
+            self.order = None
+            self.speedbar.order = None
+            self.main_window.after(500,self.monster_attack)
 
-            self.play_combat()
-
+            self.main_window.after(2000,self.play_combat_loop)
 
         # Tour du joueur
-        elif self.order == 2:
+        elif self.order == 1:
             self.playerturn = True
             self.attackbutton.config(state=NORMAL)
             self.defendbutton.config(state=NORMAL)
 
-    def play_combat(self):
-
-        self.order = self.speedbar.lets_go()
-
-        self.playbutton.config(state=DISABLED)
-        self.main_window.after(2000,self.play_combat2)
-
+        elif self.order == "stop":
+            self.hide_combat()
 
 
 
@@ -216,13 +261,13 @@ class Main_Window():
         if not self.combat:
             return
 
-        speed2 = self.player_stats['Agilité']
+        speed1 = self.player_stats['Agilité']
 
-        if speed2 > self.speedbar.id_speed2:
-            self.speedbar.set_speed2(speed2)
+        if speed1 > self.speedbar.id_speed1:
+            self.speedbar.set_speed1(speed1)
             self.outputbox.add_text(f"{self.player_dic['name']} a accéléré !")
-        elif speed2 < self.speedbar.id_speed2:
-            self.speedbar.set_speed2(speed2)
+        elif speed1 < self.speedbar.id_speed1:
+            self.speedbar.set_speed1(speed1)
             self.outputbox.add_text(f"{self.player_dic['name']} a été ralenti !")
 
 
@@ -230,14 +275,14 @@ class Main_Window():
         if not self.combat:
             return
 
-        speed1 = self.monster_stats['Agilité']
+        speed2 = self.monster_dic['stats']['Agilité']
 
-        if speed1 > self.speedbar.id_speed1:
-            self.speedbar.set_speed1(speed1)
-            self.outputbox.add_text(f"{self.monster_name} a accéléré !")
-        elif speed1 < self.speedbar.id_speed1:
-            self.speedbar.set_speed1(speed1)
-            self.outputbox.add_text(f'{self.monster_name} a été ralenti !')
+        if speed2 > self.speedbar.id_speed2:
+            self.speedbar.set_speed2(speed2)
+            self.outputbox.add_text(f"{self.monster_dic['name']} a accéléré !")
+        elif speed2 < self.speedbar.id_speed1:
+            self.speedbar.set_speed2(speed2)
+            self.outputbox.add_text(f"{self.monster_dic['name']} a été ralenti !")
 
 
     def player_defend(self):
@@ -248,26 +293,28 @@ class Main_Window():
             return
         import manipulate_stats as ms
 
-        damage = ms.calculate_damage_player(player_stats = self.player_stats,monster_stats = self.monster_stats,player_itemlist=self.equipped_list)
+        damage = ms.calculate_damage_player(player_stats = self.player_stats,monster_stats = self.monster_dic['stats'],player_itemlist=self.equipped_list)
 
         self.monster_healthbar.take_hit(damage)
         if damage>1:
             s='s'
         else:
             s=''
-        self.outputbox.add_text(f'{self.monster_name} a subi {damage:0.1f} dommage{s}')
-        self.monster_stats['HP'] -= damage
+        self.outputbox.add_text(f"{self.monster_dic['name']} a subi {damage:0.1f} dommage{s}")
+        self.monster_dic['stats']['HP'] -= damage
 
-        if self.monster_stats['HP'] < 0:
-            self.outputbox.add_text(f'{self.monster_name} a été vaincu !')
+        if self.monster_dic['stats']['HP'] < 0:
+            self.outputbox.add_text(f"{self.monster_dic['name']} a été vaincu !")
             self.player_wincombat()
 
         else:
+            self.game_canvas.update()
+            self.order = None
             self.playerturn = False
+            self.speedbar.order = None
             self.attackbutton.config(state=DISABLED)
             self.defendbutton.config(state=DISABLED)
-            #self.playbutton.config(state=NORMAL)
-            self.play_combat()
+            self.play_combat_loop()
 
 
     def monster_attack(self):
@@ -275,7 +322,7 @@ class Main_Window():
             return
         import manipulate_stats as ms
 
-        damage = ms.calculate_damage_monster(monster_stats=self.monster_stats,player_stats = self.player_stats,element=self.monster_element)
+        damage = ms.calculate_damage_monster(monster_stats=self.monster_dic['stats'],player_stats = self.player_stats,element=self.monster_dic['element'])
 
         self.player_healthbar.take_hit(damage)
         self.player_stats['HP'] -= damage
@@ -291,27 +338,46 @@ class Main_Window():
             self.player_losecombat()
 
         else:
-            pass
+            self.order = None
+            self.speedbar.order = None
             #self.playbutton.config(state=NORMAL)
 
     def player_wincombat(self):
-        print('Gagné')
+        self.speedbar.order = "stop"
+        self.playerturn = False
+        self.outputbox.add_text(f"Vous gagnez A IMPLEMENTER points d'expérience !")
+        self.playbutton.config(text="Quitter le combat")
+        self.playbutton.config(state=NORMAL)
+        self.attackbutton.config(state=DISABLED)
+        self.defendbutton.config(state=DISABLED)
 
     def player_losecombat(self):
-        print('Perdu')
+        self.speedbar.order = "stop"
+        self.playerturn = False
+        self.outputbox.add_text(f"Vous êtes mort...")
+        self.playbutton.config(text="Quitter le combat")
+        self.playbutton.config(state=NORMAL)
+        self.attackbutton.config(state=DISABLED)
+        self.defendbutton.config(state=DISABLED)
 
     def hide_combat(self):
         self.player_healthbar.hidetip()
         self.monster_healthbar.hidetip()
         self.speedbar.hidetip()
         self.outputbox.hidetip()
+        self.player_label.destroy()
+        self.monster_label.destroy()
 
-        self.combat = False
         self.player_stats = None
-        self.monster_stats = None
+        self.equipped_list = None
+        self.combat = False
+        self.playerturn = False
+        self.player_stats = None
+        self.monster_dic = None
 
 
 if __name__ == "__main__":
+    global w
     import manipulate_json as jm
 
     player_dic = jm.load_file('player_dic','Blue Dragon')

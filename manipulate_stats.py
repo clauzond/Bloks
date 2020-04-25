@@ -53,7 +53,8 @@ def calculate_damage_player(player_stats,monster_stats,player_itemlist):
     # mult item attribut : de base, 10% pour tout de base
     mi_f = mi_a = mi_i = mi_c = 0.1
     # mult base attribut (par défault, 25%)
-    mb_f = mb_a = mb_i = mb_c = 0.25
+    mb_a = mb_c = 0.20
+    mb_f = mb_i = 0.25
 
     dmg_fixe = player_stats['Dommage fixe']
     dmg_f = player_stats['Dommage force']

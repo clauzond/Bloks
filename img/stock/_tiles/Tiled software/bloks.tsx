@@ -1,250 +1,316 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.2" tiledversion="1.3.4" name="bloks" tilewidth="30" tileheight="30" tilecount="41" columns="0">
+<tileset version="1.2" tiledversion="1.3.4" name="bloks" tilewidth="70" tileheight="70" tilecount="52" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
- <tile id="0" type="box1">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/box.gif"/>
- </tile>
- <tile id="1" type="box2">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/boxAlt.gif"/>
- </tile>
- <tile id="2" type="box_coin">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/boxCoinAlt.gif"/>
- </tile>
- <tile id="3" type="box_item">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/boxItemAlt.gif"/>
- </tile>
- <tile id="4" type="brick">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/brickWall.gif"/>
- </tile>
- <tile id="5" type="stone1">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/castleCenter.gif"/>
- </tile>
- <tile id="6" type="stone1_round">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/castleCenter_rounded.gif"/>
- </tile>
- <tile id="7" type="stone2">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/dirtCenter.gif"/>
- </tile>
- <tile id="8" type="stone2_round">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/dirtCenter_rounded.gif"/>
- </tile>
- <tile id="9" type="dirt">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/grassCenter.gif"/>
- </tile>
- <tile id="10" type="dirt_round">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/grassCenter_rounded.gif"/>
- </tile>
- <tile id="11" type="ladder">
+ <tile id="0" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/ladder_mid.gif"/>
+  <image width="70" height="70" source="../non resized/bomb.png"/>
  </tile>
- <tile id="12" type="lava">
+ <tile id="1" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/liquidLava.gif"/>
+  <image width="70" height="70" source="../non resized/box.png"/>
  </tile>
- <tile id="13" type="water">
+ <tile id="2" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/liquidWater.gif"/>
+  <image width="70" height="70" source="../non resized/boxAlt.png"/>
  </tile>
- <tile id="14" type="lock_blue">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/lock_blue.gif"/>
- </tile>
- <tile id="15" type="lock_green">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/lock_green.gif"/>
- </tile>
- <tile id="16" type="lock_red">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/lock_red.gif"/>
- </tile>
- <tile id="17" type="lock_yellow">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/lock_yellow.gif"/>
- </tile>
- <tile id="18" type="dirt2">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/sandCenter.gif"/>
- </tile>
- <tile id="19" type="dirt2_round">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/sandCenter_rounded.gif"/>
- </tile>
- <tile id="20" type="snow">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/snowCenter.gif"/>
- </tile>
- <tile id="21" type="snow_round">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/snowCenter_rounded.gif"/>
- </tile>
- <tile id="22" type="stone3">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/stoneCenter.gif"/>
- </tile>
- <tile id="23" type="stone3_round">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/stoneCenter_rounded.gif"/>
- </tile>
- <tile id="24" type="stone4">
-  <properties>
-   <property name="tag" value="obstacle"/>
-  </properties>
-  <image width="30" height="30" source="../resized/stoneWall.gif"/>
- </tile>
- <tile id="25" type="torch">
+ <tile id="3" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/torch.gif"/>
+  <image width="70" height="70" source="../non resized/boxCoinAlt.png"/>
  </tile>
- <tile id="26" type="torch_lit">
+ <tile id="4" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/torchLit.gif"/>
+  <image width="70" height="70" source="../non resized/boxExplosive.png"/>
  </tile>
- <tile id="27" type="door">
+ <tile id="5" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/window.gif"/>
+  <image width="70" height="70" source="../non resized/boxItem.png"/>
  </tile>
- <tile id="28" type="key_yellow">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/keyYellow.gif"/>
- </tile>
- <tile id="29" type="plant">
+ <tile id="6" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/plant.gif"/>
+  <image width="70" height="70" source="../non resized/boxItemAlt.png"/>
  </tile>
- <tile id="30" type="rock">
+ <tile id="7" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/rock.gif"/>
+  <image width="70" height="70" source="../non resized/brickWall.png"/>
  </tile>
- <tile id="31" type="spikes">
+ <tile id="8" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/spikes.gif"/>
+  <image width="70" height="70" source="../non resized/castleCenter.png"/>
  </tile>
- <tile id="32" type="star">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/star.gif"/>
- </tile>
- <tile id="33" type="bomb">
+ <tile id="9" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/bomb.gif"/>
+  <image width="70" height="70" source="../non resized/castleCenter_rounded.png"/>
  </tile>
- <tile id="34" type="coin_bronze">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/coinBronze.gif"/>
- </tile>
- <tile id="35" type="coin_gold">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/coinGold.gif"/>
- </tile>
- <tile id="36" type="coin_silver">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/coinSilver.gif"/>
- </tile>
- <tile id="37" type="key_blue">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/keyBlue.gif"/>
- </tile>
- <tile id="38" type="key_green">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/keyGreen.gif"/>
- </tile>
- <tile id="39" type="key_red">
-  <properties>
-   <property name="tag" value="usable"/>
-  </properties>
-  <image width="30" height="30" source="../resized/keyRed.gif"/>
- </tile>
- <tile id="40" type="fond_bleu">
+ <tile id="10" type="a">
   <properties>
    <property name="tag" value=""/>
   </properties>
-  <image width="30" height="30" source="../resized/fond_bleu.gif"/>
+  <image width="70" height="70" source="../non resized/coinBronze.png"/>
+ </tile>
+ <tile id="11" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/coinGold.png"/>
+ </tile>
+ <tile id="12" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/coinSilver.png"/>
+ </tile>
+ <tile id="13" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/dirtCenter.png"/>
+ </tile>
+ <tile id="14" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/dirtCenter_rounded.png"/>
+ </tile>
+ <tile id="15" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/door_closedMid.png"/>
+ </tile>
+ <tile id="16" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/door_closedTop.png"/>
+ </tile>
+ <tile id="17" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/door_openMid.png"/>
+ </tile>
+ <tile id="18" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/door_openTop.png"/>
+ </tile>
+ <tile id="19" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/fence.png"/>
+ </tile>
+ <tile id="20" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/gemBlue.png"/>
+ </tile>
+ <tile id="21" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/gemGreen.png"/>
+ </tile>
+ <tile id="22" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/gemRed.png"/>
+ </tile>
+ <tile id="23" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/gemYellow.png"/>
+ </tile>
+ <tile id="24" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/grassCenter.png"/>
+ </tile>
+ <tile id="25" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/grassCenter_rounded.png"/>
+ </tile>
+ <tile id="26" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/keyBlue.png"/>
+ </tile>
+ <tile id="27" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/keyGreen.png"/>
+ </tile>
+ <tile id="28" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/keyRed.png"/>
+ </tile>
+ <tile id="29" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/keyYellow.png"/>
+ </tile>
+ <tile id="30" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/ladder_mid.png"/>
+ </tile>
+ <tile id="31" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/liquidLava.png"/>
+ </tile>
+ <tile id="32" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/liquidWater.png"/>
+ </tile>
+ <tile id="33" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/lock_blue.png"/>
+ </tile>
+ <tile id="34" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/lock_green.png"/>
+ </tile>
+ <tile id="35" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/lock_red.png"/>
+ </tile>
+ <tile id="36" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/lock_yellow.png"/>
+ </tile>
+ <tile id="37" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/mushroomBrown.png"/>
+ </tile>
+ <tile id="38" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/mushroomRed.png"/>
+ </tile>
+ <tile id="39" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/plant.png"/>
+ </tile>
+ <tile id="40" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/plantPurple.png"/>
+ </tile>
+ <tile id="41" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/rock.png"/>
+ </tile>
+ <tile id="42" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/sandCenter.png"/>
+ </tile>
+ <tile id="43" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/sandCenter_rounded.png"/>
+ </tile>
+ <tile id="44" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/spikes.png"/>
+ </tile>
+ <tile id="45" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/star.png"/>
+ </tile>
+ <tile id="46" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/stoneCenter.png"/>
+ </tile>
+ <tile id="47" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/stoneCenter_rounded.png"/>
+ </tile>
+ <tile id="48" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/stoneWall.png"/>
+ </tile>
+ <tile id="49" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/tochLit.png"/>
+ </tile>
+ <tile id="50" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/torch.png"/>
+ </tile>
+ <tile id="51" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/window.png"/>
  </tile>
 </tileset>

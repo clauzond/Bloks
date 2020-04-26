@@ -26,13 +26,15 @@ def template_itemlist():
     from os.path import isfile, join
     onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
-
+    print(onlyfiles)
     itemlist = []
 
     for filename in onlyfiles:
-        mydir = f"{mypath}/{filename}"
-        item = jm.load_file(fulldir=mydir)
-        itemlist.append(item)
+        print(filename,filename[-5:])
+        if filename[-5:] == '.json':
+            mydir = f"{mypath}/{filename}"
+            item = jm.load_file(fulldir=mydir)
+            itemlist.append(item)
 
     return(itemlist)
 

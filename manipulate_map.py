@@ -5,7 +5,7 @@ import manipulate_json as j
 class Map():
 
     # mapdic et tiledic sont les json, sauvegardés et ouverts comme indiqué plus bas
-    def __init__(self,mapdic,tiledic):
+    def __init__(self,mapdic,tiledic,imgdir):
 
         self.mapdic = mapdic
         self.tiledic = tiledic
@@ -13,7 +13,8 @@ class Map():
         self.layerlist = self.mapdic['map']['layer']
         self.tilelist = self.tiledic['tileset']['tile']
 
-        self.map_by_layer = self.get_mbl_matrix()
+        self.map_by_layer = self.load_map()
+        self.imgdic = self.load_imgdic(imgdir)
 
         self.loaded_map = None
 
@@ -83,10 +84,61 @@ class Map():
         self.loaded_map = mbl
         return(mbl)
 
+    def load_imgdic(self,imgdir):
+        from tkinter import PhotoImage
+
+        mydic = {}
+
+        mypath = imgdir
+        from os import listdir
+        from os.path import isfile, join
+        # Chaque élément de onlyfiles est un nom en .gif correspondant à une image de bloc
+        onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+
+        for filename in onlyfiles:
+            mydic[filename] = PhotoImage(file=f"{mypath}/{filename}")
+        return(mydic)
 
 
 
-def collect():
+
+    # On ne load pas à nouveau la map !
+    # (x,y) fournie sont les coordonnées (ligne,colonne) du bloc en haut à gauche
+    def draw_map(self,canvas,x_debut=0,y_debut=0):
+        canvas.delete('all')
+
+        width = canvas.winfo_width()
+        height = canvas.winfo_height()
+
+        # NOTE : il faudrait peut-être rajouter 1. On testera
+        nbr_colonnes = width // 70  + 1
+        nbr_lignes = height // 70  + 1
+
+        # Chaque élément est une matrice de map, la première est la layer 0
+        # On dessinera dans l'ordre croissant des layer, comme ça le background est bien dessinné en premier
+        for layer in self.map_by_layer:
+
+            # layer est une liste de "lignes" ; on ne prend que celles visibles à l'écran
+            this_layer = layer[y_debut:y_debut+nbr_lignes]
+
+            # On parcourt chaque ligne, on a donc le numéro de la ligne = y
+            for y in range(len(this_layer)):
+                # this_layer[y] est une ligne de blocs ; on ne prend que ceux visibles à l'écran
+                this_ligne = this_layer[y][x_debut:x_debut+nbr_colonnes]
+
+                # On parcourt chaque élément de la ligne, on a donc le numéro de la colonne = x
+                for x in range(len(this_ligne)):
+                    bloc_id = this_ligne[x]
+
+                    taglist = self.get_tile_taglist(bloc_id)
+                    imgname = self.get_tile_imgname(bloc_id)
+                    if imgname != "empty.gif":
+                        # Le coin supérieur gauche de l'image est situé en (x,y)
+                        canvas.create_image(x*70,70+y*70,image=self.imgdic[imgname],anchor='sw')
+        return
+
+
+def test():
 
     _map_ = "img/stock/_tiles/Tiled software/my_first_map.tmx"
     _tileset_ = "img/stock/_tiles/Tiled software/bloks.tsx"
@@ -103,9 +155,38 @@ def collect():
 
     return(_mapdic_,_tilesetdic_)
 
+# On charge les données d'une map : la map et son tileset
+# On rend l'objet 'myMap' de classe 'Map' pour load complètement la map et accéder aux fonctions utiles
+def load_map(mapdir,mapname,tilename,imgdir):
+    import manipulate_xml as x
+    import manipulate_json as j
+
+    o_fullmapdir = f"{mapdir}/{mapname}.tmx"
+    o_fulltiledir = f"{mapdir}/{tilename}.tsx"
+
+    s_fullmapdir = f"{mapdir}/{mapname}.json"
+    s_fulltiledir = f"{mapdir}/{tilename}.json"
+    if s_fullmapdir == s_fulltiledir:
+        raise Exception("Impossible de mettre le même nom !")
+
+
+    x.xml_to_json(opendir=o_fullmapdir,savedir=s_fullmapdir)
+    x.xml_to_json(opendir=o_fulltiledir,savedir=s_fulltiledir)
+
+    mapdic = j.load_file(fulldir=s_fullmapdir)
+    tiledic = j.load_file(fulldir=s_fulltiledir)
+
+    myMap = Map(mapdic,tiledic,imgdir)
+
+    return(myMap)
+
 
 if __name__ == '__main__':
-    global mymap
-    a,b = collect()
+    #global myMap
 
-    mymap = Map(a,b)
+    mapdir = "img/stock/_tiles/Tiled software"
+    mapname = "my_first_map"
+    tilename = "bloks"
+    imgdir = "img/stock/_tiles/resized"
+
+    myMap = load_map(mapdir,mapname,tilename,imgdir)

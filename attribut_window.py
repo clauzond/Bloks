@@ -4,11 +4,13 @@ import dictionnaires
 
 class AttributWindow():
 
-    def __init__(self,toplevel="",widget=""):
+    def __init__(self,toplevel="",widget="",rel_x=0,rel_y=0):
 
         self.toplevel = toplevel
         self.widget = widget
         self.attribut_window = None
+        self.rel_x = rel_x
+        self.rel_y = rel_y
 
 
     def hidetip(self):
@@ -32,6 +34,7 @@ class AttributWindow():
             if self.toplevel:
                 self.attribut_window = Toplevel()
                 self.attribut_window.wm_overrideredirect(1)
+                self.attribut_window.wm_geometry("+%d+%d" % (self.rel_x,self.rel_y))
                 self.attribut_window.focus_force()
             else:
                 self.attribut_window = Tk()
@@ -53,10 +56,10 @@ class AttributWindow():
         self.attribut_window.iconbitmap("img/icone.ico")
 
         self.attribut_window.option_add('*Font','Constantia 12')
-        self.attribut_window.option_add('*Button.activebackground','darkgray')
-        self.attribut_window.option_add('*Button.activeforeground','darkgray')
-        self.attribut_window.option_add('*Button.relief','groove')
-        self.attribut_window.option_add('*Button.overRelief','ridge')
+        #self.attribut_window.option_add('*Button.activebackground','darkgray')
+        #self.attribut_window.option_add('*Button.activeforeground','darkgray')
+        #self.attribut_window.option_add('*Button.relief','groove')
+        #self.attribut_window.option_add('*Button.overRelief','ridge')
         self.attribut_window.option_add('*justify','left')
         self.attribut_window.option_add('*bg','lightgray')
         self.attribut_window.option_add('*compound','left')
@@ -75,27 +78,27 @@ class AttributWindow():
         playerimage = PhotoImage(file=self.player_dic['image'])
         name_label = Label(self.attribut_canvas,
                         text=self.player_dic['name'],
-                        fg='black',font="Constantia 13 bold",image=playerimage)
+                        font="Constantia 13 bold",image=playerimage)
         name_label.grid(row=0, column=0, sticky=W,columnspan=1)
 
         level_label = Label(self.attribut_canvas,
                         text=str(self.player_dic['level']),
-                        fg='black',font="Constantia 13 bold",image=self.img_dic['starnoir'])
+                        font="Constantia 13 bold",image=self.img_dic['starnoir'])
         level_label.grid(row=0,column=0,columnspan=10)
 
         xp_label = Label(self.attribut_canvas,
                         text=str(self.player_dic['current_xp'])+'/'+str(self.player_dic['max_xp']),
-                        fg='black',font='Constantia 13 bold',image=self.img_dic['xpnoir'])
+                        font='Constantia 13 bold',image=self.img_dic['xpnoir'])
         xp_label.grid(row=0,column=2,columnspan=1,sticky=E)
         Frame(self.attribut_canvas,height=20).grid(row=1)
 
         txt_point_label = Label(self.attribut_canvas,
                             text='Disponible : ',
-                            fg='black',font='Constantia 13 bold',image=self.img_dic['star'])
+                            font='Constantia 13 bold',image=self.img_dic['star'])
         txt_point_label.grid(row=1,column=0,columnspan=10)
         self.point_label = Label(self.attribut_canvas,
                             text=str(self.player_dic['attribut_point']),
-                            fg='black',font='Constantia 13 bold')
+                            font='Constantia 13 bold')
         self.point_label.grid(row=1,column=1,columnspan=2)
 
 
@@ -133,7 +136,7 @@ class AttributWindow():
                     state=minus_state,font='Constantia 15 bold',fg='red')
             b2.grid(row=i+k,column=3,padx=2)
             b2.bind('<Button-1>',self.minus)
-            l2=Label(self.attribut_canvas,text=attribut_value,fg='black',font='Constantia 16',width=3)
+            l2=Label(self.attribut_canvas,text=attribut_value,font='Constantia 16',width=3)
             l2.grid(row=i+k,column=2)
             self.widget_list.append({'attribut_name':l1,'button1':b1,'button2':b2,'attribut_value':l2,'point_spent':0,'button1_state':plus_state,'button2_state':minus_state})
 

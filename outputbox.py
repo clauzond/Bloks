@@ -3,13 +3,14 @@ import tkinter.scrolledtext as scrolledtext
 
 class OutputBox():
 
-    def __init__(self,canvas,x,y,height,width):
+    def __init__(self,canvas,x,y,height,width,special=''):
         self.canvas = canvas
         self.x = x
         self.y = y
         self.widget = None
         self.width = width
         self.height = height
+        self.special=special
 
     def hidetip(self,*args):
         self.widget.place_forget()
@@ -20,8 +21,14 @@ class OutputBox():
             return
 
 
-        self.widget = scrolledtext.ScrolledText(self.canvas,width=10,height=10,wrap='word',undo=True)
-        self.widget.place(x=self.x,y=self.y,width=self.width,height=self.height)
+        self.widget = scrolledtext.ScrolledText(self.canvas,width=self.width,height=self.height,wrap='word',undo=True)
+
+        if self.special=='':
+            self.widget.place(x=self.x,y=self.y,width=self.width,height=self.height)
+        elif self.special=='pack':
+            self.widget.pack(side=TOP)
+        elif self.special=="grid":
+            self.widget.grid(row=0,column=1)
         self.widget.config(state=DISABLED)
 
         self.i = 1
@@ -51,7 +58,7 @@ if __name__ == '__main__':
     c = Canvas(main_window,width=300,height=300)
     c.pack()
 
-    textbox = OutputBox(canvas=c,x=50,y=50,height=1000,width=100)
+    textbox = OutputBox(canvas=c,x=50,y=50,height=1000,width=1000)
     textbox.show()
     textbox.widget.bind('<a>',textbox.ajouter)
     textbox.widget.bind('<b>',textbox.hidetip)

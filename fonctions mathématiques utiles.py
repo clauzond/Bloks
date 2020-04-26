@@ -13,7 +13,7 @@ def function_chance(x):
     y = x**(1/3)
     return(y)
 
-fun = function_chance
+fun = function_agilite
 l = []
 for i in range(0,100,1):
     l.append(f"{fun(i):0.1f}")

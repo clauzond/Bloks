@@ -4,10 +4,12 @@ import dictionnaires
 
 class SpellWindow():
 
-    def __init__(self,toplevel="",widget=""):
+    def __init__(self,toplevel="",widget="",rel_x=0,rel_y=0):
         self.toplevel = toplevel
         self.widget = widget
         self.spell_window = None
+        self.rel_x = rel_x
+        self.rel_y = rel_y
 
     def hidetip(self):
         tw = self.spell_window
@@ -28,6 +30,7 @@ class SpellWindow():
             if self.toplevel:
                 self.spell_window = Toplevel()
                 self.spell_window.wm_overrideredirect(1)
+                self.spell_window.wm_geometry("+%d+%d"% (self.rel_x,self.rel_y))
                 self.spell_window.focus_force()
             else:
                 self.spell_window = Tk()
@@ -92,23 +95,23 @@ class SpellWindow():
         playerimg = PhotoImage(file=self.player_dic['image'])
         name_label = Label(self.spell_canvas,
                         text=self.player_dic['name'],
-                        fg='black',font=self.bold_font13,image=playerimg)
+                        font=self.bold_font13,image=playerimg)
         name_label.grid(row=0, column=0, sticky=W,columnspan=10)
 
         level_label = Label(self.spell_canvas,
                         text=str(self.player_dic['level']),
-                        fg='black',font=self.bold_font13,image=self.img_dic['starnoir'])
+                        font=self.bold_font13,image=self.img_dic['starnoir'])
         level_label.grid(row=0,column=0,columnspan=10)
 
         xp_label = Label(self.spell_canvas,
                         text=str(self.player_dic['current_xp'])+'/'+str(self.player_dic['max_xp']),
-                        fg='black',font=self.bold_font13,image=self.img_dic['xpnoir'])
+                        font=self.bold_font13,image=self.img_dic['xpnoir'])
         xp_label.grid(row=0,column=0,columnspan=100,sticky=E)
         Frame(self.spell_canvas,height=20).grid(row=1)
 
         txt_point_label = Label(self.spell_canvas,
                             text='Disponible : ',
-                            fg='black',font=self.bold_font13,image=self.img_dic['star'])
+                            font=self.bold_font13,image=self.img_dic['star'])
         if type(self.widget)==str:
             txt_point_label.grid(row=1,column=0,columnspan=10)
         else:
@@ -117,7 +120,7 @@ class SpellWindow():
 
         self.point_label = Label(self.spell_canvas,
                             text=str(self.player_dic['spell_point']),
-                            fg='black',font=self.bold_font13)
+                            font=self.bold_font13)
         self.point_label.grid(row=1,column=1,columnspan=10,sticky=W)
         if type(self.widget)==str:
             self.point_label.grid(row=1,column=1,columnspan=10,sticky=W)
@@ -166,7 +169,7 @@ class SpellWindow():
                     state=minus_state,font=self.bold_font16,fg='red')
             b2.grid(row=i+k,column=3,padx=2)
             b2.bind('<Button-1>',self.minus)
-            l2=Label(self.spell_canvas,text=spell_value,fg='black',font=self.classic_font16,width=3)
+            l2=Label(self.spell_canvas,text=spell_value,font=self.classic_font16,width=3)
             l2.grid(row=i+k,column=2)
 
             b3=Button(self.spell_canvas,

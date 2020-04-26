@@ -67,10 +67,10 @@ class StatsWindow():
         self.stats_window.iconbitmap("img/icone.ico")
 
         self.stats_window.option_add('*Font','Constantia 12')
-        self.stats_window.option_add('*Button.activebackground','darkgray')
-        self.stats_window.option_add('*Button.activeforeground','darkgray')
-        self.stats_window.option_add('*Button.relief','groove')
-        self.stats_window.option_add('*Button.overRelief','ridge')
+        #self.stats_window.option_add('*Button.activebackground','darkgray')
+        #self.stats_window.option_add('*Button.activeforeground','darkgray')
+        #self.stats_window.option_add('*Button.relief','groove')
+        #self.stats_window.option_add('*Button.overRelief','ridge')
         self.stats_window.option_add('*justify','left')
         self.stats_window.option_add('*bg','lightgray')
         self.stats_window.option_add('*compound','left')
@@ -86,18 +86,18 @@ class StatsWindow():
         itsimage = PhotoImage(file=image_dir)
         name_label = Label(self.stats_canvas,
                         text=str(name),
-                        fg='black',font=self.bold_font13,image=itsimage)
+                        font=self.bold_font13,image=itsimage)
         name_label.grid(row=0, column=0)
 
         level_label = Label(self.stats_canvas,
                         text=str(level),
-                        fg='black',font=self.bold_font13,image=self.img_dic['starnoir'])
+                        font=self.bold_font13,image=self.img_dic['starnoir'])
         level_label.grid(row=0,column=1)
 
         if len(category)>0 :
             category_label = Label(self.stats_canvas,
                                 text = str(category),
-                                fg='black',font=self.bold_font13,image=self.img_dic[category])
+                                font=self.bold_font13,image=self.img_dic[category])
             category_label.grid(row=0,column=2)
 
         Frame(self.stats_canvas,height=10).grid(row=1)

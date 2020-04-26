@@ -24,3 +24,17 @@ def rarify_monster(monster_dic):
 
 
         elif r<25:
+
+
+
+# Trouve un encounter random parmi un dossier donné qui contient tous les monstres
+# Le level du mob devra être aux alentours de celui du joueur, sachant ques les mobs Elite et Legendary et 42 ont moins de chance de tomber
+def random_encounter(player_dic,dossier):
+    pass
+
+
+# Calcule les drops que va lacher un monstre (les drops sont dans 'drop_list', si elle est vide/inexistante alors rien ne se passe)
+# Les dropchance seront précisés dans l'item en question, dans une clé sur dictionnaire 'dropchance'
+# Ce(s) drop(s) sera(seront) rarifié(s) au hasard à l'aide de la fonction manipulate_inventory.rarify_item(item,chance)
+def random_drop(monster_dic,chance):
+    pass

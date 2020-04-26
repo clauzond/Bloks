@@ -69,12 +69,9 @@ def load_inventory_dic():
     return(jm.load_file(fulldir='ressources/template/inventory_dic.json'))
 
 
-def dictionnaires_vierge(loadimg=False,loadspelltip=False,loadspellname=False,loadlevelupdics=False):
+def dictionnaires_vierge(loadimg=False):
     if loadimg:
         return(load_images())
-
-    elif loadlevelupdics:
-        return(load_levelupdics())
 
     else:
         attribut_dic = load_attribut_dic()

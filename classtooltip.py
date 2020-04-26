@@ -20,7 +20,7 @@ class ToolTip(object):
         tw.wm_overrideredirect(1)
         tw.wm_geometry("+%d+%d" % (x, y))
         label = Label(tw, text=self.text, justify=LEFT,
-                      background="#ffffe0", relief=SOLID, borderwidth=1,
+                       relief=SOLID, borderwidth=1,
                       font=("Constantia", "11", "normal"))
         label.pack(ipadx=1)
 

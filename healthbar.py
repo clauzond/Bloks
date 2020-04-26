@@ -6,7 +6,7 @@ import tkinter.ttk as ttk
 class HealthBar():
 
 
-    def __init__(self,canvas,x,y,length,height,maximum,color):
+    def __init__(self,canvas,x,y,length,height,maximum,color,special=""):
         # La longueur maximuale de la barre sera fixe.
         # Il faudra donc tout compter en "relatif"
         self.length = length
@@ -17,6 +17,9 @@ class HealthBar():
         self.canvas = canvas
 
         self.widget = self.label = None
+
+        self.special = special
+
 
         self.color = color
         self.x = x
@@ -45,10 +48,17 @@ class HealthBar():
 
 
         self.widget = ttk.Progressbar(self.canvas,style="blue.Horizontal.TProgressbar",orient=HORIZONTAL,length=self.length,maximum=self.maximum,mode='determinate',value=self.current_value)
-        self.widget.place(x=self.x,y=self.y,height=self.height)
 
+        if self.special == "right":
+            self.widget.place(x=self.x,y=self.y,height=self.height,anchor="nw")
+        else:
+            self.widget.place(x=self.x,y=self.y,height=self.height)
         self.label = Label(self.canvas,text=f"{self.current_value:0.1f}/{self.maximum:0.1f}")
-        self.label.place(x=self.x,y=self.y+25)
+
+        if self.special == "right":
+            self.label.place(x=self.x+self.length,y=self.y+25,anchor="ne")
+        else:
+            self.label.place(x=self.x,y=self.y+25)
 
 
 
@@ -121,7 +131,7 @@ if __name__=="__main__":
     wc = Canvas(w,width=500)
     wc.pack(fill=BOTH,expand=True,padx=0,pady=0)
 
-    healthbar = HealthBar(canvas=wc,length=100,height=25,maximum=10000,x=10,y=0,color="red")
+    healthbar = HealthBar(canvas=wc,length=300,height=25,maximum=10000,x=10,y=0,color="red",special="right")
     healthbar.show()
     healthbar.widget.bind('<Button-1>',healthbar.func)
 

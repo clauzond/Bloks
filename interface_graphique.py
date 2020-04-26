@@ -13,38 +13,38 @@ class Main_Window():
         self.main_window.iconbitmap("img/icone.ico")
 
         self.main_window.option_add('*Font','Constantia 12')
-        self.main_window.option_add('*Button.activebackground','darkgray')
-        self.main_window.option_add('*Button.activeforeground','darkgray')
-        self.main_window.option_add('*Button.relief','groove')
+        self.main_window.option_add('*Button.relief','flat')
         self.main_window.option_add('*Button.overRelief','ridge')
         self.main_window.option_add('*justify','left')
-        self.main_window.option_add('*background','lightgray')
+        self.backgroundcolor='#8BD8BD'
+        self.foregroundcolor='#243665'
+        self.main_window.option_add('*background',self.backgroundcolor)
+        self.main_window.option_add('*foreground',self.foregroundcolor)
         self.main_window.option_add('*compound','left')
 
-        self.main_window.configure(bg='gray')
+        #self.main_window.configure(bg='gray')
         self.main_window.attributes("-fullscreen", True)
 
 
 
         # Actuellement : 1280 * 720
-        self.main_canvas = Canvas(self.main_window,width=16*80,height=9*80)
-        self.main_canvas.pack(expand=True)
+        #self.main_canvas = Canvas(self.main_window,width=16*80,height=9*80)
+        #self.main_canvas.pack(expand=True,fill="both")
 
         # Actuellement : 1280 * 560
-        self.game_canvas = Canvas(self.main_canvas,width=16*80,height=7*80)
-        self.game_canvas.pack(expand=True,side=TOP,fill=BOTH)
+        self.game_canvas = Canvas(self.main_window,width=16*80,height=7*80)
+        self.game_canvas.pack(expand=True,fill="both")
         self.game_canvas.update()
 
-        self.menu_canvas = Canvas(self.main_canvas,width=8*80,height=2*80)
-        self.menu_canvas.pack(expand=True,side=LEFT,fill=BOTH)
-        self.menu_canvas.update()
+        height = self.game_canvas.winfo_height()
+        width = self.game_canvas.winfo_width()
 
-        self.other_canvas = Canvas(self.main_canvas,width=8*80,height=2*80)
-        self.other_canvas.pack(expand=True,side=RIGHT,fill=BOTH)
-        self.other_canvas.update()
+        import outputbox
+        self.outputbox = outputbox.OutputBox(canvas=self.game_canvas,x=width-300,y=height-300-200,height=300,width=300)
+        self.outputbox.show()
 
+        self.myMap = None
         self.combat = False
-        self.exploration = False
 
         import manipulate_json as jm
         self.player_dic = jm.load_file(filename='player_dic',player_name=player_name)
@@ -52,14 +52,14 @@ class Main_Window():
         self.attribut_dic = jm.load_file(filename='attribut_dic',player_name=player_name)
         self.inventory_dic = jm.load_file(filename='inventory_dic',player_name=player_name)
 
-        self.draw_menu_canvas()
+        self.draw_menu()
 
 
-
-    def save_all(self):
+    # Une fonction qui DOIT ne rien renvoyer
+    def save_all(self,*args):
         import manipulate_stats as ms
 
-        self.player_dic = manipulate_stats.calculate_playerstats(attribut_dic=self.attribut_dic,player_dic = self.player_dic)
+        self.player_dic = ms.calculate_playerstats(attribut_dic=self.attribut_dic,player_dic = self.player_dic)
 
         import manipulate_json as jm
 
@@ -68,34 +68,49 @@ class Main_Window():
         jm.save_file(self.inventory_dic,filename='inventory_dic',player_name=self.player_dic['name'])
         jm.save_file(self.spell_dic,filename='spell_dic',player_name=self.player_dic['name'])
 
-        print('Everything has been saved !')
+        #self.outputbox.add_text('Everything has been saved')
 
 
+    # Une fonction qui DOIT ne rien renvoyer
     def reload_everything(self,*args):
-        print("Everything was loaded")
+        import manipulate_stats as ms
+
+        self.player_dic = ms.calculate_playerstats(attribut_dic=self.attribut_dic,player_dic = self.player_dic)
+
+        import manipulate_json as jm
+
         self.player_dic = jm.load_file(filename='player_dic',player_name=self.player_dic['name'])
         self.spell_dic = jm.load_file(filename='spell_dic',player_name=self.player_dic['name'])
         self.attribut_dic = jm.load_file(filename='attribut_dic',player_name=self.player_dic['name'])
         self.inventory_dic = jm.load_file(filename='inventory_dic',player_name=self.player_dic['name'])
 
+        #self.outputbox.add_text('Everything has been loaded')
+
+
+
+
 
     ## Menu canvas related functions ##
 
-    def draw_menu_canvas(self):
-        self.StatsButton = Button(self.menu_canvas,text="Stats",command=self.openstatwindow)
-        self.StatsButton.pack(fill='both',expand=True,side=LEFT)
+    def draw_menu(self):
+        height = self.game_canvas.winfo_height()
 
-        self.AttributButton = Button(self.menu_canvas,text="Attributs",command=self.openattributwindow)
-        self.AttributButton.pack(fill='both',expand=True,side=LEFT)
 
-        self.SpellButton = Button(self.menu_canvas,text="Spells",command=self.openspellwindow)
-        self.SpellButton.pack(fill='both',expand=True,side=LEFT)
+        self.StatsButton = Button(self.game_canvas,text="Stats",command=self.openstatwindow)
+        self.StatsButton.place(x=50,y=height-50,anchor='s')
 
-        self.InventoryButton = Button(self.menu_canvas,text="Inventaire",command=self.openinventorywindow)
-        self.InventoryButton.pack(fill='both',expand=True,side=LEFT)
 
-        self.LevelupButton = Button(self.menu_canvas,text="Level Up",command=self.openlevelupwindow)
-        self.LevelupButton.pack(fill='both',expand=True,side=LEFT)
+        self.AttributButton = Button(self.game_canvas,text="Attributs",command=self.openattributwindow)
+        self.AttributButton.place(x=50+150,y=height-50,anchor='s')
+
+        self.SpellButton = Button(self.game_canvas,text="Spells",command=self.openspellwindow)
+        self.SpellButton.place(x=50+300,y=height-50,anchor='s')
+
+        self.InventoryButton = Button(self.game_canvas,text="Inventaire",command=self.openinventorywindow)
+        self.InventoryButton.place(x=50+450,y=height-50,anchor='s')
+
+        self.LevelupButton = Button(self.game_canvas,text="Level Up",command=self.openlevelupwindow)
+        self.LevelupButton.place(x=50+600,y=height-50,anchor='s')
 
     def openstatwindow(self):
         import stats_window as sw
@@ -107,24 +122,52 @@ class Main_Window():
         import spell_window as spw
 
         w = spw.SpellWindow(toplevel=True)
-        w.show(player_dic=self.player_dic,spell_dic=self.spell_dic,function=self.reload_everything)
+        w.show(player_dic=self.player_dic,spell_dic=self.spell_dic,function=self.save_all)
 
     def openinventorywindow(self):
         import inventory_window as iw
 
-        w = iw.InventoryWindow(toplevel=True,player_dic=self.player_dic,inventory_dic=self.inventory_dic,attribut_dic=self.attribut_dic,function = self.reload_everything)
+        w = iw.InventoryWindow(toplevel=True,player_dic=self.player_dic,inventory_dic=self.inventory_dic,attribut_dic=self.attribut_dic,function = self.save_all,rel_x=50,rel_y=50)
 
     def openattributwindow(self):
         import attribut_window as aw
 
         w = aw.AttributWindow(toplevel=True)
-        w.show(player_dic=self.player_dic,attribut_dic=self.attribut_dic,function=self.reload_everything)
+        w.show(player_dic=self.player_dic,attribut_dic=self.attribut_dic,function=self.save_all)
 
     def openlevelupwindow(self):
         import levelup_window as luw
 
-        w = luw.Levelup_Window(toplevel=True,player_dic=self.player_dic,attribut_dic=self.attribut_dic,function = self.reload_everything)
+        w = luw.Levelup_Window(toplevel=True,player_dic=self.player_dic,attribut_dic=self.attribut_dic,function = self.save_all)
 
+
+
+    ## Map-related functions ##
+    import manipulate_map as mm
+    def load_map(self,mapdir,mapname,tilename,imgdir):
+        self.myMap = mm.load_map(mapdir,mapname,tilename,imgdir)
+
+
+    def clear_map(self):
+        self.game_canvas.delete('all')
+
+    def draw_map(self,x_debut,y_debut):
+        if self.myMap is None:
+            return()
+
+
+        self.myMap.draw_map(self.game_canvas,x_debut=x_debut,y_debut=y_debut)
+
+    def move_left(self):
+        pass
+    def move_right(self):
+        pass
+    def move_up(self):
+        pass
+    def move_down(self):
+        pass
+    def spawn_player(self):
+        pass
 
 
 
@@ -152,7 +195,7 @@ class Main_Window():
 
         self.player_label = Label(self.game_canvas,
                                 text=f"{self.player_dic['name']}",font="Constantia 13 bold")
-        self.player_label.place(x=xl+50,y=y_label)
+        self.player_label.place(x=xl,y=y_label)
 
         y_healthbar = y_label + 25
 
@@ -162,16 +205,16 @@ class Main_Window():
 
         self.bind_player_tooltip()
 
+        height = self.game_canvas.winfo_height()
+        width = self.game_canvas.winfo_width()
 
-
-        x_outputbox = self.game_canvas.winfo_width() - 300 - 2 # pour l'outputbox
-        x_monster_label = x_outputbox - 220
+        x_monster_label = width - 220
         self.monster_label = Label(self.game_canvas,
                                 text=f"{self.monster_dic['name']}",font="Constantia 13 bold")
-        self.monster_label.place(x=x_monster_label, y=y_label)
+        self.monster_label.place(x=x_monster_label+200, y=y_label,anchor='ne')
 
         hpmax = self.monster_dic['stats']['HP']
-        self.monster_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=200,height=25,maximum=hpmax,x=(x_outputbox - 220),y=y_healthbar,color="red")
+        self.monster_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=200,height=25,maximum=hpmax,x=x_monster_label,y=y_healthbar,color="red",special="right")
         self.monster_healthbar.show()
         self.bind_monster_tooltip()
 
@@ -179,26 +222,23 @@ class Main_Window():
         # monstre en rouge, à droite
         speed1=self.player_stats['Agilité']
         speed2=self.monster_dic['stats']['Agilité']
-        x_speedbar = (xl + x_monster_label)/2 + 50
-        self.speedbar = speedbar.SpeedBar(canvas=self.game_canvas,x=x_speedbar,y=50,length=200,max1=100,max2=100,speed1=speed1,speed2=speed2,color1="#FFFFFF",color2="red",bg="gray")
+        x_speedbar = (xl + x_monster_label)/2 + 90
+        self.speedbar = speedbar.SpeedBar(canvas=self.game_canvas,x=x_speedbar,y=20,length=200,max1=100,max2=100,speed1=speed1,speed2=speed2,color1="#FFFFFF",color2="red",backgroundcolor=self.backgroundcolor,bordercolor=self.foregroundcolor)
         self.speedbar.show()
 
 
 
-        height = self.game_canvas.winfo_height() - 1
-        self.outputbox = outputbox.OutputBox(canvas=self.game_canvas,x=x_outputbox,y=0,height=height,width=300)
-        self.outputbox.show()
 
-        # self.other_canvas
-        self.playbutton = Button(self.other_canvas,text="PLAY",command=self.play_combat_loop)
-        self.playbutton.pack(expand=False,fill='x',padx=2,pady=5)
+        # self.game_canvas
+        self.playbutton = Button(self.game_canvas,text="PLAY",command=self.play_combat_loop)
+        self.playbutton.place(x=width-400,y=height-50,anchor='s')
 
-        self.attackbutton = Button(self.other_canvas,text="ATTACK",state=DISABLED,command=self.player_attack)
-        self.attackbutton.pack(expand=False,fill='x',padx=2,pady=5)
+        self.attackbutton = Button(self.game_canvas,text="ATTACK",state=DISABLED,command=self.player_attack)
+        self.attackbutton.place(x=width-250,y=height-50,anchor='s')
 
 
-        self.defendbutton = Button(self.other_canvas,text="DEFEND",state=DISABLED,command=self.player_defend)
-        self.defendbutton.pack(expand=False,fill='x',padx=2,pady=5)
+        self.defendbutton = Button(self.game_canvas,text="DEFEND",state=DISABLED,command=self.player_defend)
+        self.defendbutton.place(x=width-100,y=height-50,anchor='s')
 
         self.order = None
 
@@ -218,7 +258,7 @@ class Main_Window():
         import stats_window as sw
         toolTip = sw.StatsWindow(widget = self.monster_healthbar.widget)
         def enter(event):
-            toolTip.show(stat_dic=self.monster_dic['stats'],name=self.monster_dic['name'],level=self.monster_dic['level'],image_dir=self.monster_dic['image'],category=self.monster_dic['category'],x_relative=-200)
+            toolTip.show(stat_dic=self.monster_dic['stats'],name=self.monster_dic['name'],level=self.monster_dic['level'],image_dir=self.monster_dic['image'],category=self.monster_dic['category'],x_relative=-500)
         def leave(event):
             toolTip.hidetip()
         self.monster_healthbar.widget.bind('<Enter>', enter)
@@ -227,10 +267,10 @@ class Main_Window():
     def play_combat_loop(self):
         self.order = self.speedbar.order
 
-        if self.order is "wait":
+        if self.order == "wait":
             self.main_window.after(20,self.play_combat_loop)
 
-        elif self.order is None:
+        elif self.order == None:
 
             self.order = self.speedbar.lets_go()
 
@@ -308,7 +348,6 @@ class Main_Window():
             self.player_wincombat()
 
         else:
-            self.game_canvas.update()
             self.order = None
             self.playerturn = False
             self.speedbar.order = None
@@ -364,9 +403,12 @@ class Main_Window():
         self.player_healthbar.hidetip()
         self.monster_healthbar.hidetip()
         self.speedbar.hidetip()
-        self.outputbox.hidetip()
         self.player_label.destroy()
         self.monster_label.destroy()
+
+        self.attackbutton.destroy()
+        self.defendbutton.destroy()
+        self.playbutton.destroy()
 
         self.player_stats = None
         self.equipped_list = None
@@ -379,6 +421,7 @@ class Main_Window():
 if __name__ == "__main__":
     global w
     import manipulate_json as jm
+    import manipulate_map as mm
 
     player_dic = jm.load_file('player_dic','Blue Dragon')
     attribut_dic =jm.load_file('attribut_dic','Blue Dragon')
@@ -386,7 +429,11 @@ if __name__ == "__main__":
     inventory_dic = jm.load_file('inventory_dic','Blue Dragon')
     monster_dic = jm.load_file(fulldir="ressources/template/monster/slime_bleu.json")
 
+    mapdir = "img/stock/_tiles/Tiled software"
+    mapname = "my_first_map"
+    tilename = "bloks"
 
+    imgdir = "img/stock/_tiles/non resized"
 
 
 
@@ -394,10 +441,8 @@ if __name__ == "__main__":
 
     w.show_combat(monster_dic=monster_dic)
 
-#    w.outputbox.add_text("Salut\nCeci\nest\nun\ntest")
-    #w.speedbar.start()
-    #w.healthbar.take_hit(1000)
-
+    w.load_map(mapdir,mapname,tilename,imgdir)
+    w.draw_map(0,0)
 
     w.main_window.focus_force()
     w.main_window.mainloop()

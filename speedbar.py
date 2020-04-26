@@ -5,7 +5,7 @@ from math import log
 class SpeedBar():
 
 
-    def __init__(self,canvas,x,y,length,max1,max2,speed1,speed2,color1,color2,bg):
+    def __init__(self,canvas,x,y,length,max1,max2,speed1,speed2,color1,color2,backgroundcolor,bordercolor):
         # La longueur maximuale de la barre sera fixe.
         # Il faudra donc tout compter en "relatif"
         self.length = length
@@ -34,7 +34,8 @@ class SpeedBar():
         self.x = x
         self.y = y
 
-        self.bg = bg
+        self.backgroundcolor = backgroundcolor
+        self.bordercolor = bordercolor
 
         self.order = None
 
@@ -65,16 +66,16 @@ class SpeedBar():
         style = ttk.Style()
         style.theme_use('clam')
         # troughcolor pour le fond, background pour le devant de la barre, bordercolor pour les bords, lightcolor/darkcolor pour le haut/bas des bords
-        style.configure("TProgressbar", background=self.color1,troughcolor=self.bg)
+        style.configure("TProgressbar", background=self.color1,troughcolor=self.backgroundcolor,bordercolor=self.bordercolor,lightcolor=self.backgroundcolor,darkcolor=self.backgroundcolor)
 
 
         self.bar1 = ttk.Progressbar(self.canvas,style="TProgressbar",orient=VERTICAL,length=self.length,maximum=self.max1,mode='determinate',value=self.value1)
-        self.bar1.place(x=self.x,y=self.y,height=self.length,width=20)
+        self.bar1.place(x=self.x,y=self.y,height=self.length,width=30)
 
 
-        style.configure("red.Horizontal.TProgressbar",background=self.color2,troughcolor=self.bg)
+        style.configure("red.Horizontal.TProgressbar",background=self.color2,troughcolor=self.backgroundcolor,bordercolor=self.bordercolor,lightcolor=self.backgroundcolor,darkcolor=self.backgroundcolor)
         self.bar2 = ttk.Progressbar(self.canvas,style="red.Horizontal.TProgressbar",orient=VERTICAL,length=self.length,maximum=self.max2,mode='determinate',value=self.value2)
-        self.bar2.place(x=self.x + 20 ,y=self.y,height=self.length,width=20)
+        self.bar2.place(x=self.x + 30 ,y=self.y,height=self.length,width=30)
 
 
 

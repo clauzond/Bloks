@@ -4,13 +4,14 @@ import dictionnaires
 
 class Levelup_Window():
 
-    def __init__(self,toplevel,player_dic,attribut_dic,function=None):
+    def __init__(self,toplevel,player_dic,attribut_dic,function=None,rel_x=0,rel_y=0):
 
         self.function = function
 
         if toplevel:
             self.level_window = Toplevel()
             self.level_window.wm_overrideredirect(1)
+            self.level_window.wm_geometry('+%d+%d' % (rel_x,rel_y))
             self.level_window.focus_force()
         else:
             self.level_window = Tk()
@@ -41,17 +42,17 @@ class Levelup_Window():
         playerimg = PhotoImage(file=self.player_dic['image'])
         name_label = Label(self.level_canvas,
                         text=self.player_dic['name'],
-                        fg='black',font="Constantia 13 bold",image=playerimg)
+                        font="Constantia 13 bold",image=playerimg)
         name_label.grid(row=0, column=0, sticky=W,columnspan=10)
 
         self.level_label = Label(self.level_canvas,
                         text=str(self.player_dic['level']),
-                        fg='black',font="Constantia 13 bold",image=self.img_dic['starnoir'])
+                        font="Constantia 13 bold",image=self.img_dic['starnoir'])
         self.level_label.grid(row=0,column=0,columnspan=10)
 
         self.xp_label = Label(self.level_canvas,
                         text=str(self.player_dic['current_xp'])+'/'+str(self.player_dic['max_xp']),
-                        fg='black',font='Constantia 13 bold',image=self.img_dic['xpnoir'])
+                        font='Constantia 13 bold',image=self.img_dic['xpnoir'])
         self.xp_label.grid(row=0,column=0,columnspan=100,sticky=E)
 
 
@@ -65,7 +66,7 @@ class Levelup_Window():
         txt=f"Attribut point{s} : {str(self.player_dic['attribut_point'])}"
         self.txt_point_label1 = Label(self.level_canvas,
                             text=txt,
-                            fg='black',font='Constantia 13 bold',image=self.img_dic['star'])
+                            font='Constantia 13 bold',image=self.img_dic['star'])
         self.txt_point_label1.grid(row=1,column=0,columnspan=10)
 
         if int(self.player_dic['spell_point'])>1:
@@ -75,7 +76,7 @@ class Levelup_Window():
         txt=f"Spell point{s} : {str(self.player_dic['spell_point'])}"
         self.txt_point_label2 = Label(self.level_canvas,
                             text=txt,
-                            fg='black',font='Constantia 13 bold',image=self.img_dic['star'])
+                            font='Constantia 13 bold',image=self.img_dic['star'])
         self.txt_point_label2.grid(row=2,column=0,columnspan=10)
 
         # Séparateur
@@ -84,15 +85,15 @@ class Levelup_Window():
 
         self.txt_levelup1 = Label(self.level_canvas,
                                 text=f'',
-                                fg='black',font='Constantia 13 bold')
+                                font='Constantia 13 bold')
         self.txt_levelup1.grid(row=4,column=0,columnspan=10)
         self.txt_levelup2 = Label(self.level_canvas,
                                 text=f"Vous n'avez pas assez d'expérience pour level up...",
-                                fg='black',font='Constantia 13 bold')
+                                font='Constantia 13 bold')
         self.txt_levelup2.grid(row=5,column=0,columnspan=10)
         self.txt_levelup3 = Label(self.level_canvas,
                                 text=f'',
-                                fg='black',font='Constantia 13 bold')
+                                font='Constantia 13 bold')
         self.txt_levelup3.grid(row=6,column=0,columnspan=10)
 
         # Séparateur
@@ -127,7 +128,7 @@ class Levelup_Window():
 
         if int(self.player_dic['current_xp'])>=int(self.player_dic['max_xp']):
 
-            dic = dictionnaires.dictionnaires_vierge(loadlevelupdics=True)
+            #dic = dictionnaires.dictionnaires_vierge(loadlevelupdics=True)
             mxlist = self.player_dic['max_xp_growth']
             apglist = self.player_dic['attribut_point_growth']
             spglist = self.player_dic['spell_point_growth']

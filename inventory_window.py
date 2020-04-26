@@ -6,10 +6,11 @@ from copy import deepcopy
 class InventoryWindow():
 
 
-    def __init__(self,toplevel,player_dic,attribut_dic,inventory_dic,function=None):
+    def __init__(self,toplevel,player_dic,attribut_dic,inventory_dic,function=None,rel_x=0,rel_y=0):
         if toplevel:
             self.inventory_window = Toplevel()
             self.inventory_window.wm_overrideredirect(1)
+            self.inventory_window.wm_geometry("+%d+%d" % (rel_x,rel_y))
             self.inventory_window.focus_force()
         else:
             self.inventory_window = Tk()
@@ -18,15 +19,16 @@ class InventoryWindow():
         self.inventory_window.iconbitmap("img/icone.ico")
 
         self.inventory_window.option_add('*Font','Constantia 12')
-        self.inventory_window.option_add('*Button.activebackground','darkgray')
-        self.inventory_window.option_add('*Button.activeforeground','darkgray')
-        self.inventory_window.option_add('*Button.relief','groove')
-        self.inventory_window.option_add('*Button.overRelief','ridge')
+        #self.inventory_window.option_add('*Button.activebackground','darkgray')
+        #self.inventory_window.option_add('*Button.activeforeground','darkgray')
+        #self.inventory_window.option_add('*Button.relief','groove')
+        #self.inventory_window.option_add('*Button.overRelief','ridge')
         self.inventory_window.option_add('*justify','left')
         self.inventory_window.option_add('*bg','lightgray')
         self.inventory_window.option_add('*compound','left')
 
         self.frame = Frame(self.inventory_window,height=1,width=1)
+        self.frame.pack()
 
         self.inventory_canvas = Canvas(self.frame)
         self.inventory_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
@@ -111,34 +113,39 @@ class InventoryWindow():
                 self.equipped_img_list.append(self.baseimg_dic['nothing'])
 
     def clear_everything(self):
+        self.function()
+
         self.inventory_canvas.destroy()
+        self.frame.destroy()
 
         self.frame = Frame(self.inventory_window,height=1,width=1)
+        self.frame.pack()
 
-        self.inventory_canvas = Canvas(self.inventory_window)
+        self.inventory_canvas = Canvas(self.frame)
         self.inventory_canvas.pack(fill=BOTH,expand=True,padx=20,pady=20)
+        self.inventory_canvas.update()
 
         self.create_imgdic()
 
         # Statistiques de base du joueur
         name_label = Label(self.inventory_canvas,
                         text=self.player_dic['name'],
-                        fg='black',font="Constantia 13 bold",image=self.playerimg)
+                        font="Constantia 13 bold",image=self.playerimg)
         name_label.grid(row=0, column=0, columnspan=1)
 
         money_label = Label(self.inventory_canvas,
                         text=self.player_dic['money'],
-                        fg='black',font="Constantia 13 bold",image=self.baseimg_dic['money'])
+                        font="Constantia 13 bold",image=self.baseimg_dic['money'])
         money_label.grid(row=0,column=1,columnspan=1)
 
         self.level_label = Label(self.inventory_canvas,
                         text=str(self.player_dic['level']),
-                        fg='black',font="Constantia 13 bold",image=self.baseimg_dic['starnoir'])
+                        font="Constantia 13 bold",image=self.baseimg_dic['starnoir'])
         self.level_label.grid(row=0,column=20,columnspan=1)
 
         self.xp_label = Label(self.inventory_canvas,
                         text=str(self.player_dic['current_xp'])+'/'+str(self.player_dic['max_xp']),
-                        fg='black',font='Constantia 13 bold',image=self.baseimg_dic['xpnoir'])
+                        font='Constantia 13 bold',image=self.baseimg_dic['xpnoir'])
         self.xp_label.grid(row=0,column=21,columnspan=1)
 
 
@@ -252,7 +259,7 @@ class InventoryWindow():
             ligne,colonne = self.n_to_coord(i)
 
             itemlabel=Label(self.inventory_canvas,name=f'0|{i}',
-                    image=img,relief=GROOVE,text=f"{number_owned}",compound="top")
+                    image=img,relief=FLAT,text=f"{number_owned}",compound="top")
             itemlabel.grid(row=a+ligne,column=b+colonne)
             itemlabel.bind('<Button-1>',self.bind_label)
 
@@ -282,7 +289,7 @@ class InventoryWindow():
 
     def groove_all_label(self):
         for label in self.current_widgetlist:
-            label.config(relief=GROOVE)
+            label.config(relief=FLAT)
             label.update()
 
     def n_to_coord(self,n):

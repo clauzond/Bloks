@@ -130,3 +130,12 @@ def calculate_damage_monster(monster_stats,player_stats,element):
         dommage_total = 0
 
     return(dommage_total)
+
+# Fonction qui détermine les chances de fuites selon la situation actuelle
+# Renvoie un booléen : True s'il réussit, False sinon
+def chance_de_fuire(player_hpmax,player_dic,monster_hpmax,monster_dic):
+    pass
+# Fonction qui détermine les chances de crit de l'attaque
+# Renvoie un booléen : True si c'est un cit, False sinon
+def chance_de_crit(player_dic):
+    pass

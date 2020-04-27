@@ -6,7 +6,7 @@ from copy import deepcopy
 class InventoryWindow():
 
 
-    def __init__(self,toplevel,player_dic,attribut_dic,inventory_dic,function=None,rel_x=0,rel_y=0):
+    def __init__(self,toplevel,player_dic,attribut_dic,inventory_dic,function=lambda :None,rel_x=0,rel_y=0):
         if toplevel:
             self.inventory_window = Toplevel()
             self.inventory_window.wm_overrideredirect(1)

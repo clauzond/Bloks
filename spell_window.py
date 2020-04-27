@@ -4,12 +4,10 @@ import dictionnaires
 
 class SpellWindow():
 
-    def __init__(self,toplevel="",widget="",rel_x=0,rel_y=0):
+    def __init__(self,toplevel="",widget=""):
         self.toplevel = toplevel
         self.widget = widget
         self.spell_window = None
-        self.rel_x = rel_x
-        self.rel_y = rel_y
 
     def hidetip(self):
         tw = self.spell_window
@@ -20,7 +18,7 @@ class SpellWindow():
             c.destroy()
             tw.destroy()
 
-    def show(self,player_dic,spell_dic,function=None):
+    def show(self,player_dic,spell_dic,function=lambda :None,rel_x=0,rel_y=0):
         if self.spell_window:
             return
 
@@ -30,7 +28,7 @@ class SpellWindow():
             if self.toplevel:
                 self.spell_window = Toplevel()
                 self.spell_window.wm_overrideredirect(1)
-                self.spell_window.wm_geometry("+%d+%d"% (self.rel_x,self.rel_y))
+                self.spell_window.wm_geometry("+%d+%d"% (rel_x,rel_y))
                 self.spell_window.focus_force()
             else:
                 self.spell_window = Tk()
@@ -213,8 +211,7 @@ class SpellWindow():
         jm.save_file(self.player_dic,filename='player_dic',player_name=self.player_dic['name'])
         jm.save_file(self.spell_dic,filename='spell_dic',player_name=self.player_dic['name'])
 
-        if self.function is not None:
-            self.function()
+        self.function()
 
         self.spell_window.destroy()
 
@@ -250,6 +247,8 @@ class SpellWindow():
 
             self.widget_list[i]['spell_value'].config(fg='green')
             self.widget_list[i]['spell_value'].update()
+
+            self.function()
 
 
     # -1 au spell correspondant
@@ -287,6 +286,7 @@ class SpellWindow():
 
                 self.widget_list[i]['spell_value'].config(fg='black')
                 self.widget_list[i]['spell_value'].update()
+            self.function()
 
 
     def enable_all_buttons(self,type):
@@ -353,6 +353,7 @@ class SpellWindow():
             self.widget_list[i]['button3'].config(text=f'< {spell_bind} >')
             self.widget_list[i]['button3'].update()
             self.bind_state=(-1,'off')
+            self.function()
 
 
 
@@ -367,6 +368,8 @@ class SpellWindow():
         self.spell_dic['active'] = spell_id
         self.player_dic['active_spell'] = self.spell_dic[spell_id]
         self.underline_activebind()
+
+        self.function()
 
 
 

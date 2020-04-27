@@ -56,6 +56,7 @@ class Main_Window():
 
 
     # Une fonction qui DOIT ne rien renvoyer
+    # Elle sera utilisée régulièrement, quand un changement est effectué "globalement dans les dictionnaires", mais pas réellement dans le disque
     def save_all(self,*args):
         import manipulate_stats as ms
 
@@ -68,7 +69,7 @@ class Main_Window():
         jm.save_file(self.inventory_dic,filename='inventory_dic',player_name=self.player_dic['name'])
         jm.save_file(self.spell_dic,filename='spell_dic',player_name=self.player_dic['name'])
 
-        #self.outputbox.add_text('Everything has been saved')
+        self.outputbox.add_text('Everything has been saved')
 
 
     # Une fonction qui DOIT ne rien renvoyer
@@ -112,33 +113,49 @@ class Main_Window():
         self.LevelupButton = Button(self.game_canvas,text="Level Up",command=self.openlevelupwindow)
         self.LevelupButton.place(x=50+600,y=height-50,anchor='s')
 
+
     def openstatwindow(self):
         import stats_window as sw
 
+        x = self.game_canvas.winfo_width() / 4
+        y = self.game_canvas.winfo_height() / 4 - 100
+
         w = sw.StatsWindow(toplevel=True)
-        w.show(stat_dic=self.player_dic['stats'],name=self.player_dic['name'],level=self.player_dic['level'],image_dir=self.player_dic['image'])
+        w.show(stat_dic=self.player_dic['stats'],name=self.player_dic['name'],level=self.player_dic['level'],image_dir=self.player_dic['image'],rel_x=x,rel_y=y)
 
     def openspellwindow(self):
         import spell_window as spw
 
+        x = self.game_canvas.winfo_width() / 4
+        y = self.game_canvas.winfo_height() / 4 - 100
+
         w = spw.SpellWindow(toplevel=True)
-        w.show(player_dic=self.player_dic,spell_dic=self.spell_dic,function=self.save_all)
+        w.show(player_dic=self.player_dic,spell_dic=self.spell_dic,function=self.save_all,rel_x=x,rel_y=y)
 
     def openinventorywindow(self):
         import inventory_window as iw
 
-        w = iw.InventoryWindow(toplevel=True,player_dic=self.player_dic,inventory_dic=self.inventory_dic,attribut_dic=self.attribut_dic,function = self.save_all,rel_x=50,rel_y=50)
+        x = self.game_canvas.winfo_width() / 4
+        y = self.game_canvas.winfo_height() / 4 - 100
+
+        w = iw.InventoryWindow(toplevel=True,player_dic=self.player_dic,inventory_dic=self.inventory_dic,attribut_dic=self.attribut_dic,function = self.save_all,rel_x=x,rel_y=y)
 
     def openattributwindow(self):
         import attribut_window as aw
 
+        x = self.game_canvas.winfo_width() / 4
+        y = self.game_canvas.winfo_height() / 4 - 100
+
         w = aw.AttributWindow(toplevel=True)
-        w.show(player_dic=self.player_dic,attribut_dic=self.attribut_dic,function=self.save_all)
+        w.show(player_dic=self.player_dic,attribut_dic=self.attribut_dic,function=self.save_all,rel_x=x,rel_y=y)
 
     def openlevelupwindow(self):
         import levelup_window as luw
 
-        w = luw.Levelup_Window(toplevel=True,player_dic=self.player_dic,attribut_dic=self.attribut_dic,function = self.save_all)
+        x = self.game_canvas.winfo_width() / 4
+        y = self.game_canvas.winfo_height() / 4 - 100
+
+        w = luw.Levelup_Window(toplevel=True,player_dic=self.player_dic,attribut_dic=self.attribut_dic,function = self.save_all,rel_x=x,rel_y=y)
 
 
 
@@ -148,15 +165,51 @@ class Main_Window():
         self.myMap = mm.load_map(mapdir,mapname,tilename,imgdir)
 
 
+    def load_player(self,player_imgdir):
+        import manipulate_showplayer as msp
+        self.player_image = PhotoImage(file=player_imgdir)
+        self.showplayer = msp.ShowPlayer(window=self.main_window,
+                                    draw_map_function = self.draw_map,
+                                    game_canvas = self.game_canvas,
+                                    player_photoimage = self.player_image,
+                                    outputbox=self.outputbox,
+                                    x_limit = self.myMap.x_limit,
+                                    y_limit = self.myMap.y_limit)
+
+
+
+
+
+    def test(self,event):
+        self.outputbox.add_text(text=f"{event.x},{event.y}")
+
     def clear_map(self):
         self.game_canvas.delete('all')
 
+
+    # La fonction draw_map doit prendre en argument seulement les x,y du bloc tout en haut à gauche de l'écran
+    # Attention : x et y sont en "numéro de bloc"
+    # 1,1 correspond donc au bloc en haut à gauche ligne 1 colonne 1
+    # Ainsi, si x_debut = 0.5, on ne voit affiché que la moitié (en x) du bloc en haut à gauche
     def draw_map(self,x_debut,y_debut):
         if self.myMap is None:
             return()
 
+        self.myMap.draw_map(canvas=self.game_canvas,x_debut=x_debut,y_debut=y_debut)
 
-        self.myMap.draw_map(self.game_canvas,x_debut=x_debut,y_debut=y_debut)
+    def draw_player(self,x_debut,y_debut):
+        self.showplayer.draw(x_map = x_debut, y_map = y_debut)
+
+        self.game_canvas.bind_all('<Left>',self.showplayer.move_left)
+        self.game_canvas.bind_all('<Right>',self.showplayer.move_right)
+        self.game_canvas.bind_all('<space>',self.showplayer.jump)
+        self.game_canvas.bind_all('<Down>',self.showplayer.go_down)
+        self.game_canvas.bind_all('<Up>',self.showplayer.check_usable)
+
+        self.game_canvas.bind_all('<Button-1>',self.test)
+
+        pass
+
 
     def move_left(self):
         pass
@@ -165,8 +218,6 @@ class Main_Window():
     def move_up(self):
         pass
     def move_down(self):
-        pass
-    def spawn_player(self):
         pass
 
 
@@ -177,7 +228,11 @@ class Main_Window():
         import speedbar
         import outputbox
 
-        #a = Frame(self.game_canvas,width=100).place(x=16*75,y=7*75)
+        # Désactive tous les boutons de Menu inutiles
+        self.AttributButton.config(state=DISABLED)
+        self.SpellButton.config(state=DISABLED)
+        self.InventoryButton.config(state=DISABLED)
+        self.LevelupButton.config(state=DISABLED)
 
         self.combat = True
         self.playerturn = False
@@ -237,7 +292,7 @@ class Main_Window():
         self.attackbutton.place(x=width-250,y=height-50,anchor='s')
 
 
-        self.defendbutton = Button(self.game_canvas,text="DEFEND",state=DISABLED,command=self.player_defend)
+        self.defendbutton = Button(self.game_canvas,text="Quit",state=DISABLED,command=self.player_defend)
         self.defendbutton.place(x=width-100,y=height-50,anchor='s')
 
         self.order = None
@@ -326,7 +381,8 @@ class Main_Window():
 
 
     def player_defend(self):
-        print("Touche de défense - inutile")
+        self.outputbox.add_text("Touche de défense, momentannément changée")
+        self.player_wincombat()
 
     def player_attack(self):
         if (not self.combat) or (not self.playerturn):
@@ -417,6 +473,11 @@ class Main_Window():
         self.player_stats = None
         self.monster_dic = None
 
+        self.AttributButton.config(state=NORMAL)
+        self.SpellButton.config(state=NORMAL)
+        self.InventoryButton.config(state=NORMAL)
+        self.LevelupButton.config(state=NORMAL)
+
 
 if __name__ == "__main__":
     global w
@@ -439,10 +500,15 @@ if __name__ == "__main__":
 
     w = Main_Window(player_dic['name'])
 
-    w.show_combat(monster_dic=monster_dic)
+    #w.show_combat(monster_dic=monster_dic)
 
     w.load_map(mapdir,mapname,tilename,imgdir)
-    w.draw_map(0,0)
+    w.draw_map(0.33,0)
+
+    player_imgdir = "img/stock/platformer graphics/Player/p1_stand.png"
+    w.load_player(player_imgdir=player_imgdir)
+    w.draw_player(0.33,0)
+
 
     w.main_window.focus_force()
     w.main_window.mainloop()

@@ -4,7 +4,7 @@ import dictionnaires
 
 class Levelup_Window():
 
-    def __init__(self,toplevel,player_dic,attribut_dic,function=None,rel_x=0,rel_y=0):
+    def __init__(self,toplevel,player_dic,attribut_dic,function=lambda :None,rel_x=0,rel_y=0):
 
         self.function = function
 
@@ -166,6 +166,7 @@ class Levelup_Window():
 
         else:
             # afficher la majorité des informations une fois que la phase de levelup est terminée
+            self.function()
 
             if int(self.player_dic['attribut_point'])>1:
                 s='s'

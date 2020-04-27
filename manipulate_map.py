@@ -58,6 +58,17 @@ class Map():
 
         return(this_tile_taglist)
 
+    def get_tile_name(self,_id):
+        _id = int(_id)
+
+        # L'ID affiché sur la map est "id+1"
+        if _id == 0:
+            return("empty.gif")
+        _id -= 1
+        this_tile = self.tilelist[_id]
+        this_tile_name = this_tile['@type']
+        return(this_tile_name)
+
 
     # Renvoie une liste dont le ième élément est la ième layer, et donc la ième layer est une matrice qui correspond aux éléments dans la map
     # Cette fonction ayant une grande complexité, on ne l'appellera que pour passer d'une map à l'autre
@@ -104,8 +115,12 @@ class Map():
 
     # On ne load pas à nouveau la map !
     # (x,y) fournie sont les coordonnées (ligne,colonne) du bloc en haut à gauche
+    # Donc 1,1 correspond au bloc ligne 1, colonne 1
+    # Cela marche aussi avec des flottants : 0.5 , 0 correspond à la moitié (en x) du bloc en haut à gauche
     def draw_map(self,canvas,x_debut=0,y_debut=0):
         canvas.delete('all')
+
+
 
         width = canvas.winfo_width()
         height = canvas.winfo_height()
@@ -114,27 +129,72 @@ class Map():
         nbr_colonnes = width // 70  + 1
         nbr_lignes = height // 70  + 1
 
+        self.x_limit = len(self.map_by_layer[0][0]) -1
+        self.y_limit = len(self.map_by_layer[0]) - 1
+
+
+        x_int = int(x_debut)
+        y_int = int(y_debut)
+
+        x_frac = x_debut - x_int
+        y_frac = y_debut - y_int
+
+        if x_frac > 0:
+            nbr_lignes += 1
+        if y_frac > 0:
+            nbr_colonnes += 1
+
+
+
+        a = False
+        b = False
+
+
+        # Ces deux conditions sont faites pour décaler l'écran hors-map
+        if x_int < 0:
+            nbr_colonnes = nbr_colonnes + x_int
+            old_x=x_int
+            x_int = 0
+            a=True
+        if y_int < 0:
+            nbr_lignes = nbr_lignes + y_int
+            old_y=y_int
+            y_int=0
+            b=True
+
         # Chaque élément est une matrice de map, la première est la layer 0
         # On dessinera dans l'ordre croissant des layer, comme ça le background est bien dessinné en premier
         for layer in self.map_by_layer:
 
             # layer est une liste de "lignes" ; on ne prend que celles visibles à l'écran
-            this_layer = layer[y_debut:y_debut+nbr_lignes]
+
+            this_layer = layer[y_int:y_int+nbr_lignes+1]
 
             # On parcourt chaque ligne, on a donc le numéro de la ligne = y
             for y in range(len(this_layer)):
                 # this_layer[y] est une ligne de blocs ; on ne prend que ceux visibles à l'écran
-                this_ligne = this_layer[y][x_debut:x_debut+nbr_colonnes]
+
+
+                this_ligne = this_layer[y][x_int:x_int+nbr_colonnes]
+
+                if b:
+                    y += abs(old_y)
 
                 # On parcourt chaque élément de la ligne, on a donc le numéro de la colonne = x
                 for x in range(len(this_ligne)):
                     bloc_id = this_ligne[x]
 
-                    taglist = self.get_tile_taglist(bloc_id)
+                    if a:
+                        x += abs(old_x)
+
+                    tag_tuple = tuple(self.get_tile_taglist(bloc_id))
                     imgname = self.get_tile_imgname(bloc_id)
                     if imgname != "empty.gif":
-                        # Le coin supérieur gauche de l'image est situé en (x,y)
-                        canvas.create_image(x*70,70+y*70,image=self.imgdic[imgname],anchor='sw')
+                        canvas.create_image(x_frac*(-70)+x*70,
+                                            y_frac*(-70)+70+y*70,
+                                            image=self.imgdic[imgname],
+                                            anchor='sw',
+                                            tags=tag_tuple)
         return
 
 

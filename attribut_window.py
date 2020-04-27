@@ -4,13 +4,11 @@ import dictionnaires
 
 class AttributWindow():
 
-    def __init__(self,toplevel="",widget="",rel_x=0,rel_y=0):
+    def __init__(self,toplevel="",widget=""):
 
         self.toplevel = toplevel
         self.widget = widget
         self.attribut_window = None
-        self.rel_x = rel_x
-        self.rel_y = rel_y
 
 
     def hidetip(self):
@@ -24,7 +22,7 @@ class AttributWindow():
 
 
 
-    def show(self,player_dic,attribut_dic,function=None):
+    def show(self,player_dic,attribut_dic,function=lambda :None,rel_x=0,rel_y=0):
         if self.attribut_window:
             return
 
@@ -34,7 +32,7 @@ class AttributWindow():
             if self.toplevel:
                 self.attribut_window = Toplevel()
                 self.attribut_window.wm_overrideredirect(1)
-                self.attribut_window.wm_geometry("+%d+%d" % (self.rel_x,self.rel_y))
+                self.attribut_window.wm_geometry("+%d+%d" % (rel_x,rel_y))
                 self.attribut_window.focus_force()
             else:
                 self.attribut_window = Tk()
@@ -211,6 +209,8 @@ class AttributWindow():
             self.widget_list[i]['attribut_value'].config(fg='green')
             self.widget_list[i]['attribut_value'].update()
 
+            self.function()
+
 
     # -1 à l'attribut correspondant
     def minus(self,event):
@@ -247,6 +247,8 @@ class AttributWindow():
 
                 self.widget_list[i]['attribut_value'].config(fg='black')
                 self.widget_list[i]['attribut_value'].update()
+
+            self.function()
 
 
     def enable_all_buttons(self,type):

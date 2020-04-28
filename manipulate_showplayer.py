@@ -1,3 +1,6 @@
+import math
+from time import time
+
 class ShowPlayer():
 
 
@@ -25,14 +28,24 @@ class ShowPlayer():
         self.x_limit = x_limit - self.pos_x
         self.y_limit = y_limit - self.pos_y - 1
 
+        self.keyhistory = []
+
+        self.speedx = 0
+        self.speedy = 0
+
+        # Pour "get_collisions" plus tard
+        self.x1 = self.pos_x*70
+        self.y1 = 70+self.pos_y*70
+
+        self.x2 = self.x1 + self.player_photoimage.width()
+        self.y2 = self.y1 + self.player_photoimage.height()
+
+        self.loop = False
 
 
     def draw(self,x_map,y_map):
         self.x_map = x_map
         self.y_map = y_map
-        self.game_canvas.delete("player")
-        height = self.game_canvas.winfo_height()
-        width = self.game_canvas.winfo_width()
 
         self.game_canvas.create_image(  self.pos_x*70,
                                         70+self.pos_y*70,
@@ -41,12 +54,27 @@ class ShowPlayer():
                                         tags=("player"))
 
 
-        # Pour "get_collisions" plus tard
-        self.x1 = self.pos_x*70
-        self.y1 = 70+self.pos_y*70
+        if not self.loop:
+            self.loop = True
+            self.jumptime = 0
+            self.current_time = time()
+            self.go_on_ground(0)
+            self.myloop()
 
-        self.x2 = self.x1 + self.player_photoimage.width()
-        self.y2 = self.y1 + self.player_photoimage.height()
+
+
+
+
+    def keydown(self,*args):
+        event = args[0]
+        if not event.keysym in self.keyhistory and event.keysym in ['Up','Left','Down','Right','space']:
+            self.keyhistory.append(event.keysym)
+
+    def keyrelease(self,*args):
+        event = args[0]
+        if event.keysym in self.keyhistory:
+            self.keyhistory.pop(self.keyhistory.index(event.keysym))
+
 
 
 
@@ -88,12 +116,15 @@ class ShowPlayer():
         self.outputbox.add_text(text=f"{self.get_collisions()}")
 
 
-    def get_collisions(self):
+    def get_collisions(self,*args):
         # Renvoie un tuple contenant les items qui croisent le rectangle
         # (x1,y1) coin supérieur gauche
         # (x2,y2) coin inférieur droit
 
-        (x1,y1,x2,y2) = (self.x1,self.y1,self.x2,self.y2)
+        if len(args)==0:
+            (x1,y1,x2,y2) = (self.x1,self.y1,self.x2,self.y2)
+        else:
+            (x1,y1,x2,y2) = (args[0],args[1],args[2],args[3])
 
         collision_tuple = self.game_canvas.find_overlapping(x1,y1,x2,y2)
 
@@ -112,8 +143,103 @@ class ShowPlayer():
                     collision_dic['taglist'].append(tag)
         return(collision_dic)
 
+    def is_colliding(self,*args):
+        (x1,y1,x2,y2) = (args[0],args[1],args[2],args[3])
+        collision_tuple = self.game_canvas.find_overlapping(x1,y1,x2,y2)
+        for item in collision_tuple:
+            tag_tuple = self.game_canvas.gettags(item)
+            if "collision" in tag_tuple:
+                return(True)
+        return(False)
+
+    def distance_colliding(self,*args):
+        (x1,y1,x2,y2) = (args[0],args[1],args[2],args[3])
+        collision_tuple = self.game_canvas.find_overlapping(x1,y1,x2,y2)
+        player = self.game_canvas.find_withtag("player")[0]
+        x,y = self.game_canvas.coords(player)
+
+
+        for item in collision_tuple:
+            tag_tuple = self.game_canvas.gettags(item)
+            if "collision" in tag_tuple:
+                m,n = self.game_canvas.coords(item)
+
+
+                distance = n-y - self.player_photoimage.height() - 70# le bloc est défini en sw, le joueur en nw
+                return(distance)
+        return(None)
+
+    def canjump(self):
+        self.can_jump = True
+
+    def go_on_ground(self,dy):
+        distance = self.distance_colliding(self.x1,self.y1+dy*70,self.x2,self.y2+dy*70)/70
+
+        if type(distance) is float:
+            self.y_map += distance
+            self.draw_map(self.x_map,self.y_map)
+            self.draw(self.x_map,self.y_map)
+            self.on_ground = True
+            self.can_jump = True
+            self.jump_nbr = 0
+
     def myloop(self):
-        self.move_right()
+        # nb : on code en "bloc par seconde" pour la vitesse
+        dt = time() - self.current_time # pas de temps en s
+        self.current_time = time()
+        if dt>0.1:
+            dt=0.1
+
+
+
+        dx = 0
+
+
+        for keysym in self.keyhistory:
+
+            if keysym == "Left":
+                dx = -0.4
+            if keysym == "Right":
+                dx = 0.4
+            if keysym == "space":
+                if (self.on_ground or self.jump_nbr < 2) and self.can_jump:
+                    self.speedy = -10
+                    self.on_ground = False
+                    self.can_jump = False
+                    self.window.after(500,self.canjump)
+                    self.jump_nbr += 1
+
+
+        self.speedy += 1
+        if self.speedy > 10:
+            self.speedy = 10
+
+        dy = self.speedy*dt
+
+
+
+
+        x1, y1, x2, y2 = self.x1, self.y1 + dy*70, self.x2, self.y2 + dy*70
+        if abs(dy)>0:
+            if self.distance_colliding(x1,y1,x2,y2) is None:
+                if -self.pos_y-2 <= self.y_map + dy <= self.y_limit:
+                    self.y_map += dy
+            # C'est une chute et il y a collision -> sol
+            elif dy>0:
+                self.go_on_ground(dy)
+                self.speedy = 0
+                self.on_ground = True
+                self.jump_nbr = 0
+                self.can_jump = True
+
+        if abs(dx)>0:
+            if self.distance_colliding(self.x1+dx*70,self.y1,self.x2+dx*70,self.y2) is None:
+                if -self.pos_x <= self.x_map + dx <= self.x_limit:
+                    self.x_map += dx
+        self.draw_map(self.x_map,self.y_map)
+        self.draw(self.x_map,self.y_map)
+
+        #self.game_canvas.create_rectangle(self.x1+dx*70,self.y1 + dy*70,self.x2+dx*70,self.y2+dy*70)
 
 
         self.window.after(1,self.myloop)

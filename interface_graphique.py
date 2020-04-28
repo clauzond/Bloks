@@ -16,7 +16,7 @@ class Main_Window():
         self.main_window.option_add('*Button.relief','flat')
         self.main_window.option_add('*Button.overRelief','ridge')
         self.main_window.option_add('*justify','left')
-        self.backgroundcolor='#8BD8BD'
+        self.backgroundcolor='#000000'
         self.foregroundcolor='#243665'
         self.main_window.option_add('*background',self.backgroundcolor)
         self.main_window.option_add('*foreground',self.foregroundcolor)
@@ -200,15 +200,12 @@ class Main_Window():
     def draw_player(self,x_debut,y_debut):
         self.showplayer.draw(x_map = x_debut, y_map = y_debut)
 
-        self.game_canvas.bind_all('<Left>',self.showplayer.move_left)
-        self.game_canvas.bind_all('<Right>',self.showplayer.move_right)
-        self.game_canvas.bind_all('<space>',self.showplayer.jump)
-        self.game_canvas.bind_all('<Down>',self.showplayer.go_down)
-        self.game_canvas.bind_all('<Up>',self.showplayer.check_usable)
+        self.game_canvas.bind_all('<KeyPress>',self.showplayer.keydown)
+        self.game_canvas.bind_all('<KeyRelease>',self.showplayer.keyrelease)
 
         self.game_canvas.bind_all('<Button-1>',self.test)
 
-        pass
+
 
 
     def move_left(self):

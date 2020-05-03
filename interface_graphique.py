@@ -16,7 +16,7 @@ class Main_Window():
         self.main_window.option_add('*Button.relief','flat')
         self.main_window.option_add('*Button.overRelief','ridge')
         self.main_window.option_add('*justify','left')
-        self.backgroundcolor='#000000'
+        self.backgroundcolor='#8BD8BD'
         self.foregroundcolor='#243665'
         self.main_window.option_add('*background',self.backgroundcolor)
         self.main_window.option_add('*foreground',self.foregroundcolor)
@@ -200,8 +200,11 @@ class Main_Window():
     def draw_player(self,x_debut,y_debut):
         self.showplayer.draw(x_map = x_debut, y_map = y_debut)
 
-        self.game_canvas.bind_all('<KeyPress>',self.showplayer.keydown)
-        self.game_canvas.bind_all('<KeyRelease>',self.showplayer.keyrelease)
+        self.game_canvas.bind_all('<Left>',self.showplayer.move_left)
+        self.game_canvas.bind_all('<Right>',self.showplayer.move_right)
+        self.game_canvas.bind_all('<Up>',self.showplayer.move_up)
+        self.game_canvas.bind_all('<Down>',self.showplayer.move_down)
+        self.game_canvas.bind_all('<space>',self.showplayer.check_usable)
 
         self.game_canvas.bind_all('<Button-1>',self.test)
 
@@ -224,6 +227,7 @@ class Main_Window():
         import healthbar
         import speedbar
         import outputbox
+        import spellbar
 
         # Désactive tous les boutons de Menu inutiles
         self.AttributButton.config(state=DISABLED)
@@ -233,6 +237,7 @@ class Main_Window():
 
         self.combat = True
         self.playerturn = False
+        self.defending = False
 
         self.monster_dic = monster_dic
 
@@ -242,17 +247,17 @@ class Main_Window():
 
         # self.game_canvas
 
-        xl = 20
+        x_playerhealth = 20
         y_label = 20
 
         self.player_label = Label(self.game_canvas,
                                 text=f"{self.player_dic['name']}",font="Constantia 13 bold")
-        self.player_label.place(x=xl,y=y_label)
+        self.player_label.place(x=x_playerhealth,y=y_label)
 
         y_healthbar = y_label + 25
 
         hpmax = self.player_stats['HP']
-        self.player_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=200,height=25,maximum=hpmax,x=xl,y=y_healthbar,color="red")
+        self.player_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=200,height=25,maximum=hpmax,x=x_playerhealth,y=y_healthbar,color="red",backgroundcolor=self.backgroundcolor,bordercolor=self.foregroundcolor)
         self.player_healthbar.show()
 
         self.bind_player_tooltip()
@@ -266,7 +271,7 @@ class Main_Window():
         self.monster_label.place(x=x_monster_label+200, y=y_label,anchor='ne')
 
         hpmax = self.monster_dic['stats']['HP']
-        self.monster_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=200,height=25,maximum=hpmax,x=x_monster_label,y=y_healthbar,color="red",special="right")
+        self.monster_healthbar = healthbar.HealthBar(canvas=self.game_canvas,length=200,height=25,maximum=hpmax,x=x_monster_label,y=y_healthbar,color="red",backgroundcolor=self.backgroundcolor,bordercolor=self.foregroundcolor,special="right")
         self.monster_healthbar.show()
         self.bind_monster_tooltip()
 
@@ -274,25 +279,37 @@ class Main_Window():
         # monstre en rouge, à droite
         speed1=self.player_stats['Agilité']
         speed2=self.monster_dic['stats']['Agilité']
-        x_speedbar = (xl + x_monster_label)/2 + 90
+        x_speedbar = (x_playerhealth + x_monster_label)/2 + 90
         self.speedbar = speedbar.SpeedBar(canvas=self.game_canvas,x=x_speedbar,y=20,length=200,max1=100,max2=100,speed1=speed1,speed2=speed2,color1="#FFFFFF",color2="red",backgroundcolor=self.backgroundcolor,bordercolor=self.foregroundcolor)
         self.speedbar.show()
 
 
+        x_spellbar = width - 300
+        y_spellbar = height - 200
+
+        self.spellbar = spellbar.SpellBar(canvas=self.game_canvas,x=x_spellbar,y=y_spellbar,length=200,height=25,current_value=0,maximum=100,color="#EB2188",backgroundcolor=self.backgroundcolor,bordercolor=self.foregroundcolor,special="middle")
+        self.spellbar.show()
 
 
         # self.game_canvas
-        self.playbutton = Button(self.game_canvas,text="PLAY",command=self.play_combat_loop)
+        self.playbutton = Button(self.game_canvas,text="PLAY",command=self.function_play_button)
         self.playbutton.place(x=width-400,y=height-50,anchor='s')
 
         self.attackbutton = Button(self.game_canvas,text="ATTACK",state=DISABLED,command=self.player_attack)
         self.attackbutton.place(x=width-250,y=height-50,anchor='s')
 
 
-        self.defendbutton = Button(self.game_canvas,text="Quit",state=DISABLED,command=self.player_defend)
+        self.defendbutton = Button(self.game_canvas,text="DEFEND",state=DISABLED,command=self.player_defend)
         self.defendbutton.place(x=width-100,y=height-50,anchor='s')
 
         self.order = None
+
+    def function_play_button(self):
+        self.showplayer.loop = False
+        self.play_combat_loop()
+
+        self.playbutton.config(text="QUIT")
+        self.playbutton.config(command=self.player_wincombat)
 
 
     def bind_player_tooltip(self):
@@ -347,48 +364,36 @@ class Main_Window():
             self.hide_combat()
 
 
-
-
-    def refresh_speed_player(self):
-        if not self.combat:
-            return
-
-        speed1 = self.player_stats['Agilité']
-
-        if speed1 > self.speedbar.id_speed1:
-            self.speedbar.set_speed1(speed1)
-            self.outputbox.add_text(f"{self.player_dic['name']} a accéléré !")
-        elif speed1 < self.speedbar.id_speed1:
-            self.speedbar.set_speed1(speed1)
-            self.outputbox.add_text(f"{self.player_dic['name']} a été ralenti !")
-
-
-    def refresh_speed_monster(self):
-        if not self.combat:
-            return
-
-        speed2 = self.monster_dic['stats']['Agilité']
-
-        if speed2 > self.speedbar.id_speed2:
-            self.speedbar.set_speed2(speed2)
-            self.outputbox.add_text(f"{self.monster_dic['name']} a accéléré !")
-        elif speed2 < self.speedbar.id_speed1:
-            self.speedbar.set_speed2(speed2)
-            self.outputbox.add_text(f"{self.monster_dic['name']} a été ralenti !")
-
-
     def player_defend(self):
-        self.outputbox.add_text("Touche de défense, momentannément changée")
-        self.player_wincombat()
+        if (not self.combat) or (not self.playerturn):
+            return
+
+        # Le joueur s'enlève de l'état
+        if self.defending:
+            self.defending = False
+            self.defendbutton.config(text="DEFEND")
+        # Le jour se met dans l'état
+        else:
+            self.defending = True
+            self.defendbutton.config(text="STOP DEFEND")
+
 
     def player_attack(self):
         if (not self.combat) or (not self.playerturn):
             return
         import manipulate_stats as ms
 
-        damage = ms.calculate_damage_player(player_stats = self.player_stats,monster_stats = self.monster_dic['stats'],player_itemlist=self.equipped_list)
+        if self.defending:
+            mult_damage = ms.player_multiplicateur_defense(player_stats = self.player_stats,attacking=True,receiving=False)
+            self.outputbox.add_text(text=f"Vous tapez à hauteur de {100*mult_damage:0.1f}% de vos dégâts normaux en forme défensive")
+        else:
+            mult_damage = 1
+
+        damage = ms.calculate_damage_player(player_stats = self.player_stats,monster_stats = self.monster_dic['stats'],player_itemlist=self.equipped_list,multiplicateur_defense=mult_damage)
+        spellbarprogress = ms.spellbar_progress(self.player_stats)
 
         self.monster_healthbar.take_hit(damage)
+        self.spellbar.slowprogress(value=spellbarprogress)
         if damage>1:
             s='s'
         else:
@@ -414,7 +419,13 @@ class Main_Window():
             return
         import manipulate_stats as ms
 
-        damage = ms.calculate_damage_monster(monster_stats=self.monster_dic['stats'],player_stats = self.player_stats,element=self.monster_dic['element'])
+        if self.defending:
+            mult_defense = ms.player_multiplicateur_defense(player_stats = self.player_stats,attacking=False,receiving=True)
+            self.outputbox.add_text(text=f"Vous ne prenez que {mult_defense*100:0.1f}% des dégâts en forme défensive")
+        else:
+            mult_defense = 1
+
+        damage = ms.calculate_damage_monster(monster_stats=self.monster_dic['stats'],player_stats = self.player_stats,element=self.monster_dic['element'],multiplicateur_defense = mult_defense)
 
         self.player_healthbar.take_hit(damage)
         self.player_stats['HP'] -= damage
@@ -440,6 +451,7 @@ class Main_Window():
         self.outputbox.add_text(f"Vous gagnez A IMPLEMENTER points d'expérience !")
         self.playbutton.config(text="Quitter le combat")
         self.playbutton.config(state=NORMAL)
+        self.playbutton.config(command=self.hide_combat)
         self.attackbutton.config(state=DISABLED)
         self.defendbutton.config(state=DISABLED)
 
@@ -449,6 +461,7 @@ class Main_Window():
         self.outputbox.add_text(f"Vous êtes mort...")
         self.playbutton.config(text="Quitter le combat")
         self.playbutton.config(state=NORMAL)
+        self.playbutton.config(command=self.hide_combat)
         self.attackbutton.config(state=DISABLED)
         self.defendbutton.config(state=DISABLED)
 
@@ -456,6 +469,7 @@ class Main_Window():
         self.player_healthbar.hidetip()
         self.monster_healthbar.hidetip()
         self.speedbar.hidetip()
+        self.spellbar.hidetip()
         self.player_label.destroy()
         self.monster_label.destroy()
 
@@ -497,12 +511,12 @@ if __name__ == "__main__":
 
     w = Main_Window(player_dic['name'])
 
-    #w.show_combat(monster_dic=monster_dic)
+    w.show_combat(monster_dic=monster_dic)
 
     w.load_map(mapdir,mapname,tilename,imgdir)
     w.draw_map(0.33,0)
 
-    player_imgdir = "img/stock/platformer graphics/Player/p1_stand.png"
+    player_imgdir = "img/stock/platformer graphics/Enemies/blockerMad.png"
     w.load_player(player_imgdir=player_imgdir)
     w.draw_player(0.33,0)
 

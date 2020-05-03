@@ -47,7 +47,7 @@ def calculate_playerstats(attribut_dic,player_dic):
 
 
 
-def calculate_damage_player(player_stats,monster_stats,player_itemlist):
+def calculate_damage_player(player_stats,monster_stats,player_itemlist,multiplicateur_defense=1):
     # itemlist sera la "equipped_list" du joueur
 
     # mult item attribut : de base, 10% pour tout de base
@@ -84,19 +84,19 @@ def calculate_damage_player(player_stats,monster_stats,player_itemlist):
             mi_i += item['multiplicateurs']['Intelligence']
             mi_c += item['multiplicateurs']['Chance']
 
-    dmg_fixe = dmg_fixe - res_fixe
+    dmg_fixe = multiplicateur_defense*dmg_fixe - res_fixe
     if dmg_fixe < 0:
         dmg_fixe = 0
-    dmg_force = mi_f*(mb_f*f + dmg_f) - res_f
+    dmg_force =   multiplicateur_defense*(mi_f*(mb_f*f + dmg_f)) - res_f
     if dmg_force < 0:
         dmg_force = 0
-    dmg_agilite = mi_a*(mb_a*a + dmg_a) - res_a
+    dmg_agilite = multiplicateur_defense*(mi_a*(mb_a*a + dmg_a)) - res_a
     if dmg_agilite < 0:
         dmg_agilite = 0
-    dmg_intelligence = mi_i*(mb_i*i + dmg_i) - res_i
+    dmg_intelligence = multiplicateur_defense*(mi_i*(mb_i*i + dmg_i)) - res_i
     if dmg_intelligence < 0:
         dmg_intelligence = 0
-    dmg_chance = mi_c*(mb_c*c + dmg_c) - res_c
+    dmg_chance = multiplicateur_defense*(mi_c*(mb_c*c + dmg_c)) - res_c
     if dmg_chance < 0:
         dmg_chance = 0
 
@@ -108,7 +108,7 @@ def calculate_damage_player(player_stats,monster_stats,player_itemlist):
 
 
 # Le monstre va taper à [(multiplicateur_stat)*(stat_principale) + dommage de la stat principale]
-def calculate_damage_monster(monster_stats,player_stats,element):
+def calculate_damage_monster(monster_stats,player_stats,element,multiplicateur_defense):
     # Element = Force, Agilité, Intelligence ou Chance
 
     stat = monster_stats[element]
@@ -125,7 +125,7 @@ def calculate_damage_monster(monster_stats,player_stats,element):
     elif element == "Chance":
         multiplicateur_stat = 0.25
 
-    dommage_total = (dmg_stat + stat * multiplicateur_stat) - res
+    dommage_total = (multiplicateur_defense)*(dmg_stat + stat * multiplicateur_stat) - res
     if dommage_total < 0:
         dommage_total = 0
 
@@ -135,7 +135,17 @@ def calculate_damage_monster(monster_stats,player_stats,element):
 # Renvoie un booléen : True s'il réussit, False sinon
 def chance_de_fuire(player_hpmax,player_dic,monster_hpmax,monster_dic):
     pass
-# Fonction qui détermine les chances de crit de l'attaque
-# Renvoie un booléen : True si c'est un cit, False sinon
-def chance_de_crit(player_dic):
-    pass
+
+# Calculate le multiplicateur de défense du joueur, lorsque celui-ci est en état de défense
+# La force augmente ce multiplicateur
+def player_multiplicateur_defense(player_stats,attacking=True,receiving=False):
+    from fonctions_maths import function_multiplicateur_defense
+
+    mult = function_multiplicateur_defense(player_stats['Force'],attacking,receiving)
+    return(mult)
+
+def spellbar_progress(player_stats):
+    from fonctions_maths import function_mana_spellbar
+    mana = player_stats['Mana']
+
+    return(function_mana_spellbar(mana))

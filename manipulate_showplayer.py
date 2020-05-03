@@ -52,14 +52,7 @@ class ShowPlayer():
                                         image=self.player_photoimage,
                                         anchor="nw",
                                         tags=("player"))
-
-
-        if not self.loop:
-            self.loop = True
-            self.jumptime = 0
-            self.current_time = time()
-            self.go_on_ground(0)
-            self.myloop()
+        self.game_canvas.update()
 
 
 
@@ -80,40 +73,54 @@ class ShowPlayer():
 
 
     def move_left(self,*args):
-        if self.x_map - 1 >= (-self.pos_x):
-            self.x_map -= 1
+        if not self.is_colliding(self.x1+(-0.5)*70,self.y1,self.x2+(-0.5)*70,self.y2):
+            if self.x_map - 0.5 >= (-self.pos_x):
+                self.x_map -= 0.5
+                self.draw_map(self.x_map,self.y_map)
+                self.draw(self.x_map,self.y_map)
 
-        self.draw_map(self.x_map,self.y_map)
-        self.draw(self.x_map,self.y_map)
+
 
 
 
     def move_right(self,*args):
-        if self.x_map + 1 <= self.x_limit:
-            self.x_map += 1
+        if not self.is_colliding(self.x1+(0.5)*70,self.y1,self.x2+(0.5)*70,self.y2):
+            if self.x_map + 0.5 <= self.x_limit:
+                self.x_map += 0.5
+                self.draw_map(self.x_map,self.y_map)
+                self.draw(self.x_map,self.y_map)
 
-        #self.game_canvas.delete("all")
-        self.draw_map(self.x_map,self.y_map)
-        self.draw(self.x_map,self.y_map)
 
+    def move_up(self,*args):
+        if not self.is_colliding(self.x1,self.y1+(-0.5)*70,self.x2,self.y2+(-0.5)*70):
+            if self.y_map - 0.5 >= (-self.pos_y-1):
+                self.y_map -= 0.5
+                self.draw_map(self.x_map,self.y_map)
+                self.draw(self.x_map,self.y_map)
 
-    def jump(self,*args):
-        if self.y_map - 1 >= (-self.pos_y-2):
-            self.y_map -= 1
-
-        self.draw_map(self.x_map,self.y_map)
-        self.draw(self.x_map,self.y_map)
-
-    def go_down(self,*args):
-        if self.y_map + 1 <= self.y_limit:
-            self.y_map += 1
-
-        self.draw_map(self.x_map,self.y_map)
-        self.draw(self.x_map,self.y_map)
+    def move_down(self,*args):
+        if not self.is_colliding(self.x1,self.y1+(0.5)*70,self.x2,self.y2+(0.5)*70):
+            if self.y_map + 0.5 <= self.y_limit:
+                self.y_map += 0.5
+                self.draw_map(self.x_map,self.y_map)
+                self.draw(self.x_map,self.y_map)
 
 
     def check_usable(self,*args):
-        self.outputbox.add_text(text=f"{self.get_collisions()}")
+        # coordonnées sur le canvas du rectangle du joueur
+        # Rappel : un bloc fait 70*70 pixels
+        x1,y1,x2,y2 = self.x1,self.y1,self.x2,self.y2
+
+        distance_check = 20
+        x1 -= distance_check
+        y1 -= distance_check
+        x2 += distance_check
+        y2 += distance_check
+
+        self.outputbox.add_text(text=f"{self.get_collisions(x1,y1,x2,y2)}")
+        self.game_canvas.create_rectangle(x1,y1,x2,y2)
+
+
 
 
     def get_collisions(self,*args):
@@ -169,77 +176,64 @@ class ShowPlayer():
                 return(distance)
         return(None)
 
-    def canjump(self):
-        self.can_jump = True
-
-    def go_on_ground(self,dy):
-        distance = self.distance_colliding(self.x1,self.y1+dy*70,self.x2,self.y2+dy*70)/70
-
-        if type(distance) is float:
-            self.y_map += distance
-            self.draw_map(self.x_map,self.y_map)
-            self.draw(self.x_map,self.y_map)
-            self.on_ground = True
-            self.can_jump = True
-            self.jump_nbr = 0
 
     def myloop(self):
+        if not self.loop:
+            return
+
+
         # nb : on code en "bloc par seconde" pour la vitesse
         dt = time() - self.current_time # pas de temps en s
         self.current_time = time()
         if dt>0.1:
             dt=0.1
 
-
-
-        dx = 0
-
-
         for keysym in self.keyhistory:
 
             if keysym == "Left":
-                dx = -0.4
+                if self.speedx > -5:
+                    self.speedx -= 1
             if keysym == "Right":
-                dx = 0.4
+                if self.speedx < 5:
+                    self.speedx += 1
+            if keysym == "Up":
+                if self.speedy > -5:
+                    self.speedy -=1
+            if keysym == "Down":
+                if self.speedy < 5:
+                    self.speedy +=1
             if keysym == "space":
-                if (self.on_ground or self.jump_nbr < 2) and self.can_jump:
-                    self.speedy = -10
-                    self.on_ground = False
-                    self.can_jump = False
-                    self.window.after(500,self.canjump)
-                    self.jump_nbr += 1
+                self.check_usable()
 
 
-        self.speedy += 1
-        if self.speedy > 10:
-            self.speedy = 10
 
+
+        if "Left" not in self.keyhistory and "Right" not in self.keyhistory:
+            if self.speedx < 0:
+                self.speedx += 1
+            elif self.speedx >0:
+                self.speedx -= 1
+        if "Up" not in self.keyhistory and "Down" not in self.keyhistory:
+            if self.speedy < 0:
+                self.speedy += 1
+            elif self.speedy > 0:
+                self.speedy -=1
+
+        dx = self.speedx*dt
         dy = self.speedy*dt
 
 
-
-
-        x1, y1, x2, y2 = self.x1, self.y1 + dy*70, self.x2, self.y2 + dy*70
-        if abs(dy)>0:
-            if self.distance_colliding(x1,y1,x2,y2) is None:
-                if -self.pos_y-2 <= self.y_map + dy <= self.y_limit:
-                    self.y_map += dy
-            # C'est une chute et il y a collision -> sol
-            elif dy>0:
-                self.go_on_ground(dy)
-                self.speedy = 0
-                self.on_ground = True
-                self.jump_nbr = 0
-                self.can_jump = True
-
         if abs(dx)>0:
-            if self.distance_colliding(self.x1+dx*70,self.y1,self.x2+dx*70,self.y2) is None:
+            if self.is_colliding(self.x1+dx*70,self.y1,self.x2+dx*70,self.y2) is False:
                 if -self.pos_x <= self.x_map + dx <= self.x_limit:
                     self.x_map += dx
+        x1, y1, x2, y2 = self.x1, self.y1 + dy*70, self.x2, self.y2 + dy*70
+        if abs(dy)>0:
+            if self.is_colliding(x1,y1,x2,y2) is False:
+                if -self.pos_y-2 <= self.y_map + dy <= self.y_limit:
+                    self.y_map += dy
         self.draw_map(self.x_map,self.y_map)
         self.draw(self.x_map,self.y_map)
 
         #self.game_canvas.create_rectangle(self.x1+dx*70,self.y1 + dy*70,self.x2+dx*70,self.y2+dy*70)
-
-
         self.window.after(1,self.myloop)

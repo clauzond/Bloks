@@ -67,14 +67,14 @@ class SpellBar():
         self.slowprogress(30)
 
 
-    def slowprogress(self,value):
+    def slowprogress(self,addvalue):
         # l'intervalle de temps (en ms) sera de 1% de la valeur max par 10 ms
         # donc "valeur max en 1000 ms = 1s"
         intervalle = 1
 
         pas = 0.001 * self.maximum
 
-        final_value = self.current_value + value
+        final_value = self.current_value + addvalue
 
 
         if not self.loop:

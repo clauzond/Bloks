@@ -1,4 +1,4 @@
-{
+﻿{
 "name":"Slime vert",
 "description":"Qu'il est mignon ! Sa couleur doit vouloir dire quelque chose...",
 "level":1,
@@ -9,7 +9,7 @@
     "HP": 20,
     "Mana": 0,
     "Force": 0,
-    "Agilité": 5,
+    "Agilité": 30,
     "Intelligence": 0,
     "Chance": 0,
     "Dommage fixe": 0,

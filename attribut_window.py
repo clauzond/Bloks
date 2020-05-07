@@ -22,7 +22,7 @@ class AttributWindow():
 
 
 
-    def show(self,player_dic,attribut_dic,function=lambda :None,rel_x=0,rel_y=0):
+    def show(self,player_dic,attribut_dic,function=lambda :None,x_relative=0,y_relative=0):
         if self.attribut_window:
             return
 
@@ -32,7 +32,7 @@ class AttributWindow():
             if self.toplevel:
                 self.attribut_window = Toplevel()
                 self.attribut_window.wm_overrideredirect(1)
-                self.attribut_window.wm_geometry("+%d+%d" % (rel_x,rel_y))
+                self.attribut_window.wm_geometry("+%d+%d" % (x_relative,y_relative))
                 self.attribut_window.focus_force()
             else:
                 self.attribut_window = Tk()

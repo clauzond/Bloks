@@ -4,14 +4,14 @@ import dictionnaires
 
 class Levelup_Window():
 
-    def __init__(self,toplevel,player_dic,attribut_dic,function=lambda :None,rel_x=0,rel_y=0):
+    def __init__(self,toplevel,player_dic,attribut_dic,function=lambda :None,x_relative=0,y_relative=0):
 
         self.function = function
 
         if toplevel:
             self.level_window = Toplevel()
             self.level_window.wm_overrideredirect(1)
-            self.level_window.wm_geometry('+%d+%d' % (rel_x,rel_y))
+            self.level_window.wm_geometry('+%d+%d' % (x_relative,y_relative))
             self.level_window.focus_force()
         else:
             self.level_window = Tk()

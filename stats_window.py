@@ -22,7 +22,7 @@ class StatsWindow():
             tw.destroy()
 
     # anystat_dic correspond au dictionnaire stats contenu dans "player_dic" ou dans "monster_dic"
-    def show(self,stat_dic,name,level,image_dir,category='',rel_x=0,rel_y=0):
+    def show(self,stat_dic,name,level,image_dir,category='',x_relative=0,y_relative=0):
         if self.stats_window:
             return
 
@@ -30,7 +30,7 @@ class StatsWindow():
             if self.toplevel:
                 self.stats_window = Toplevel()
                 self.stats_window.wm_overrideredirect(1)
-                self.stats_window.wm_geometry("+%d+%d" % (rel_x,rel_y))
+                self.stats_window.wm_geometry("+%d+%d" % (x_relative,y_relative))
                 self.stats_window.focus_force()
             else:
                 self.stats_window = Tk()
@@ -51,7 +51,7 @@ class StatsWindow():
             self.stats_window = Toplevel(self.widget)
 
             self.stats_window.wm_overrideredirect(1)
-            self.stats_window.wm_geometry("+%d+%d" % (x+rel_x, y+rel_y))
+            self.stats_window.wm_geometry("+%d+%d" % (x+x_relative, y+y_relative))
 
             self.bold_font13 = "Constantia 10 bold"
             self.bold_font16 = "Constantia 10 bold"

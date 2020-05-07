@@ -18,6 +18,9 @@ class Map():
 
         self.loaded_map = None
 
+        self.x_limit = len(self.map_by_layer[0][0]) -1
+        self.y_limit = len(self.map_by_layer[0]) - 1
+
 
     # Dans Tiled, la layer la plus en bas est indexé à 0 (background = 0, calque dessus = 1, ...)
     # layer = calque

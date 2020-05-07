@@ -16,8 +16,10 @@ class Main_Window():
         self.main_window.option_add('*Button.relief','flat')
         self.main_window.option_add('*Button.overRelief','ridge')
         self.main_window.option_add('*justify','left')
-        self.backgroundcolor='#8BD8BD'
-        self.foregroundcolor='#243665'
+        #self.backgroundcolor='#8BD8BD'
+        #self.foregroundcolor='#243665'
+        self.backgroundcolor="#292826"
+        self.foregroundcolor="#F9D342"
         self.main_window.option_add('*background',self.backgroundcolor)
         self.main_window.option_add('*foreground',self.foregroundcolor)
         self.main_window.option_add('*compound','left')
@@ -121,7 +123,7 @@ class Main_Window():
         y = self.game_canvas.winfo_height() / 4 - 100
 
         w = sw.StatsWindow(toplevel=True)
-        w.show(stat_dic=self.player_dic['stats'],name=self.player_dic['name'],level=self.player_dic['level'],image_dir=self.player_dic['image'],rel_x=x,rel_y=y)
+        w.show(stat_dic=self.player_dic['stats'],name=self.player_dic['name'],level=self.player_dic['level'],image_dir=self.player_dic['image'],x_relative=x,y_relative=y)
 
     def openspellwindow(self):
         import spell_window as spw
@@ -130,7 +132,7 @@ class Main_Window():
         y = self.game_canvas.winfo_height() / 4 - 100
 
         w = spw.SpellWindow(toplevel=True)
-        w.show(player_dic=self.player_dic,spell_dic=self.spell_dic,function=self.save_all,rel_x=x,rel_y=y)
+        w.show(player_dic=self.player_dic,spell_dic=self.spell_dic,function=self.save_all,x_relative=x,y_relative=y)
 
     def openinventorywindow(self):
         import inventory_window as iw
@@ -138,7 +140,7 @@ class Main_Window():
         x = self.game_canvas.winfo_width() / 4
         y = self.game_canvas.winfo_height() / 4 - 100
 
-        w = iw.InventoryWindow(toplevel=True,player_dic=self.player_dic,inventory_dic=self.inventory_dic,attribut_dic=self.attribut_dic,function = self.save_all,rel_x=x,rel_y=y)
+        w = iw.InventoryWindow(toplevel=True,player_dic=self.player_dic,inventory_dic=self.inventory_dic,attribut_dic=self.attribut_dic,function = self.save_all,x_relative=x,y_relative=y)
 
     def openattributwindow(self):
         import attribut_window as aw
@@ -147,7 +149,7 @@ class Main_Window():
         y = self.game_canvas.winfo_height() / 4 - 100
 
         w = aw.AttributWindow(toplevel=True)
-        w.show(player_dic=self.player_dic,attribut_dic=self.attribut_dic,function=self.save_all,rel_x=x,rel_y=y)
+        w.show(player_dic=self.player_dic,attribut_dic=self.attribut_dic,function=self.save_all,x_relative=x,y_relative=y)
 
     def openlevelupwindow(self):
         import levelup_window as luw
@@ -155,7 +157,7 @@ class Main_Window():
         x = self.game_canvas.winfo_width() / 4
         y = self.game_canvas.winfo_height() / 4 - 100
 
-        w = luw.Levelup_Window(toplevel=True,player_dic=self.player_dic,attribut_dic=self.attribut_dic,function = self.save_all,rel_x=x,rel_y=y)
+        w = luw.Levelup_Window(toplevel=True,player_dic=self.player_dic,attribut_dic=self.attribut_dic,function = self.save_all,x_relative=x,y_relative=y)
 
 
 
@@ -185,7 +187,26 @@ class Main_Window():
 
     def clear_map(self):
         self.game_canvas.delete('all')
+        self.showplayer.turn_bind_off()
 
+
+
+    def test_combat(self,*args):
+        if not self.combat:
+            import manipulate_json as jm
+
+            monster_dic = jm.load_file(fulldir="ressources/template/monster/slime_vert.json")
+
+            self.show_combat(monster_dic=monster_dic)
+
+    def test_fuite(self,*args):
+        try:
+            if self.fleebutton['state']=='normal':
+                self.player_tryfleecombat()
+            else:
+                self.outputbox.add_text(text=f"Le bouton est désactivé")
+        except:
+            self.outputbox.add_text(text=f"Pas de combat...")
 
     # La fonction draw_map doit prendre en argument seulement les x,y du bloc tout en haut à gauche de l'écran
     # Attention : x et y sont en "numéro de bloc"
@@ -198,6 +219,7 @@ class Main_Window():
         self.myMap.draw_map(canvas=self.game_canvas,x_debut=x_debut,y_debut=y_debut)
 
     def draw_player(self,x_debut,y_debut):
+
         self.showplayer.draw(x_map = x_debut, y_map = y_debut)
 
         self.game_canvas.bind_all('<Left>',self.showplayer.move_left)
@@ -207,18 +229,23 @@ class Main_Window():
         self.game_canvas.bind_all('<space>',self.showplayer.check_usable)
 
         self.game_canvas.bind_all('<Button-1>',self.test)
+        self.game_canvas.bind_all('<c>',self.test_combat)
+        self.outputbox.add_text(text=f"Appuie sur <c> pour démarrer un combat")
+        self.game_canvas.bind_all('<q>',self.test_fuite)
+        self.outputbox.add_text(text=f"Appuie sur <q> pour fuire le combat")
+
+        self.showplayer.turn_bind_on()
 
 
+    def draw_everything(self,x_debut=None,y_debut=None):
+        if x_debut is None or y_debut is None:
+            x_debut,y_debut = self.showplayer.coords()
+            if x_debut is None or y_debut is None:
+                raise Exception("Impossible de draw player sans avoir de coordonnées !")
+        self.draw_map(x_debut,y_debut)
+        self.draw_player(x_debut,y_debut)
 
 
-    def move_left(self):
-        pass
-    def move_right(self):
-        pass
-    def move_up(self):
-        pass
-    def move_down(self):
-        pass
 
 
 
@@ -229,11 +256,17 @@ class Main_Window():
         import outputbox
         import spellbar
 
+        # Efface la map
+        self.clear_map()
+
+
+
         # Désactive tous les boutons de Menu inutiles
         self.AttributButton.config(state=DISABLED)
         self.SpellButton.config(state=DISABLED)
         self.InventoryButton.config(state=DISABLED)
         self.LevelupButton.config(state=DISABLED)
+
 
         self.combat = True
         self.playerturn = False
@@ -242,8 +275,8 @@ class Main_Window():
         self.monster_dic = monster_dic
 
         # Ces 3 dictionnaires pourront bouger en plein combat, et sont recréés pour les manipuler
-        self.player_stats = player_dic['stats']
-        self.equipped_list = player_dic['equipped_list']
+        self.player_stats = self.player_dic['stats']
+        self.equipped_list = self.player_dic['equipped_list']
 
         # self.game_canvas
 
@@ -293,14 +326,18 @@ class Main_Window():
 
         # self.game_canvas
         self.playbutton = Button(self.game_canvas,text="PLAY",command=self.function_play_button)
-        self.playbutton.place(x=width-400,y=height-50,anchor='s')
+        self.playbutton.place(x=width-400,y=height-100,anchor='s')
 
         self.attackbutton = Button(self.game_canvas,text="ATTACK",state=DISABLED,command=self.player_attack)
-        self.attackbutton.place(x=width-250,y=height-50,anchor='s')
+        self.attackbutton.place(x=width-250,y=height-100,anchor='s')
 
 
         self.defendbutton = Button(self.game_canvas,text="DEFEND",state=DISABLED,command=self.player_defend)
-        self.defendbutton.place(x=width-100,y=height-50,anchor='s')
+        self.defendbutton.place(x=width-100,y=height-100,anchor='s')
+
+        self.fleebutton = Button(self.game_canvas,text="FUIRE",state=DISABLED,command=self.player_tryfleecombat)
+        self.fleebutton.place(x=width-400,y=height-50,anchor='s')
+
 
         self.order = None
 
@@ -359,6 +396,7 @@ class Main_Window():
             self.playerturn = True
             self.attackbutton.config(state=NORMAL)
             self.defendbutton.config(state=NORMAL)
+            self.fleebutton.config(state=NORMAL)
 
         elif self.order == "stop":
             self.hide_combat()
@@ -393,7 +431,7 @@ class Main_Window():
         spellbarprogress = ms.spellbar_progress(self.player_stats)
 
         self.monster_healthbar.take_hit(damage)
-        self.spellbar.slowprogress(value=spellbarprogress)
+        self.spellbar.slowprogress(addvalue=spellbarprogress)
         if damage>1:
             s='s'
         else:
@@ -411,6 +449,7 @@ class Main_Window():
             self.speedbar.order = None
             self.attackbutton.config(state=DISABLED)
             self.defendbutton.config(state=DISABLED)
+            self.fleebutton.config(state=DISABLED)
             self.play_combat_loop()
 
 
@@ -443,7 +482,6 @@ class Main_Window():
         else:
             self.order = None
             self.speedbar.order = None
-            #self.playbutton.config(state=NORMAL)
 
     def player_wincombat(self):
         self.speedbar.order = "stop"
@@ -454,6 +492,7 @@ class Main_Window():
         self.playbutton.config(command=self.hide_combat)
         self.attackbutton.config(state=DISABLED)
         self.defendbutton.config(state=DISABLED)
+        self.fleebutton.config(state=DISABLED)
 
     def player_losecombat(self):
         self.speedbar.order = "stop"
@@ -464,6 +503,66 @@ class Main_Window():
         self.playbutton.config(command=self.hide_combat)
         self.attackbutton.config(state=DISABLED)
         self.defendbutton.config(state=DISABLED)
+        self.fleebutton.config(state=DISABLED)
+
+
+    def player_tryfleecombat(self):
+        if not self.combat or not self.playerturn:
+            self.outputbox.add_text(f"Vous ne pouvez pas fuire maintenant.")
+            return
+        if self.defending:
+            self.outputbox.add_text(f"Vous ne pouvez pas défendre en fuyant.")
+            return
+
+        from fonctions_maths import function_fuite
+        from random import random
+
+        self.fleebutton.config(state=DISABLED)
+
+        a_p = self.player_stats['Agilité']
+        a_m = self.monster_dic['stats']['Agilité']
+        chance = function_fuite(x_player=a_p,x_monster=a_m)
+        r = random()
+
+        self.outputbox.add_text(f"Vous avez {chance*100:0.0f}% de chance de fuire")
+        self.outputbox.add_text(f"")
+
+        # avec 100% de chance de fuite la condition est réalisée
+        if chance >= r:
+            self.aux_flee_loop(True,chance,0)
+        else:
+            self.aux_flee_loop(False,chance,0)
+    def aux_flee_loop(self,success,chance,k):
+        if k<15:
+            self.outputbox.concatenate_text("█")
+            self.main_window.after(30,self.aux_flee_loop,success,chance,k+1)
+        else:
+            self.player_fleecombat(success)
+
+
+
+    def player_fleecombat(self,success):
+        if success:
+            self.speedbar.order = "stop"
+            self.playerturn = False
+            self.outputbox.add_text(f"Vous avez réussi à fuire.")
+            self.outputbox.add_text(f"Vous ne gagnez pas de point d'expérience.")
+            self.playbutton.config(text="Quitter le combat")
+            self.playbutton.config(state=NORMAL)
+            self.playbutton.config(command=self.hide_combat)
+            self.attackbutton.config(state=DISABLED)
+            self.defendbutton.config(state=DISABLED)
+            self.fleebutton.config(state=DISABLED)
+        else:
+            self.outputbox.add_text(f"Vous n'avez pas réussi à fuire !")
+            self.order = None
+            self.playerturn = False
+            self.speedbar.order = None
+            self.attackbutton.config(state=DISABLED)
+            self.defendbutton.config(state=DISABLED)
+            self.fleebutton.config(state=DISABLED)
+            self.play_combat_loop()
+
 
     def hide_combat(self):
         self.player_healthbar.hidetip()
@@ -476,6 +575,7 @@ class Main_Window():
         self.attackbutton.destroy()
         self.defendbutton.destroy()
         self.playbutton.destroy()
+        self.fleebutton.destroy()
 
         self.player_stats = None
         self.equipped_list = None
@@ -488,6 +588,8 @@ class Main_Window():
         self.SpellButton.config(state=NORMAL)
         self.InventoryButton.config(state=NORMAL)
         self.LevelupButton.config(state=NORMAL)
+
+        self.draw_everything()
 
 
 if __name__ == "__main__":
@@ -511,15 +613,14 @@ if __name__ == "__main__":
 
     w = Main_Window(player_dic['name'])
 
-    w.show_combat(monster_dic=monster_dic)
 
     w.load_map(mapdir,mapname,tilename,imgdir)
-    w.draw_map(0.33,0)
-
     player_imgdir = "img/stock/platformer graphics/Enemies/blockerMad.png"
     w.load_player(player_imgdir=player_imgdir)
-    w.draw_player(0.33,0)
 
+    w.draw_everything(0,0)
+
+    #w.show_combat(monster_dic=monster_dic)
 
     w.main_window.focus_force()
     w.main_window.mainloop()

@@ -18,7 +18,7 @@ class SpellWindow():
             c.destroy()
             tw.destroy()
 
-    def show(self,player_dic,spell_dic,function=lambda :None,rel_x=0,rel_y=0):
+    def show(self,player_dic,spell_dic,function=lambda :None,x_relative=0,y_relative=0):
         if self.spell_window:
             return
 
@@ -28,7 +28,7 @@ class SpellWindow():
             if self.toplevel:
                 self.spell_window = Toplevel()
                 self.spell_window.wm_overrideredirect(1)
-                self.spell_window.wm_geometry("+%d+%d"% (rel_x,rel_y))
+                self.spell_window.wm_geometry("+%d+%d"% (x_relative,y_relative))
                 self.spell_window.focus_force()
             else:
                 self.spell_window = Tk()

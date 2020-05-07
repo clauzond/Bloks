@@ -42,10 +42,17 @@ class ShowPlayer():
 
         self.loop = False
 
+        self.bind_active = False
+
+        self.x_map = None
+        self.y_map = None
+
 
     def draw(self,x_map,y_map):
         self.x_map = x_map
         self.y_map = y_map
+
+        self.bind_active = True
 
         self.game_canvas.create_image(  self.pos_x*70,
                                         70+self.pos_y*70,
@@ -56,23 +63,40 @@ class ShowPlayer():
 
 
 
+    def coords(self):
+        return(self.x_map,self.y_map)
 
 
     def keydown(self,*args):
+        if not self.bind_active:
+            return
+
         event = args[0]
         if not event.keysym in self.keyhistory and event.keysym in ['Up','Left','Down','Right','space']:
             self.keyhistory.append(event.keysym)
 
     def keyrelease(self,*args):
+        if not self.bind_active:
+            return
+
         event = args[0]
         if event.keysym in self.keyhistory:
             self.keyhistory.pop(self.keyhistory.index(event.keysym))
 
 
+    def turn_bind_off(self):
+        self.bind_active = False
+
+    def turn_bind_on(self):
+        self.bind_active = True
 
 
 
     def move_left(self,*args):
+        if not self.bind_active:
+            return
+
+
         if not self.is_colliding(self.x1+(-0.5)*70,self.y1,self.x2+(-0.5)*70,self.y2):
             if self.x_map - 0.5 >= (-self.pos_x):
                 self.x_map -= 0.5
@@ -84,6 +108,8 @@ class ShowPlayer():
 
 
     def move_right(self,*args):
+        if not self.bind_active:
+            return
         if not self.is_colliding(self.x1+(0.5)*70,self.y1,self.x2+(0.5)*70,self.y2):
             if self.x_map + 0.5 <= self.x_limit:
                 self.x_map += 0.5
@@ -92,6 +118,8 @@ class ShowPlayer():
 
 
     def move_up(self,*args):
+        if not self.bind_active:
+            return
         if not self.is_colliding(self.x1,self.y1+(-0.5)*70,self.x2,self.y2+(-0.5)*70):
             if self.y_map - 0.5 >= (-self.pos_y-1):
                 self.y_map -= 0.5
@@ -99,6 +127,8 @@ class ShowPlayer():
                 self.draw(self.x_map,self.y_map)
 
     def move_down(self,*args):
+        if not self.bind_active:
+            return
         if not self.is_colliding(self.x1,self.y1+(0.5)*70,self.x2,self.y2+(0.5)*70):
             if self.y_map + 0.5 <= self.y_limit:
                 self.y_map += 0.5
@@ -107,6 +137,8 @@ class ShowPlayer():
 
 
     def check_usable(self,*args):
+        if not self.bind_active:
+            return
         # coordonnées sur le canvas du rectangle du joueur
         # Rappel : un bloc fait 70*70 pixels
         x1,y1,x2,y2 = self.x1,self.y1,self.x2,self.y2

@@ -42,6 +42,13 @@ class OutputBox():
 
         self.widget.update()
 
+    def concatenate_text(self,text):
+        self.widget.config(state=NORMAL)
+        self.widget.insert(END,text)
+        self.widget.see(END)
+        self.widget.config(state=DISABLED)
+
+        self.widget.update()
 
     def ajouter(self,event):
         self.i = self.i * 2

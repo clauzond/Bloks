@@ -40,23 +40,26 @@ def function_mana_spellbar(x):
 # L'agilité fera augmenté ces chances, mais l'agilité de l'adversaire les fera baisser
 # Renvoie un nombre entre 0 et 1 (pourcentage)
 def function_fuite(x_player,x_monster):
+    """
+    Détermine le pourcentage de chance de fuire du joueur, en fonction des stats joueur/monstre
+    Exemple:
+        Si x_player == x_monster, 0.5
+        Si x_player >= 2*x_monster, 1
+        Si en dessous, cela baisse beaucoup mais il y a toujours des chances
+    """
     if x_monster==0:
         return(1)
-    # J'utilise la formule des générations 1 et 2 de Pokémon, en adaptant sachant que 32 = 255/8
-    # Au lieu de 255, on prend 7200
-    # Au lieu de 32 on prend 900 (car 7200/900 = 8)
-    B = ((1/4)*x_monster)%7200
-    F = ((x_player)*900)/B
-    if F>7200:
+    F = (x_player)/(2*x_monster)
+    if F>1:
         return(1)
     else:
-        return(F/7200)
+        return(F)
 
 
 
 if __name__ == '__main__':
     fun = function_fuite
     l = []
-    for i in range(0,100,1):
-        l.append(f"{fun(i,257):0.2f}")
+    for i in range(0,51,1):
+        l.append(f"{fun(i,50):0.2f}")
     print(l)

@@ -64,10 +64,10 @@ class SpellBar():
 
 
     def func(self,event):
-        self.slowprogress(30)
+        self.slowprogress(-30)
 
 
-    def slowprogress(self,addvalue):
+    def slowprogress(self,addvalue,function=lambda:None):
         # l'intervalle de temps (en ms) sera de 1% de la valeur max par 10 ms
         # donc "valeur max en 1000 ms = 1s"
         intervalle = 1
@@ -78,17 +78,17 @@ class SpellBar():
 
 
         if not self.loop:
-            self.mini_loop(intervalle,pas,final_value)
+            self.mini_loop(intervalle,pas,final_value,function)
 
 
-    def mini_loop(self,intervalle,pas,final_value):
+    def mini_loop(self,intervalle,pas,final_value,function=lambda:None):
         self.loop = True
         if self.current_value + pas < final_value:
             self.current_value += pas
             self.progress(pas)
             self.label.config(text=f"{self.current_value:0.0f}%")
 
-            self.widget.after(intervalle,self.mini_loop,intervalle,pas,final_value)
+            self.widget.after(intervalle,self.mini_loop,intervalle,pas,final_value,function)
             #self.widget.update()
 
         else:
@@ -97,6 +97,8 @@ class SpellBar():
             self.current_value = final_value
 
             self.loop = False
+
+            function()
 
 
     # Ajoute value à la barre de progression
@@ -109,6 +111,7 @@ class SpellBar():
     # Défini la barre de progression à value
     def set(self,value):
         self.widget['value'] = value
+        self.label.config(text=f"{value:0.0f}%")
         self.widget.update()
 
 
@@ -134,7 +137,7 @@ if __name__=="__main__":
     wc = Canvas(w,width=500)
     wc.pack(fill=BOTH,expand=True,padx=0,pady=0)
 
-    healthbar = SpellBar(canvas=wc,length=200,height=25,current_value=0,maximum=100,x=10,y=0,color="red",backgroundcolor="white",bordercolor="yellow",special="middle")
+    healthbar = SpellBar(canvas=wc,length=200,height=25,current_value=100,maximum=100,x=10,y=0,color="red",backgroundcolor="white",bordercolor="yellow",special="middle")
     healthbar.show()
     wc.bind_all('<Button-1>',healthbar.func)
 

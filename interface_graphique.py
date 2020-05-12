@@ -4,7 +4,6 @@ class Main_Window():
 
     def __init__(self,player_name):
 
-
         self.main_window = Tk()
 
 
@@ -102,12 +101,11 @@ class Main_Window():
         self.StatsButton = Button(self.game_canvas,text="Stats",command=self.openstatwindow)
         self.StatsButton.place(x=50,y=height-50,anchor='s')
 
-
         self.AttributButton = Button(self.game_canvas,text="Attributs",command=self.openattributwindow)
         self.AttributButton.place(x=50+150,y=height-50,anchor='s')
 
-        self.SpellButton = Button(self.game_canvas,text="Spells",command=self.openspellwindow)
-        self.SpellButton.place(x=50+300,y=height-50,anchor='s')
+        self.SpellMenuButton = Button(self.game_canvas,text="Spells",command=self.openspellwindow)
+        self.SpellMenuButton.place(x=50+300,y=height-50,anchor='s')
 
         self.InventoryButton = Button(self.game_canvas,text="Inventaire",command=self.openinventorywindow)
         self.InventoryButton.place(x=50+450,y=height-50,anchor='s')
@@ -190,24 +188,6 @@ class Main_Window():
         self.showplayer.turn_bind_off()
 
 
-
-    def test_combat(self,*args):
-        if not self.combat:
-            import manipulate_json as jm
-
-            monster_dic = jm.load_file(fulldir="ressources/template/monster/slime_vert.json")
-
-            self.show_combat(monster_dic=monster_dic)
-
-    def test_fuite(self,*args):
-        try:
-            if self.fleebutton['state']=='normal':
-                self.player_tryfleecombat()
-            else:
-                self.outputbox.add_text(text=f"Le bouton est désactivé")
-        except:
-            self.outputbox.add_text(text=f"Pas de combat...")
-
     # La fonction draw_map doit prendre en argument seulement les x,y du bloc tout en haut à gauche de l'écran
     # Attention : x et y sont en "numéro de bloc"
     # 1,1 correspond donc au bloc en haut à gauche ligne 1 colonne 1
@@ -229,12 +209,93 @@ class Main_Window():
         self.game_canvas.bind_all('<space>',self.showplayer.check_usable)
 
         self.game_canvas.bind_all('<Button-1>',self.test)
+        self.game_canvas.bind_all('<p>',self.test_play)
         self.game_canvas.bind_all('<c>',self.test_combat)
-        self.outputbox.add_text(text=f"Appuie sur <c> pour démarrer un combat")
-        self.game_canvas.bind_all('<q>',self.test_fuite)
-        self.outputbox.add_text(text=f"Appuie sur <q> pour fuire le combat")
+        self.game_canvas.bind_all('<f>',self.test_fuite)
+        self.game_canvas.bind_all('<a>',self.test_attaque)
+        self.game_canvas.bind_all('<d>',self.test_defense)
+        self.game_canvas.bind_all('<s>',self.test_spell)
+
+        self.game_canvas.bind_all('<?>',self.test_help)
+        self.outputbox.add_text(text=f"Appuie <?> pour afficher l'aide")
 
         self.showplayer.turn_bind_on()
+
+    def test_help(self,*args):
+        self.outputbox.add_text(text="\n")
+        self.outputbox.add_text(text=f"Appuie sur <c> pour démarrer un combat")
+        self.outputbox.add_text(text=f"Appuie sur <f> pour fuire le combat")
+        self.outputbox.add_text(text=f"Appuie sur <a> pour attaquer en combat")
+        self.outputbox.add_text(text=f"Appuie sur <d> pour défendre en combat")
+        self.outputbox.add_text(text=f"Appuie sur <s> pour lancer un sort en combat")
+        self.outputbox.add_text(text=f"Appuie <?> pour afficher l'aide")
+
+    def test_play(self,*args):
+        if not self.combat:
+            return
+        try:
+            if self.playbutton['state']=='normal' and self.playbutton['text']=='(P)LAY':
+                self.function_play_button()
+            elif self.playbutton['state']=='normal' and self.playbutton['text']=='(P)QUIT':
+                self.player_wincombat()
+            elif self.playbutton['state']=='normal' and self.playbutton['text']=="(P)Quitter le combat":
+                self.hide_combat()
+            else:
+                self.outputbox.add_text(text=f"Pas maintenant !")
+        except Exception as e:
+            self.outputbox.add_text(text=f"Erreur : {e}")
+
+    def test_combat(self,*args):
+        if not self.combat:
+            import manipulate_json as jm
+
+            monster_dic = jm.load_file(fulldir="ressources/template/monster/slime_rouge.json")
+
+            self.show_combat(monster_dic=monster_dic)
+
+    def test_fuite(self,*args):
+        if not self.combat:
+            return
+        try:
+            if self.fleebutton['state']=='normal':
+                self.player_tryfleecombat()
+            else:
+                self.outputbox.add_text(text=f"Vous ne pouvez pas fuire maintenant.")
+        except Exception as e:
+            self.outputbox.add_text(text=f"Erreur : {e}")
+
+    def test_attaque(self,*args):
+        if not self.combat:
+            return
+        try:
+            if self.attackbutton['state']=='normal':
+                self.player_attack()
+            else:
+                self.outputbox.add_text(text=f"Vous ne pouvez pas attaquer maintenant.")
+        except Exception as e:
+            self.outputbox.add_text(text=f"Erreur : {e}")
+
+    def test_defense(self,*args):
+        if not self.combat:
+            return
+        try:
+            if self.defendbutton['state']=='normal':
+                self.player_defend()
+            else:
+                self.outputbox.add_text(text=f"Vous ne pouvez pas défendre maintenant.")
+        except Exception as e:
+            self.outputbox.add_text(text=f"Erreur : {e}")
+
+    def test_spell(self,*args):
+        if not self.combat:
+            return
+        try:
+            if self.spellbutton['state']=='normal':
+                self.player_spell()
+            else:
+                self.outputbox.add_text(text=f"Vous ne pouvez pas lancer un sort maintenant.")
+        except Exception as e:
+            self.outputbox.add_text(text=f"Erreur : {e}")
 
 
     def draw_everything(self,x_debut=None,y_debut=None):
@@ -263,7 +324,7 @@ class Main_Window():
 
         # Désactive tous les boutons de Menu inutiles
         self.AttributButton.config(state=DISABLED)
-        self.SpellButton.config(state=DISABLED)
+        self.SpellMenuButton.config(state=DISABLED)
         self.InventoryButton.config(state=DISABLED)
         self.LevelupButton.config(state=DISABLED)
 
@@ -323,19 +384,24 @@ class Main_Window():
         self.spellbar = spellbar.SpellBar(canvas=self.game_canvas,x=x_spellbar,y=y_spellbar,length=200,height=25,current_value=0,maximum=100,color="#EB2188",backgroundcolor=self.backgroundcolor,bordercolor=self.foregroundcolor,special="middle")
         self.spellbar.show()
 
+        x_spellbutton = x_spellbar + 200
+        self.spellbutton = Button(self.game_canvas,text="",state='disabled',command=self.player_spell)
+        self.spellbutton.place(x=x_spellbar+200,y=y_spellbar,anchor='nw')
+        self.spell_is_active = False
+
 
         # self.game_canvas
-        self.playbutton = Button(self.game_canvas,text="PLAY",command=self.function_play_button)
+        self.playbutton = Button(self.game_canvas,text="(P)LAY",command=self.function_play_button)
         self.playbutton.place(x=width-400,y=height-100,anchor='s')
 
-        self.attackbutton = Button(self.game_canvas,text="ATTACK",state=DISABLED,command=self.player_attack)
+        self.attackbutton = Button(self.game_canvas,text="(A)TTACK",state=DISABLED,command=self.player_attack)
         self.attackbutton.place(x=width-250,y=height-100,anchor='s')
 
 
-        self.defendbutton = Button(self.game_canvas,text="DEFEND",state=DISABLED,command=self.player_defend)
+        self.defendbutton = Button(self.game_canvas,text="(D)EFEND",state=DISABLED,command=self.player_defend)
         self.defendbutton.place(x=width-100,y=height-100,anchor='s')
 
-        self.fleebutton = Button(self.game_canvas,text="FUIRE",state=DISABLED,command=self.player_tryfleecombat)
+        self.fleebutton = Button(self.game_canvas,text="(F)UIRE",state=DISABLED,command=self.player_tryfleecombat)
         self.fleebutton.place(x=width-400,y=height-50,anchor='s')
 
 
@@ -345,7 +411,7 @@ class Main_Window():
         self.showplayer.loop = False
         self.play_combat_loop()
 
-        self.playbutton.config(text="QUIT")
+        self.playbutton.config(text="(P)QUIT")
         self.playbutton.config(command=self.player_wincombat)
 
 
@@ -370,6 +436,44 @@ class Main_Window():
         self.monster_healthbar.widget.bind('<Enter>', enter)
         self.monster_healthbar.widget.bind('<Leave>', leave)
 
+
+    def check_spellbar_progress(self,*args):
+        try:
+            if self.spellbar.current_value >= 100:
+                self.spell_is_active = True
+                self.spellbutton.config(state='disabled')
+                self.spellbutton.config(text='(S)PELL')
+            else:
+                self.spell_is_active = False
+                self.spellbutton.config(state='disabled')
+                self.spellbuton.config(text="")
+        except:
+            pass
+
+    def player_spell(self,*args):
+        from manipulate_spells import cast_spell
+
+        if self.defending:
+            self.outputbox.add_text(text=f"Vous ne pouvez pas lancer un sort en vous défendant.")
+            return()
+
+        spell_number = self.spell_dic['active'].split('spell')[-1]
+
+        self.spellbar.slowprogress(addvalue=-100,function=self.check_spellbar_progress)
+
+        self.order = None
+        self.playerturn = False
+        self.speedbar.order = None
+        self.attackbutton.config(state=DISABLED)
+        self.defendbutton.config(state=DISABLED)
+        self.fleebutton.config(state=DISABLED)
+        self.spellbutton.config(state=DISABLED)
+
+        cast_spell(spell_number=spell_number,player_stats=self.player_stats,monster_dic=self.monster_dic,spell_dic=self.spell_dic,outputbox=self.outputbox,function=self.play_combat_loop)
+
+
+
+
     def play_combat_loop(self):
         self.order = self.speedbar.order
 
@@ -389,14 +493,16 @@ class Main_Window():
             self.speedbar.order = None
             self.main_window.after(500,self.monster_attack)
 
-            self.main_window.after(2000,self.play_combat_loop)
-
         # Tour du joueur
         elif self.order == 1:
             self.playerturn = True
             self.attackbutton.config(state=NORMAL)
             self.defendbutton.config(state=NORMAL)
             self.fleebutton.config(state=NORMAL)
+            if self.spell_is_active:
+                self.spellbutton.config(state=NORMAL)
+            else:
+                self.spellbutton.config(state=DISABLED)
 
         elif self.order == "stop":
             self.hide_combat()
@@ -409,16 +515,22 @@ class Main_Window():
         # Le joueur s'enlève de l'état
         if self.defending:
             self.defending = False
-            self.defendbutton.config(text="DEFEND")
+            self.defendbutton.config(text="(D)EFEND")
         # Le jour se met dans l'état
         else:
             self.defending = True
-            self.defendbutton.config(text="STOP DEFEND")
+            self.defendbutton.config(text="STOP (D)EFEND")
 
 
     def player_attack(self):
         if (not self.combat) or (not self.playerturn):
             return
+
+        self.attackbutton.config(state=DISABLED)
+        self.defendbutton.config(state=DISABLED)
+        self.fleebutton.config(state=DISABLED)
+        self.spellbutton.config(state=DISABLED)
+
         import manipulate_stats as ms
 
         if self.defending:
@@ -431,7 +543,7 @@ class Main_Window():
         spellbarprogress = ms.spellbar_progress(self.player_stats)
 
         self.monster_healthbar.take_hit(damage)
-        self.spellbar.slowprogress(addvalue=spellbarprogress)
+        self.spellbar.slowprogress(addvalue=spellbarprogress+50,function=self.check_spellbar_progress)
         if damage>1:
             s='s'
         else:
@@ -447,9 +559,6 @@ class Main_Window():
             self.order = None
             self.playerturn = False
             self.speedbar.order = None
-            self.attackbutton.config(state=DISABLED)
-            self.defendbutton.config(state=DISABLED)
-            self.fleebutton.config(state=DISABLED)
             self.play_combat_loop()
 
 
@@ -482,28 +591,31 @@ class Main_Window():
         else:
             self.order = None
             self.speedbar.order = None
+            self.main_window.after(1500,self.play_combat_loop)
 
     def player_wincombat(self):
         self.speedbar.order = "stop"
         self.playerturn = False
         self.outputbox.add_text(f"Vous gagnez A IMPLEMENTER points d'expérience !")
-        self.playbutton.config(text="Quitter le combat")
+        self.playbutton.config(text="(P)Quitter le combat")
         self.playbutton.config(state=NORMAL)
         self.playbutton.config(command=self.hide_combat)
         self.attackbutton.config(state=DISABLED)
         self.defendbutton.config(state=DISABLED)
         self.fleebutton.config(state=DISABLED)
+        self.spellbutton.config(state=DISABLED)
 
     def player_losecombat(self):
         self.speedbar.order = "stop"
         self.playerturn = False
         self.outputbox.add_text(f"Vous êtes mort...")
-        self.playbutton.config(text="Quitter le combat")
+        self.playbutton.config(text="(P)Quitter le combat")
         self.playbutton.config(state=NORMAL)
         self.playbutton.config(command=self.hide_combat)
         self.attackbutton.config(state=DISABLED)
         self.defendbutton.config(state=DISABLED)
         self.fleebutton.config(state=DISABLED)
+        self.spellbutton.config(state=DISABLED)
 
 
     def player_tryfleecombat(self):
@@ -514,14 +626,15 @@ class Main_Window():
             self.outputbox.add_text(f"Vous ne pouvez pas défendre en fuyant.")
             return
 
-        from fonctions_maths import function_fuite
+        from manipulate_stats import chance_fuite
         from random import random
 
+        self.attackbutton.config(state=DISABLED)
+        self.defendbutton.config(state=DISABLED)
+        self.spellbutton.config(state=DISABLED)
         self.fleebutton.config(state=DISABLED)
 
-        a_p = self.player_stats['Agilité']
-        a_m = self.monster_dic['stats']['Agilité']
-        chance = function_fuite(x_player=a_p,x_monster=a_m)
+        chance = chance_fuite(player_stats=self.player_stats,monster_stats=self.monster_dic['stats'])
         r = random()
 
         self.outputbox.add_text(f"Vous avez {chance*100:0.0f}% de chance de fuire")
@@ -545,21 +658,24 @@ class Main_Window():
         if success:
             self.speedbar.order = "stop"
             self.playerturn = False
-            self.outputbox.add_text(f"Vous avez réussi à fuire.")
-            self.outputbox.add_text(f"Vous ne gagnez pas de point d'expérience.")
-            self.playbutton.config(text="Quitter le combat")
+            self.outputbox.add_text(f"Vous avez réussi à fuire !")
+            self.outputbox.add_text(f"Vous ne gagnez pas de point d'expérience pour avoir fui.")
+            self.playbutton.config(text="(P)Quitter le combat")
             self.playbutton.config(state=NORMAL)
             self.playbutton.config(command=self.hide_combat)
             self.attackbutton.config(state=DISABLED)
             self.defendbutton.config(state=DISABLED)
             self.fleebutton.config(state=DISABLED)
+            self.spellbutton.config(state=DISABLED)
         else:
             self.outputbox.add_text(f"Vous n'avez pas réussi à fuire !")
+            self.outputbox.add_text(f"Vous passez votre tour.")
             self.order = None
             self.playerturn = False
             self.speedbar.order = None
             self.attackbutton.config(state=DISABLED)
             self.defendbutton.config(state=DISABLED)
+            self.spellbutton.config(state=DISABLED)
             self.fleebutton.config(state=DISABLED)
             self.play_combat_loop()
 
@@ -575,6 +691,7 @@ class Main_Window():
         self.attackbutton.destroy()
         self.defendbutton.destroy()
         self.playbutton.destroy()
+        self.spellbutton.destroy()
         self.fleebutton.destroy()
 
         self.player_stats = None
@@ -585,7 +702,7 @@ class Main_Window():
         self.monster_dic = None
 
         self.AttributButton.config(state=NORMAL)
-        self.SpellButton.config(state=NORMAL)
+        self.SpellMenuButton.config(state=NORMAL)
         self.InventoryButton.config(state=NORMAL)
         self.LevelupButton.config(state=NORMAL)
 

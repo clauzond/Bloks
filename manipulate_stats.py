@@ -131,10 +131,6 @@ def calculate_damage_monster(monster_stats,player_stats,element,multiplicateur_d
 
     return(dommage_total)
 
-# Fonction qui détermine les chances de fuites selon la situation actuelle
-# Renvoie un booléen : True s'il réussit, False sinon
-def chance_de_fuire(player_hpmax,player_dic,monster_hpmax,monster_dic):
-    pass
 
 # Calculate le multiplicateur de défense du joueur, lorsque celui-ci est en état de défense
 # La force augmente ce multiplicateur
@@ -144,8 +140,29 @@ def player_multiplicateur_defense(player_stats,attacking=True,receiving=False):
     mult = function_multiplicateur_defense(player_stats['Force'],attacking,receiving)
     return(mult)
 
+
 def spellbar_progress(player_stats):
+    """
+    Calcule le pourcentage (entre 0 et 100) de la barre de spell à remplir par attaque du joueur.
+
+    Formule : function_mana_spellbar(Mana + 0.25 * Intelligence)
+    (voir détails pour la fonction dans fonctions_maths.function_mana_spellbar)
+    """
     from fonctions_maths import function_mana_spellbar
-    mana = player_stats['Mana']
+    mana = player_stats['Mana'] + 0.25*player_stats['Intelligence']
 
     return(function_mana_spellbar(mana))
+
+
+def chance_fuite(player_stats,monster_stats):
+    """
+    Calcule les chances de fuite (entre 0 et 1) du joueur.
+
+    Formule : function_fuite(Agilité_joueur,Agilité_monstre)
+    (voir détails pour la fonction dans fonctions_maths.function_fuite)
+    """
+    from fonctions_maths import function_fuite
+    x_player = player_stats['Agilité']
+    x_monster = monster_stats['Agilité']
+
+    return(function_fuite(x_player=x_player,x_monster=x_monster))

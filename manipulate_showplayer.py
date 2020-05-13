@@ -187,7 +187,7 @@ class ShowPlayer():
         collision_tuple = self.game_canvas.find_overlapping(x1,y1,x2,y2)
         for item in collision_tuple:
             tag_tuple = self.game_canvas.gettags(item)
-            if "collision" in tag_tuple:
+            if "collision" in tag_tuple or "enemy" in tag_tuple:
                 return(True)
         return(False)
 

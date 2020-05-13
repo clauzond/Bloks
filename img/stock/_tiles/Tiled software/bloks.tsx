@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.2" tiledversion="1.3.4" name="bloks" tilewidth="70" tileheight="70" tilecount="52" columns="0">
+<tileset version="1.2" tiledversion="1.3.4" name="bloks" tilewidth="70" tileheight="70" tilecount="60" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0" type="bomb">
   <properties>
@@ -183,7 +183,7 @@
  </tile>
  <tile id="30" type="a">
   <properties>
-   <property name="tag" value=""/>
+   <property name="tag" value="collision"/>
   </properties>
   <image width="70" height="70" source="../non resized/ladder_mid.png"/>
  </tile>
@@ -312,5 +312,53 @@
    <property name="tag" value=""/>
   </properties>
   <image width="70" height="70" source="../non resized/window.png"/>
+ </tile>
+ <tile id="52" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/grass.png"/>
+ </tile>
+ <tile id="53" type="a">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/greenback.png"/>
+ </tile>
+ <tile id="54">
+  <properties>
+   <property name="tag" value=""/>
+  </properties>
+  <image width="70" height="70" source="../non resized/redback.png"/>
+ </tile>
+ <tile id="55">
+  <properties>
+   <property name="tag" value="enemy,medium"/>
+  </properties>
+  <image width="70" height="70" source="../non resized/slime_yellow.png"/>
+ </tile>
+ <tile id="56">
+  <properties>
+   <property name="tag" value="enemy,very_easy"/>
+  </properties>
+  <image width="70" height="70" source="../non resized/slime_blue.png"/>
+ </tile>
+ <tile id="57">
+  <properties>
+   <property name="tag" value="enemy,easy"/>
+  </properties>
+  <image width="70" height="70" source="../non resized/slime_green.png"/>
+ </tile>
+ <tile id="58">
+  <properties>
+   <property name="tag" value="enemy,hard"/>
+  </properties>
+  <image width="70" height="70" source="../non resized/slime_purple.png"/>
+ </tile>
+ <tile id="59">
+  <properties>
+   <property name="tag" value="enemy,very_hard"/>
+  </properties>
+  <image width="70" height="70" source="../non resized/slime_red.png"/>
  </tile>
 </tileset>

@@ -38,7 +38,6 @@ class Map():
             return("empty.gif")
         _id -= 1
         this_tile = self.tilelist[_id]
-        this_tile_name = this_tile['@type']
         this_tile_imgname = this_tile['image']['@source'].split('/')[-1]
         return(this_tile_imgname)
 

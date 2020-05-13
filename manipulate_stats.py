@@ -47,7 +47,7 @@ def calculate_playerstats(attribut_dic,player_dic):
 
 
 
-def calculate_damage_player(player_stats,monster_stats,player_itemlist,multiplicateur_defense=1):
+def calculate_damage_player(player_stats,monster_stats,player_itemlist,number_of_weapons,multiplicateur_defense,multiplicateur_attaque):
     # itemlist sera la "equipped_list" du joueur
 
     # mult item attribut : de base, 10% pour tout de base
@@ -84,19 +84,23 @@ def calculate_damage_player(player_stats,monster_stats,player_itemlist,multiplic
             mi_i += item['multiplicateurs']['Intelligence']
             mi_c += item['multiplicateurs']['Chance']
 
-    dmg_fixe = multiplicateur_defense*dmg_fixe - res_fixe
+    if number_of_weapons == 0:
+        return(0)
+    mult = multiplicateur_attaque / number_of_weapons
+
+    dmg_fixe = mult*multiplicateur_defense*dmg_fixe - res_fixe
     if dmg_fixe < 0:
         dmg_fixe = 0
-    dmg_force =   multiplicateur_defense*(mi_f*(mb_f*f + dmg_f)) - res_f
+    dmg_force =   mult*multiplicateur_defense*(mi_f*(mb_f*f + dmg_f)) - res_f
     if dmg_force < 0:
         dmg_force = 0
-    dmg_agilite = multiplicateur_defense*(mi_a*(mb_a*a + dmg_a)) - res_a
+    dmg_agilite = mult*multiplicateur_defense*(mi_a*(mb_a*a + dmg_a)) - res_a
     if dmg_agilite < 0:
         dmg_agilite = 0
-    dmg_intelligence = multiplicateur_defense*(mi_i*(mb_i*i + dmg_i)) - res_i
+    dmg_intelligence = mult*multiplicateur_defense*(mi_i*(mb_i*i + dmg_i)) - res_i
     if dmg_intelligence < 0:
         dmg_intelligence = 0
-    dmg_chance = multiplicateur_defense*(mi_c*(mb_c*c + dmg_c)) - res_c
+    dmg_chance = mult*multiplicateur_defense*(mi_c*(mb_c*c + dmg_c)) - res_c
     if dmg_chance < 0:
         dmg_chance = 0
 
@@ -134,10 +138,10 @@ def calculate_damage_monster(monster_stats,player_stats,element,multiplicateur_d
 
 # Calculate le multiplicateur de défense du joueur, lorsque celui-ci est en état de défense
 # La force augmente ce multiplicateur
-def player_multiplicateur_defense(player_stats,attacking=True,receiving=False):
+def player_multiplicateur_defense(player_stats,attacking=True,receiving=False,pourcentage_total=0):
     from fonctions_maths import function_multiplicateur_defense
 
-    mult = function_multiplicateur_defense(player_stats['Force'],attacking,receiving)
+    mult = function_multiplicateur_defense(x=player_stats['Force'],attacking=attacking,receiving=receiving,pourcentage_total=pourcentage_total)
     return(mult)
 
 
@@ -166,3 +170,21 @@ def chance_fuite(player_stats,monster_stats):
     x_monster = monster_stats['Agilité']
 
     return(function_fuite(x_player=x_player,x_monster=x_monster))
+
+def attackbar_difficulty(player_level):
+    from fonctions_maths import function_attackbardiff
+
+    return(function_attackbardiff(player_level))
+
+
+def number_of_weapons(player_dic):
+    equipped_list = player_dic['equipped_list']
+
+    k = 0
+
+    for i in range(len(equipped_list)):
+        if len(equipped_list[i])>0:
+            if "multiplicateurs" in equipped_list[i].keys():
+                if len(equipped_list[i]['multiplicateurs'])>0:
+                    k += 1
+    return(k)

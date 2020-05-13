@@ -19,6 +19,12 @@ class Main_Window():
         #self.foregroundcolor='#243665'
         self.backgroundcolor="#292826"
         self.foregroundcolor="#F9D342"
+
+        self.aabg = "#3F3E3B"
+        self.aaborder = self.foregroundcolor
+        self.aaline = "#8E38F7"
+        self.aahitbox = "#FF5C56"
+
         self.main_window.option_add('*background',self.backgroundcolor)
         self.main_window.option_add('*foreground',self.foregroundcolor)
         self.main_window.option_add('*compound','left')
@@ -206,13 +212,14 @@ class Main_Window():
         self.game_canvas.bind_all('<Right>',self.showplayer.move_right)
         self.game_canvas.bind_all('<Up>',self.showplayer.move_up)
         self.game_canvas.bind_all('<Down>',self.showplayer.move_down)
-        self.game_canvas.bind_all('<space>',self.showplayer.check_usable)
+        self.game_canvas.bind_all('<e>',self.showplayer.check_usable)
 
         self.game_canvas.bind_all('<Button-1>',self.test)
         self.game_canvas.bind_all('<p>',self.test_play)
         self.game_canvas.bind_all('<c>',self.test_combat)
         self.game_canvas.bind_all('<f>',self.test_fuite)
         self.game_canvas.bind_all('<a>',self.test_attaque)
+        self.game_canvas.bind_all('<space>',self.test_stoptheline)
         self.game_canvas.bind_all('<d>',self.test_defense)
         self.game_canvas.bind_all('<s>',self.test_spell)
 
@@ -226,6 +233,7 @@ class Main_Window():
         self.outputbox.add_text(text=f"Appuie sur <c> pour démarrer un combat")
         self.outputbox.add_text(text=f"Appuie sur <f> pour fuire le combat")
         self.outputbox.add_text(text=f"Appuie sur <a> pour attaquer en combat")
+        self.outputbox.add_text(text=f"Appuie sur ESPACE pour arrêter la barre")
         self.outputbox.add_text(text=f"Appuie sur <d> pour défendre en combat")
         self.outputbox.add_text(text=f"Appuie sur <s> pour lancer un sort en combat")
         self.outputbox.add_text(text=f"Appuie <?> pour afficher l'aide")
@@ -275,6 +283,14 @@ class Main_Window():
         except Exception as e:
             self.outputbox.add_text(text=f"Erreur : {e}")
 
+    def test_stoptheline(self,*args):
+        if not self.combat:
+            return
+        try:
+            self.attackbar.stoptheline()
+        except Exception as e:
+            self.outputbox.add_text(text=f"Erreur : {e}")
+
     def test_defense(self,*args):
         if not self.combat:
             return
@@ -316,6 +332,8 @@ class Main_Window():
         import speedbar
         import outputbox
         import spellbar
+        import attackbar
+        import manipulate_stats as ms
 
         # Efface la map
         self.clear_map()
@@ -338,6 +356,7 @@ class Main_Window():
         # Ces 3 dictionnaires pourront bouger en plein combat, et sont recréés pour les manipuler
         self.player_stats = self.player_dic['stats']
         self.equipped_list = self.player_dic['equipped_list']
+        self.number_of_weapons = ms.number_of_weapons(self.player_dic)
 
         # self.game_canvas
 
@@ -383,6 +402,18 @@ class Main_Window():
 
         self.spellbar = spellbar.SpellBar(canvas=self.game_canvas,x=x_spellbar,y=y_spellbar,length=200,height=25,current_value=0,maximum=100,color="#EB2188",backgroundcolor=self.backgroundcolor,bordercolor=self.foregroundcolor,special="middle")
         self.spellbar.show()
+
+        x_aa = x_playerhealth + 50
+        y_aa = y_healthbar + 250
+
+
+        dif_level = ms.attackbar_difficulty(self.player_dic['level'])
+        self.outputbox.add_text(text=f"Difficulté : {dif_level}/20")
+        self.attackbar = attackbar.AttackBar(canvas=self.game_canvas,x=x_aa,y=y_aa,width=800,height=300,difficulty_level=dif_level,backgroundcolor=self.aabg,backgroundbordercolor=self.aaborder,linecolor=self.aaline,linebordercolor=self.aaborder,hitboxcolor=self.aahitbox)
+        self.attackbar.show()
+
+
+
 
         x_spellbutton = x_spellbar + 200
         self.spellbutton = Button(self.game_canvas,text="",state='disabled',command=self.player_spell)
@@ -531,6 +562,13 @@ class Main_Window():
         self.fleebutton.config(state=DISABLED)
         self.spellbutton.config(state=DISABLED)
 
+        if self.number_of_weapons == 0:
+            self.player_attack_suite(pourcentage_total = 0)
+        else:
+            self.attackbar.start_animation(number_of_times=self.number_of_weapons,function=self.player_attack_suite)
+
+
+    def player_attack_suite(self,pourcentage_total=0):
         import manipulate_stats as ms
 
         if self.defending:
@@ -539,7 +577,7 @@ class Main_Window():
         else:
             mult_damage = 1
 
-        damage = ms.calculate_damage_player(player_stats = self.player_stats,monster_stats = self.monster_dic['stats'],player_itemlist=self.equipped_list,multiplicateur_defense=mult_damage)
+        damage = ms.calculate_damage_player(player_stats = self.player_stats,monster_stats = self.monster_dic['stats'],player_itemlist=self.equipped_list,number_of_weapons=self.number_of_weapons,multiplicateur_defense=mult_damage,multiplicateur_attaque = pourcentage_total)
         spellbarprogress = ms.spellbar_progress(self.player_stats)
 
         self.monster_healthbar.take_hit(damage)
@@ -565,10 +603,17 @@ class Main_Window():
     def monster_attack(self):
         if not self.combat:
             return
+
+        if self.defending:
+            self.attackbar.start_animation(number_of_times=1,function=self.monster_attack_suite)
+        else:
+            self.monster_attack_suite(pourcentage_total=0)
+
+    def monster_attack_suite(self,pourcentage_total=0):
         import manipulate_stats as ms
 
         if self.defending:
-            mult_defense = ms.player_multiplicateur_defense(player_stats = self.player_stats,attacking=False,receiving=True)
+            mult_defense = ms.player_multiplicateur_defense(player_stats = self.player_stats,attacking=False,receiving=True,pourcentage_total=pourcentage_total)
             self.outputbox.add_text(text=f"Vous ne prenez que {mult_defense*100:0.1f}% des dégâts en forme défensive")
         else:
             mult_defense = 1
@@ -685,6 +730,7 @@ class Main_Window():
         self.monster_healthbar.hidetip()
         self.speedbar.hidetip()
         self.spellbar.hidetip()
+        self.attackbar.hidetip()
         self.player_label.destroy()
         self.monster_label.destroy()
 

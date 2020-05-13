@@ -38,6 +38,14 @@ class SpellBar():
         self.label.place_forget()
         self.widget.destroy()
         self.label.destroy()
+        self.length = self.maximum = None
+        self.current_value = None
+        self.loop = None
+        self.canvas = None
+        self.widget = self.label = None
+        self.special = None
+        self.color = self.backgroundcolor = self.bordercolor = None
+        self.x = self.y = self.height = None
 
     def show(self):
         if self.widget:

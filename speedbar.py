@@ -58,6 +58,22 @@ class SpeedBar():
         self.bar2.place_forget()
         self.bar1.destroy()
         self.bar2.destroy()
+        self.canvas = None
+        self.loop = None
+        self.bar1 = self.bar2 = None
+        self.color1 = self.color2 = None
+        self.x = self.y = None
+        self.backgroundcolor = self.bordercolor = None
+        self.order = None
+        self.length = None
+        self.max1 = None
+        self.max2 = None
+        self.value1 = None
+        self.value2 = None
+        self.id_speed1 = None
+        self.id_speed2 = None
+        self.speed1= None
+        self.speed2= None
 
     def show(self):
         if self.bar1:

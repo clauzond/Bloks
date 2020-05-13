@@ -3,7 +3,7 @@ from random import uniform
 import tkinter.ttk as ttk
 from time import time
 
-class AttackAnimation():
+class AttackBar():
 
 
     def __init__(self,canvas,x,y,width,height,difficulty_level,backgroundcolor,backgroundbordercolor,linecolor,linebordercolor,hitboxcolor):
@@ -43,11 +43,11 @@ class AttackAnimation():
     # Dessine le background
     def show(self):
         self.draw_background()
-        self.draw_hitbox()
+        #self.draw_hitbox()
         pass
 
     # On retire TOUS les paramètres qu'on a défini en "self.param = ..."
-    def hide(self):
+    def hidetip(self):
         self.canvas.delete("myline","myhitbox","mybackground")
         self.canvas = None
         self.x = None
@@ -93,7 +93,7 @@ class AttackAnimation():
 
     def loop_for_input(self,x,_time,i,maximum_times,function):
         if i>=maximum_times:
-            function(self.pourcentage_total,maximum_times)
+            function(self.pourcentage_total)
             self.looping = False
 
         elif (not self.player_input) and (x <= self.x + self.width - self.linewidth):
@@ -215,7 +215,7 @@ def truc4(event):
 def truc5(event):
     aa.start_animation(number_of_times=3,function=truc0)
 
-def truc0(pourcentage,nbr):
+def truc0(pourcentage,nbr=1):
     print(f"Fini ! Vous avez fait {pourcentage*100:0.0f}/{nbr*100}%")
 
 if __name__ == "__main__":
@@ -243,7 +243,7 @@ if __name__ == "__main__":
     wc = Canvas(w,width=600,height=600)
     wc.pack(fill=BOTH,expand=True,padx=0,pady=0)
 
-    aa = AttackAnimation(canvas=wc,x=20,y=20,width=500,height=200,difficulty_level=10,backgroundcolor="gray",backgroundbordercolor="yellow",linecolor="blue",linebordercolor="yellow",hitboxcolor="red")
+    aa = AttackBar(canvas=wc,x=20,y=20,width=500,height=200,difficulty_level=10,backgroundcolor="gray",backgroundbordercolor="yellow",linecolor="blue",linebordercolor="yellow",hitboxcolor="red")
 
     aa.show()
 

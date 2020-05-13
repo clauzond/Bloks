@@ -40,6 +40,19 @@ class HealthBar():
         self.widget.destroy()
         self.label.destroy()
 
+        self.length = None
+        self.maximum = None
+        self.current_value = None
+        self.loop = None
+        self.canvas = None
+        self.widget = self.label = None
+        self.special = None
+        self.color = None
+        self.x = None
+        self.y = None
+        self.height = None
+        self.backgroundcolor = self.bordercolor = None
+
     def show(self):
         if self.widget:
             return

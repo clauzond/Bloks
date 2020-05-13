@@ -17,7 +17,7 @@ def function_chance(x):
 # La fonction pour déterminer combien fait gagner la force au multiplicateur de défense
 # Peut renvoyer le nouveau pourcentage des dégâts d'attaques
 # ou le nouveau pourcentage des dégâts reçus
-def function_multiplicateur_defense(x,attacking=True,receiving=False):
+def function_multiplicateur_defense(x,attacking=True,receiving=False,pourcentage_total=0):
     y = x/1000
     if y>0.25:
         y=0.25
@@ -25,7 +25,7 @@ def function_multiplicateur_defense(x,attacking=True,receiving=False):
     if attacking:
         return(y)
     elif receiving:
-        return(1 - y*0.5)
+        return(1 - y*0.75*pourcentage_total)
 
 # La fonction détermine le nombre de pourcentage de barre de spell gagnée par attaque
 # Par défaut, on veut 10% par attaque et maximum 50% pour +200 mana
@@ -55,11 +55,16 @@ def function_fuite(x_player,x_monster):
     else:
         return(F)
 
+# La fonction détermine la difficulté pour la barre d'attaque
+# Difficulté de base 5, et +1 par tranche de 3 level
+def function_attackbardiff(x):
+    return(5 + x//3)
+
 
 
 if __name__ == '__main__':
-    fun = function_fuite
+    fun = function_multiplicateur_defense
     l = []
-    for i in range(0,51,1):
-        l.append(f"{fun(i,50):0.2f}")
+    for i in range(0,50,1):
+        l.append(f"{fun(i,False,True,0.9):0.2f}")
     print(l)

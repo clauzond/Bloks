@@ -781,7 +781,7 @@ if __name__ == "__main__":
     player_imgdir = "img/stock/platformer graphics/Enemies/blockerMad.png"
     w.load_player(player_imgdir=player_imgdir)
 
-    w.draw_everything(0,0)
+    w.draw_everything(3,3)
 
     #w.show_combat(monster_dic=monster_dic)
 

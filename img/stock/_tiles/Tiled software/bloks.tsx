@@ -63,19 +63,19 @@
  </tile>
  <tile id="10" type="coinBronze">
   <properties>
-   <property name="tag" value="usable,coinBronze"/>
+   <property name="tag" value="usable,coinBronze,disappear"/>
   </properties>
   <image width="70" height="70" source="../non resized/coinBronze.png"/>
  </tile>
  <tile id="11" type="coinGold">
   <properties>
-   <property name="tag" value="usable,coinGold"/>
+   <property name="tag" value="usable,coinGold,disappear"/>
   </properties>
   <image width="70" height="70" source="../non resized/coinGold.png"/>
  </tile>
  <tile id="12" type="coinSilver">
   <properties>
-   <property name="tag" value="usable,coinSilver"/>
+   <property name="tag" value="usable,coinSilver,disappear"/>
   </properties>
   <image width="70" height="70" source="../non resized/coinSilver.png"/>
  </tile>
@@ -159,25 +159,25 @@
  </tile>
  <tile id="26" type="keyBlue">
   <properties>
-   <property name="tag" value="usable,keyBlue"/>
+   <property name="tag" value="usable,keyBlue,disappear"/>
   </properties>
   <image width="70" height="70" source="../non resized/keyBlue.png"/>
  </tile>
  <tile id="27" type="keyGreen">
   <properties>
-   <property name="tag" value="usable,keyGreen"/>
+   <property name="tag" value="usable,keyGreen,disappear"/>
   </properties>
   <image width="70" height="70" source="../non resized/keyGreen.png"/>
  </tile>
  <tile id="28" type="keyRed">
   <properties>
-   <property name="tag" value="usable,keyRed"/>
+   <property name="tag" value="usable,keyRed,disappear"/>
   </properties>
   <image width="70" height="70" source="../non resized/keyRed.png"/>
  </tile>
  <tile id="29" type="keyYellow">
   <properties>
-   <property name="tag" value="usable,keyYellow"/>
+   <property name="tag" value="usable,keyYellow,disappear"/>
   </properties>
   <image width="70" height="70" source="../non resized/keyYellow.png"/>
  </tile>
@@ -333,31 +333,31 @@
  </tile>
  <tile id="55">
   <properties>
-   <property name="tag" value="enemy,medium"/>
+   <property name="tag" value="enemy,medium,collision"/>
   </properties>
   <image width="70" height="70" source="../non resized/slime_yellow.png"/>
  </tile>
  <tile id="56">
   <properties>
-   <property name="tag" value="enemy,very_easy"/>
+   <property name="tag" value="enemy,very_easy,collision"/>
   </properties>
   <image width="70" height="70" source="../non resized/slime_blue.png"/>
  </tile>
  <tile id="57">
   <properties>
-   <property name="tag" value="enemy,easy"/>
+   <property name="tag" value="enemy,easy,collision"/>
   </properties>
   <image width="70" height="70" source="../non resized/slime_green.png"/>
  </tile>
  <tile id="58">
   <properties>
-   <property name="tag" value="enemy,hard"/>
+   <property name="tag" value="enemy,hard,collision"/>
   </properties>
   <image width="70" height="70" source="../non resized/slime_purple.png"/>
  </tile>
  <tile id="59">
   <properties>
-   <property name="tag" value="enemy,very_hard"/>
+   <property name="tag" value="enemy,very_hard,collision"/>
   </properties>
   <image width="70" height="70" source="../non resized/slime_red.png"/>
  </tile>

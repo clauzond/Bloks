@@ -1,11 +1,12 @@
 import manipulate_xml as x
 import manipulate_json as j
+import manipulate_tiles
 
 
 class Map():
 
     # mapdic et tiledic sont les json, sauvegardés et ouverts comme indiqué plus bas
-    def __init__(self,mapdic,tiledic,imgdir):
+    def __init__(self,mapdic,tiledic,imgdir,used_objects=[]):
 
         self.mapdic = mapdic
         self.tiledic = tiledic
@@ -13,13 +14,17 @@ class Map():
         self.layerlist = self.mapdic['map']['layer']
         self.tilelist = self.tiledic['tileset']['tile']
 
-        self.map_by_layer = self.load_map()
+
+        self.map_by_layer = self.load_map(used_objects)
         self.imgdic = self.load_imgdic(imgdir)
 
-        self.loaded_map = None
 
         self.x_limit = len(self.map_by_layer[0][0]) -1
         self.y_limit = len(self.map_by_layer[0]) - 1
+
+
+
+
 
 
     # Dans Tiled, la layer la plus en bas est indexé à 0 (background = 0, calque dessus = 1, ...)
@@ -74,7 +79,7 @@ class Map():
 
     # Renvoie une liste dont le ième élément est la ième layer, et donc la ième layer est une matrice qui correspond aux éléments dans la map
     # Cette fonction ayant une grande complexité, on ne l'appellera que pour passer d'une map à l'autre
-    def load_map(self):
+    def load_map(self,used_objects):
 
         mbl = []
 
@@ -92,9 +97,7 @@ class Map():
                 matrix_layer.append(ligne_liste)
 
             mbl.append(matrix_layer)
-
-
-        self.loaded_map = mbl
+        mbl = manipulate_tiles.load_map_with_used_objects(map_by_layer=mbl, used_objects=used_objects)
         return(mbl)
 
     def load_imgdic(self,imgdir):
@@ -166,7 +169,8 @@ class Map():
 
         # Chaque élément est une matrice de map, la première est la layer 0
         # On dessinera dans l'ordre croissant des layer, comme ça le background est bien dessinné en premier
-        for layer in self.map_by_layer:
+        for layer_nbr in range(len(self.map_by_layer)):
+            layer = self.map_by_layer[layer_nbr]
 
             # layer est une liste de "lignes" ; on ne prend que celles visibles à l'écran
 
@@ -181,14 +185,14 @@ class Map():
 
                 if b:
                     y += abs(old_y)
+        
 
                 # On parcourt chaque élément de la ligne, on a donc le numéro de la colonne = x
                 for x in range(len(this_ligne)):
                     bloc_id = this_ligne[x]
-
                     if a:
                         x += abs(old_x)
-
+                            
                     tag_tuple = tuple(self.get_tile_taglist(bloc_id))
                     imgname = self.get_tile_imgname(bloc_id)
                     if imgname != "empty.gif":
@@ -219,7 +223,7 @@ def test():
 
 # On charge les données d'une map : la map et son tileset
 # On rend l'objet 'myMap' de classe 'Map' pour load complètement la map et accéder aux fonctions utiles
-def load_map(mapdir,mapname,tilename,imgdir):
+def load_map(mapdir,mapname,tilename,imgdir,used_objects):
     import manipulate_xml as x
     import manipulate_json as j
 
@@ -238,17 +242,21 @@ def load_map(mapdir,mapname,tilename,imgdir):
     mapdic = j.load_file(fulldir=s_fullmapdir)
     tiledic = j.load_file(fulldir=s_fulltiledir)
 
-    myMap = Map(mapdic,tiledic,imgdir)
+    myMap = Map(mapdic=mapdic,tiledic=tiledic,imgdir=imgdir,used_objects=used_objects)
+
 
     return(myMap)
 
 
 if __name__ == '__main__':
-    #global myMap
+    global myMap
+    from tkinter import *
+
+    w = Tk()
 
     mapdir = "img/stock/_tiles/Tiled software"
     mapname = "my_first_map"
     tilename = "bloks"
-    imgdir = "img/stock/_tiles/resized"
+    imgdir = "img/stock/_tiles/non resized"
 
     myMap = load_map(mapdir,mapname,tilename,imgdir)

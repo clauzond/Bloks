@@ -1,4 +1,9 @@
 {
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.linting.pylintArgs": [
+        "--disable=invalid-name,missing-final-newline,missing-module-docstring,line-too-long,bad-whitespace,trailing-whitespace,unused-wildcard-import,wildcard-import,broad-except,pointless-string-statement,bare-except,superfluous-parens,unused-argument,redefined-outer-name"
+    ]
+
 }
+

@@ -530,7 +530,7 @@ class Main_Window():
         if self.order == "wait":
             self.main_window.after(20, self.play_combat_loop)
 
-        elif self.order == None:
+        elif self.order is None:
 
             self.order = self.speedbar.lets_go()
 

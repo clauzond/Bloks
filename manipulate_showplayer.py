@@ -1,5 +1,3 @@
-import math
-from time import time
 import manipulate_tiles
 
 
@@ -40,7 +38,6 @@ class ShowPlayer():
 
         self.x_map = None
         self.y_map = None
-
 
     def draw(self, x_map, y_map):
         self.x_map = x_map
@@ -102,6 +99,7 @@ class ShowPlayer():
             li + 1, go + 1, self.get_block_taglist(layer, li + 1, go + 1))
 
         return(liste)
+
     def check_collision(self, direction):
         """
         Renvoie un booléen correspond à "IL Y A COLLISION"
@@ -125,8 +123,6 @@ class ShowPlayer():
             taglist2 = self.get_block_taglist(layer=2, li=li + 1, go=go)
             taglist3 = self.get_block_taglist(layer=3, li=li + 1, go=go)
 
-        
-
         return("collision" in taglist1 or "collision" in taglist2 or "collision" in taglist3)
 
     def check_for_everything(self):
@@ -147,24 +143,26 @@ class ShowPlayer():
         for i in range(0, 3):
             for j in range(0, 3):
                 li, go, taglist = myList[i][j]
-                if len(taglist)>0:
+                if len(taglist) > 0:
                     if layer == 1:
                         self.use_normal_item(li=li, go=go, taglist=taglist)
                     elif layer == 2:
-                        self.use_disappearing_item(li=li, go=go, taglist=taglist)
+                        self.use_disappearing_item(
+                            li=li, go=go, taglist=taglist)
                     elif layer == 3:
                         self.use_enemy(li=li, go=go, taglist=taglist)
         return
-
 
     def use_normal_item(self, li, go, taglist):
         pass
 
     def use_disappearing_item(self, li, go, taglist):
-        manipulate_tiles.use_disappearing_item(layer=2,li=li,go=go,taglist=taglist,player_name=self.player_name, myMap=self.myMap)
-        self.myMap.draw_map(canvas=self.game_canvas,x_debut=self.x_map,y_debut=self.y_map)
-        self.draw(self.x_map,self.y_map)
-        
+        manipulate_tiles.use_disappearing_item(
+            layer=2, li=li, go=go, taglist=taglist, player_name=self.player_name, myMap=self.myMap)
+        self.myMap.draw_map(canvas=self.game_canvas,
+                            x_debut=self.x_map, y_debut=self.y_map)
+        self.draw(self.x_map, self.y_map)
+
         pass
 
     def use_enemy(self, li, go, taglist):
@@ -184,7 +182,7 @@ class ShowPlayer():
             if self.x_map - 1 >= (-self.pos_x):
                 self.x_map -= 1
                 self.myMap.draw_map(canvas=self.game_canvas,
-                              x_debut=self.x_map, y_debut=self.y_map)
+                                    x_debut=self.x_map, y_debut=self.y_map)
                 self.draw(self.x_map, self.y_map)
 
     def move_right(self, *args):
@@ -194,7 +192,7 @@ class ShowPlayer():
             if self.x_map + 1 <= self.x_limit:
                 self.x_map += 1
                 self.myMap.draw_map(canvas=self.game_canvas,
-                              x_debut=self.x_map, y_debut=self.y_map)
+                                    x_debut=self.x_map, y_debut=self.y_map)
                 self.draw(self.x_map, self.y_map)
 
     def move_up(self, *args):
@@ -204,7 +202,7 @@ class ShowPlayer():
             if self.y_map - 1 >= (-self.pos_y - 1):
                 self.y_map -= 1
                 self.myMap.draw_map(canvas=self.game_canvas,
-                              x_debut=self.x_map, y_debut=self.y_map)
+                                    x_debut=self.x_map, y_debut=self.y_map)
                 self.draw(self.x_map, self.y_map)
 
     def move_down(self, *args):
@@ -214,5 +212,5 @@ class ShowPlayer():
             if self.y_map + 1 <= self.y_limit:
                 self.y_map += 1
                 self.myMap.draw_map(canvas=self.game_canvas,
-                              x_debut=self.x_map, y_debut=self.y_map)
+                                    x_debut=self.x_map, y_debut=self.y_map)
                 self.draw(self.x_map, self.y_map)
